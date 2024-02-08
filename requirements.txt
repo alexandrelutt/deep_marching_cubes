@@ -1,1 +1,4 @@
 datasets
+torch
+torchvision
+matplotlib

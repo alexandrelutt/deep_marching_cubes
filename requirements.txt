@@ -3,3 +3,4 @@ torch
 torchvision
 ninja
 matplotlib
+gdown

@@ -6,16 +6,21 @@ from code.model import RawDeepMarchingCube
 from code.my_losses import PointToMeshLoss
 
 if __name__ == '__main__':
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f'Using device: {device}')
+
     train_data = np.load('all_data/points_shapenet_32x32x32_train.npy')
     batch_size = 8
 
     sample_batch = train_data[:batch_size, :, :]
-    sample_batch = torch.tensor(sample_batch).float()
+    sample_batch = torch.tensor(sample_batch).float().to(device)
 
-    DMC = RawDeepMarchingCube()
+    model = RawDeepMarchingCube()
+    model.to(device)
+    
     print(f'Computing DMC...')
     t = time.time()
-    offset, topology, occupancy = DMC(sample_batch)
+    offset, topology, occupancy = model(sample_batch)
     dt = time.time() - t
     print(f'Finished computing DMC in {dt:.4f} seconds.')
 

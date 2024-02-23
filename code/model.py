@@ -3,14 +3,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 import sys 
 
-# sys.path.append('../code')
-import grid
-import topo
+from code.grid import GridPooling, FeatureExtractor
+from code.topo import OccupancyToTopology
 
 if torch.cuda.is_available():
     dtype = torch.cuda.FloatTensor
 else:
     dtype = torch.FloatTensor
+
 class LocalEncoder(nn.Module):
     """Encoder of the U-Net"""
     def __init__(self, input_dim=16, skip_connection=True):
@@ -144,7 +144,7 @@ class SurfaceDecoder(nn.Module):
 class RawDeepMarchingCube(nn.Module):
     def __init__(self):
         super(RawDeepMarchingCube, self).__init__()
-        self.feature_extractor = grid.FeatureExtractor()
+        self.feature_extractor = FeatureExtractor()
         self.encoder = LocalEncoder(16, True)
         self.decoder = SurfaceDecoder(True)
 
@@ -153,7 +153,7 @@ class RawDeepMarchingCube(nn.Module):
     def forward(self, x):
         features = self.feature_extractor(x)
 
-        output_grid = grid.GridPooling.apply(x, features)
+        output_grid = GridPooling.apply(x, features)
         output_grid = output_grid.permute(0, 4, 1, 2, 3)
         
         curr_size = output_grid.size()
@@ -163,6 +163,6 @@ class RawDeepMarchingCube(nn.Module):
         x, intermediate_feat = self.encoder(new_output_grid)
         occupancy, offset = self.decoder(x, intermediate_feat)
 
-        topology = topo.OccupancyToTopology.apply(occupancy)
+        topology = OccupancyToTopology.apply(occupancy)
 
         return offset, topology, occupancy 

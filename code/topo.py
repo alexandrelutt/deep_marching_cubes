@@ -1,6 +1,6 @@
 from torch.utils.cpp_extension import load
 
-OccTopology = load(name="occtopology", sources=["../cpp_files/occtopology.cpp"])
+OccTopology = load(name="occtopology", sources=["cpp_files/occtopology.cpp"])
 
 import torch
 from torch.autograd import Function

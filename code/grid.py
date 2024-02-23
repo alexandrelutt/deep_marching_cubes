@@ -1,6 +1,6 @@
 from torch.utils.cpp_extension import load
 
-GPooling = load(name="grid_pooling", sources=["../cpp_files/grid_pooling.cpp"])
+GPooling = load(name="grid_pooling", sources=["cpp_files/grid_pooling.cpp"])
 
 import torch
 import torch.nn as nn

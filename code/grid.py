@@ -1,7 +1,3 @@
-from torch.utils.cpp_extension import load
-
-GPooling = load(name="grid_pooling", sources=["cpp_files/grid_pooling.cpp"])
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -24,37 +20,56 @@ class FeatureExtractor(nn.Module):
         features = self.conv2(point_cloud)
         features = features.transpose(1, 2)
         return features
-    
-class GridPooling(Function):
+        
+class GridPoolingFct(Function):
     @staticmethod
-    def forward(ctx, point_cloud, features):
-        N = 32
+    def forward(ctx, points, features):
+        batch_size, n_points, _ = points.size()
+        _, _, n_features = features.size()
 
-        batch_size = point_cloud.shape[0]
-        C = features.shape[-1]
+        output_grid = torch.zeros(batch_size, 32, 32, 32, n_features, device=points.device)
 
-        volumetric_representation = torch.zeros((batch_size, N, N, N, C))
-        indices = -1*torch.ones((batch_size, N**3, C), dtype=torch.int)
+        indices = -1*torch.ones(batch_size, 32**3, n_features, device=points.device, dtype=torch.long)
 
-        GPooling.grid_pooling(volumetric_representation, indices, point_cloud, features)
+        normed_points = (points - points.min()) / (points.max() - points.min() + 1e-6)
+        voxel_indices = (normed_points // (1/32)).long()
 
+        for b in range(batch_size):
+            for i in range(n_points):
+                voxel_index = voxel_indices[b, i]
+                global_index = voxel_index[0]*32*32 + voxel_index[1]*32 + voxel_index[2]
+
+                global_t = torch.cat([output_grid[b, voxel_index[0], voxel_index[1], voxel_index[2]].reshape(n_features, -1), features[b, i].reshape(n_features, -1)], dim=1)
+                max_values, max_indices = torch.max(global_t, dim=1)
+
+                output_grid[b, voxel_index[0], voxel_index[1], voxel_index[2]] = max_values
+
+                old_indices = indices[b, global_index]
+                indices[b, global_index] = torch.where(max_indices.bool(), global_index, old_indices)
+                
         ctx.save_for_backward(indices)
-        ctx.n_points = point_cloud.shape[1]
-        ctx.N = N   
-        ctx.C = C
         ctx.batch_size = batch_size
+        ctx.n_points = n_points
+        ctx.n_features = n_features
+        return output_grid
 
-        return volumetric_representation
-    
     @staticmethod
     def backward(ctx, grad_output):
         indices = ctx.saved_tensors[0]
-        n_points = ctx.n_points
-        N = ctx.N
-        C = ctx.C
         batch_size = ctx.batch_size
+        n_points = ctx.n_points
+        n_features = ctx.n_features
 
-        grad_points = torch.zeros((batch_size, n_points, C))
-        GPooling.grid_pooling_backward(grad_points, grad_output, indices, N)
+        grad_points = torch.zeros((batch_size, n_points, n_features))
+        for b in range(batch_size):
+            for i in range(n_points):
+                for c in range(n_features):
+                    current_indices = indices[b, i, c]
+                    if current_indices == -1:
+                        continue
+                    grad_points[b, i, c] = grad_output[b, current_indices//32//32, (current_indices//32)%32, current_indices%32, c]
+        return grad_points, None
 
-        return grad_points, None, None
+class GridPooling(nn.Module):
+    def forward(self, points, features):
+        return GridPoolingFct.apply(points, features)

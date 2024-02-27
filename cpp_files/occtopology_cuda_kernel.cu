@@ -1,11 +1,16 @@
 #include <torch/extension.h>
-#include <torch/torch.h>
-#include <iostream>
+
+#include <cuda.h>
+#include <cuda_runtime.h>
+
 #include <vector>
 
-const int T = 256;
+__constant__ int T = 256;
 
-static int occTable[256][8] = {{ 0,  0,  0,  0,  0,  0,  0,  0 },
+__constant__ int acceptTopology[48] = {1, 2, 3, 4, 6, 8, 9, 12, 15, 16, 17, 32, 34, 48, 51, 63, 64, 68, 96, 102, 111, 119, 127, 0, 254, 253, 252, 251, 249, 247, 246, 243, 240, 239, 238, 223, 221, 207, 204, 192, 191, 187, 159, 153, 144, 136, 128, 255};
+
+
+__constant__ int occTable[256][8] = {{ 0,  0,  0,  0,  0,  0,  0,  0 },
        { 1,  0,  0,  0,  0,  0,  0,  0 },
        { 0,  1,  0,  0,  0,  0,  0,  0 },
        { 1,  1,  0,  0,  0,  0,  0,  0 },
@@ -262,78 +267,117 @@ static int occTable[256][8] = {{ 0,  0,  0,  0,  0,  0,  0,  0 },
        { 0,  1,  1,  1,  1,  1,  1,  1 },
        { 1,  1,  1,  1,  1,  1,  1,  1 }};
 
-
-static int vertexTable[8][3]={ {0, 1, 0},
+__constant__ int vertexTable[8][3]={ {0, 1, 0},
 			       {1, 1, 0},
 			       {1, 0, 0},
-                   {0, 0, 0},
+                               {0, 0, 0},
 			       {0, 1, 1},
 			       {1, 1, 1},
 			       {1, 0, 1},
-                   {0, 0, 1} };
+                               {0, 0, 1} };
 
-int occupancy_to_topology(torch::Tensor batch_occupancy, torch::Tensor batch_topology){
-    int N = batch_occupancy.size(1)-1;
+__global__ void occ_to_topo_kernel(
+    float* occupancy,
+    float* topology){
 
-    for (int i=0; i<N; i++){
-        for (int j=0; j<N; j++){
-            for (int k=0; k<N; k++){
-                float p_occ[2][8];
-                for (int v=0; v<8; v++){
-                    p_occ[0][v] = batch_occupancy.index({i+vertexTable[v][0], j+vertexTable[v][1], k+vertexTable[v][2]}).item<float>();
-                    p_occ[1][v] = 1 - p_occ[0][v];
-                }
-                for (int t=0; t<T; t++){
-                    float p = 1.0;
-                    for (int v=0; v<8; v++){
-                        float new_p = p_occ[occTable[t][v]][v];
-                        p *= new_p;
-                    }
-                    batch_topology.index_put_({i*N*N + j*N + k, t}, p);
-                }
-            }
-        }
+    int H = blockDim.y;
+    int D = blockDim.z;
+
+    int i = blockIdx.x;
+    int j = blockIdx.y;
+    int k = blockIdx.z;
+
+    int t = threadIdx.x;
+
+    int topology_ind = t;
+
+    float p_occ[2][8];
+
+    for (int v=0; v<8; v++){
+        p_occ[0][v] = occupancy[ (i+vertexTable[v][0])*(H+1)*(D+1) + (j+vertexTable[v][1])*(D+1) + k+vertexTable[v][2] ]; 
+        p_occ[1][v] = 1-p_occ[0][v]; 
     }
 
-    return 1;
-}
-
-int occupancy_to_topology_backward(torch::Tensor grad_output, torch::Tensor batch_occupancy, torch::Tensor batch_topology, torch::Tensor grad_occupancy){
-    int N = batch_occupancy.size(0)-1;
-
-    for (int i=0; i<N; i++){
-        for (int j=0; j<N; j++){
-            for (int k=0; k<N; k++){
-                float p_occ[2][8];
-                for (int v=0; v<8; v++){
-                    p_occ[0][v] = batch_occupancy.index({i+vertexTable[v][0], j+vertexTable[v][1], k+vertexTable[v][2]}).item<float>();
-                    p_occ[1][v] = 1 - p_occ[0][v];
-                }
-                for (int t=0; t<T; t++){
-                    float grad = grad_output.index({i*N*N + j*N + k, t}).item<float>();
-                    for (int v=0; v<8; v++){
-                        float curr_grad = grad_occupancy.index({i+vertexTable[v][0], j+vertexTable[v][1], k+vertexTable[v][2]}).item<float>();
-                        float sign = -1.0;
-                        if (occTable[t][v] == 0){
-                            sign = 1.0;
-                        }
-                        float p = 1.0;
-                        for (int v2=0; v2<8; v2++){
-                            if (v2 != v){
-                                float new_p = p_occ[occTable[t][v2]][v2];
-                                p *= new_p;
-                            }
-                        }
-                       grad_occupancy.index_put_({i+vertexTable[v][0], j+vertexTable[v][1], k+vertexTable[v][2]}, curr_grad + sign * grad * p);
-                    }               
-                }
-            }
-        }
+    float p_accumu = 1.0;
+    for (int v=0; v<8; v++){
+        p_accumu = p_accumu*p_occ[occTable[topology_ind][v]][v]; 
     }
-    return 1;
+    topology[ (i*H*D+j*D+k)*T + t ] = p_accumu;
 }
 
-PYBIND11_MODULE(TORCH_EXTENSION_NAME, m) {
-  m.def("occupancy_to_topology", &occupancy_to_topology, "Occupancy to Topology");
-  m.def("occupancy_to_topology_backward", &occupancy_to_topology_backward, "Occupancy to Topology Backward");
+__global__ void grad_occ_to_topo_kernel(
+    float* grad_output,
+    float* occupancy,
+    float* topology,
+    float* grad_occupancy){
+
+    int H = blockDim.y;
+    int D = blockDim.z;
+
+    int i = blockIdx.x;
+    int j = blockIdx.y;
+    int k = blockIdx.z;
+
+    int t = threadIdx.x;
+
+    int topology_ind = t;
+
+    float p_occ[2][8];
+    for (int v=0; v<8; v++){
+        p_occ[0][v] = occupancy[ (i+vertexTable[v][0])*(H+1)*(D+1) + (j+vertexTable[v][1])*(D+1) + k+vertexTable[v][2] ]; 
+        p_occ[1][v] = 1-p_occ[0][v]; 
+    }
+
+    float grad_accumu = grad_output[ (i*H*D+j*D+k)*T + t ];
+    float sign;
+    for (int v=0; v<8; v++){
+        if (occTable[topology_ind][v] == 0){
+            sign = 1.0;
+        } else {
+            sign = -1.0;
+        }
+
+        float p_accumu = 1.0;
+        for (int v_=0; v_<8; v_++){
+            if (v_ == v) continue;
+            p_accumu = p_accumu*p_occ[occTable[topology_ind][v_]][v_]; 
+        }
+    atomicAdd(&grad_occupancy[ (i+vertexTable[v][0])*(H+1)*(D+1) + (j+vertexTable[v][1])*(D+1) + k+vertexTable[v][2] ], sign*grad_accumu*p_accumu );
+    }
+}
+
+void occ_to_topo_cuda_forward(
+    torch::Tensor occupancy,
+    torch::Tensor topology){
+
+    int N = occupancy.size(0) - 1;
+    int T = topology.size(1);
+
+    dim3 dimGrid(N, N, N);
+    dim3 dimBlock(T, 1, 1);
+
+    occ_to_topo_kernel<<<dimGrid, dimBlock>>>(
+        occupancy.data_ptr<float>(),
+        topology.data_ptr<float>());
+
+    }
+
+void occ_to_topo_cuda_backward(
+    torch::Tensor grad_output,
+    torch::Tensor occupancy,
+    torch::Tensor topology,
+    torch::Tensor grad_occupancy){
+
+    int N = occupancy.size(0) - 1;
+    int T = topology.size(1);
+
+    dim3 dimGrid(N, N, N);
+    dim3 dimBlock(T, 1, 1);
+
+    grad_occ_to_topo_kernel<<<dimGrid, dimBlock>>>(
+        grad_output.data_ptr<float>(),
+        occupancy.data_ptr<float>(),
+        topology.data_ptr<float>(),
+        grad_occupancy.data_ptr<float>());
+
 }

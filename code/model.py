@@ -1,10 +1,12 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import sys 
 
 from code.grid import GridPooling, FeatureExtractor
 from code.topo import OccupancyToTopology
+
+# from grid import GridPooling, FeatureExtractor
+# from topo import OccupancyToTopology
 
 if torch.cuda.is_available():
     dtype = torch.cuda.FloatTensor
@@ -141,28 +143,38 @@ class SurfaceDecoder(nn.Module):
     def forward(self, x, intermediate_feat=None):
         return self.decoder(x, intermediate_feat)
     
-class RawDeepMarchingCube(nn.Module):
+class DeepMarchingCube(nn.Module):
     def __init__(self):
-        super(RawDeepMarchingCube, self).__init__()
+        super(DeepMarchingCube, self).__init__()
         self.feature_extractor = FeatureExtractor()
+        self.grid_pooling = GridPooling()
         self.encoder = LocalEncoder(16, True)
         self.decoder = SurfaceDecoder(True)
+        self.occupancy_to_topology = OccupancyToTopology()
 
         self.N = 32
 
     def forward(self, x):
         features = self.feature_extractor(x)
+        output_grid = self.grid_pooling(x, features)
 
-        output_grid = GridPooling.apply(x, features)
         output_grid = output_grid.permute(0, 4, 1, 2, 3)
         
         curr_size = output_grid.size()
         new_output_grid = torch.zeros(curr_size[0], curr_size[1], curr_size[2]+1, curr_size[3]+1, curr_size[4]+1)
         new_output_grid[:, :, :-1, :-1, :-1] = output_grid
+        if next(self.parameters()).is_cuda:
+            new_output_grid = new_output_grid.cuda()
 
         x, intermediate_feat = self.encoder(new_output_grid)
         occupancy, offset = self.decoder(x, intermediate_feat)
-
-        topology = OccupancyToTopology.apply(occupancy)
+        
+        N = occupancy.size(2) - 1
+        T = 256
+        batch_size = occupancy.size(0)
+        topology = torch.zeros(batch_size, N**3, T, device=occupancy.device).float()
+        
+        for b in range(batch_size):
+            topology[b, :, :] = self.occupancy_to_topology(occupancy[b, 0, :, :, :])
 
         return offset, topology, occupancy 

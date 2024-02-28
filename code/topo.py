@@ -6,7 +6,7 @@ from torch.utils.cpp_extension import load
 # OccTopology = load(name="occtopology", sources=["cpp_files/occtopology_cuda.cpp", "cpp_files/occtopology_cuda_kernel.cu"])
 # OccTopology = load(name="occtopology", sources=["occtopology_cuda.cpp", "occtopology_cuda_kernel.cu"])
 
-from dist.cuda_extension import OccTopology
+from dist.cuda_extension import occ_to_topo_cuda_forward
 
 class OccupancyToTopologyFct(Function):
     @staticmethod
@@ -14,7 +14,7 @@ class OccupancyToTopologyFct(Function):
         N = occupancy.size(0) - 1
         T = 256
         topology = torch.zeros(N**3, T, device=occupancy.device).float()
-        OccTopology.occ_to_topo_cuda_forward(occupancy, topology)
+        occ_to_topo_cuda_forward(occupancy, topology)
 
         ctx.save_for_backward(occupancy, topology)
         return topology
@@ -23,7 +23,7 @@ class OccupancyToTopologyFct(Function):
     def backward(ctx, grad_output):
         occupancy, topology = ctx.saved_tensors
         grad_occupancy = torch.zeros_like(occupancy).type(torch.FloatTensor).cuda()
-        OccTopology.occ_to_topo_cuda_backward(grad_output, occupancy, topology, grad_occupancy)
+        occ_to_topo_cuda_backward(grad_output, occupancy, topology, grad_occupancy)
         return grad_occupancy 
     
 class OccupancyToTopology(nn.Module):

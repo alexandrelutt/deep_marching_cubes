@@ -6,7 +6,7 @@ from torch.utils.cpp_extension import load
 # OccTopology = load(name="occtopology", sources=["cpp_files/occtopology_cuda.cpp", "cpp_files/occtopology_cuda_kernel.cu"])
 # OccTopology = load(name="occtopology", sources=["occtopology_cuda.cpp", "occtopology_cuda_kernel.cu"])
 
-from dist.cuda_extension import occ_to_topo_cuda_forward, occ_to_topo_cuda_backward
+from dist.occtopology_cuda import occ_to_topo_cuda_forward, occ_to_topo_cuda_backward
 
 class OccupancyToTopologyFct(Function):
     @staticmethod

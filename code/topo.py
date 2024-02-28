@@ -3,8 +3,10 @@ import torch.nn as nn
 from torch.autograd import Function
 from torch.utils.cpp_extension import load
 
-OccTopology = load(name="occtopology", sources=["cpp_files/occtopology_cuda.cpp", "cpp_files/occtopology_cuda_kernel.cu"])
+# OccTopology = load(name="occtopology", sources=["cpp_files/occtopology_cuda.cpp", "cpp_files/occtopology_cuda_kernel.cu"])
 # OccTopology = load(name="occtopology", sources=["occtopology_cuda.cpp", "occtopology_cuda_kernel.cu"])
+
+from dist import cuda_extension.py
 
 class OccupancyToTopologyFct(Function):
     @staticmethod

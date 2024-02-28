@@ -1,6 +1,4 @@
-datasets
+numpy
 torch
 torchvision
 ninja
-matplotlib
-gdown

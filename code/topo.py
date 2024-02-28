@@ -1,4 +1,5 @@
 import torch
+import torch.nn as nn
 from torch.autograd import Function
 from torch.utils.cpp_extension import load
 

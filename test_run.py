@@ -26,7 +26,11 @@ if __name__ == '__main__':
         dt = time.time() - t
         print(f'Finished computing full forward pass in {dt:.4f} seconds.')
 
-        loss = MyLoss().point_to_mesh(offset, topology, clean_batch, occupancy)
+        print(f'Computing loss...')
+        t = time.time()
+        loss = MyLoss().loss(offset, topology, clean_batch, occupancy)
+        dt = time.time() - t
+        print(f'Finished computing loss in {dt:.4f} seconds.')
 
         print(f'Performing backward pass...')
         t = time.time()

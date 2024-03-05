@@ -22,6 +22,8 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, device):
             model.zero_grad()
             loss.backward()
 
+            print(f'Batch loss: {loss.item()}')
+
             epoch_train_loss += loss.item()
 
             if i > 1:
@@ -51,7 +53,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, device):
             if epoch_test_loss < best_test_loss:
                 print('New best model found.')
                 best_test_loss = epoch_test_loss
-                # torch.save(model.state_dict(), 'models/best_model.pth')
+                # torch.save(model.state_dict(), '/models/best_model.pth')
                 # print('Model saved.')
 
     return train_losses, test_losses

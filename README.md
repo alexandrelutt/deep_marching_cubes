@@ -9,5 +9,4 @@ python -m venv venv
 source venv/bin/activate
 python3 -m pip install --upgrade pip
 sh scripts/config.sh
-sh scripts/download_data.sh
 ```

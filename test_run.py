@@ -1,12 +1,15 @@
 import numpy as np
 import torch
 import time
+import faulthandler
 
 from code.model import DeepMarchingCube
 # from code.loss import MyLoss
 from code.loader import get_loader
 
 if __name__ == '__main__':
+    faulthandler.enable(length=10000)
+    
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f'Using device: {device}')
 

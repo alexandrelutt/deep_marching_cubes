@@ -37,6 +37,7 @@ class GridPoolingFct(Function):
         for b in range(batch_size):
             for i in range(n_points):
                 voxel_index = voxel_indices[b, i]
+                print(voxel_index)
                 global_index = voxel_index[0]*32*32 + voxel_index[1]*32 + voxel_index[2]
 
                 global_t = torch.cat([output_grid[b, voxel_index[0], voxel_index[1], voxel_index[2]].reshape(n_features, -1), features[b, i].reshape(n_features, -1)], dim=1)

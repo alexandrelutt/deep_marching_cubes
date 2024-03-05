@@ -19,7 +19,11 @@ def load_data(set, noise):
         pts_gt = torch.tensor(pts_gt, dtype=torch.float32)
 
     else:
-        raise NotImplementedError(f'Set {set} not implemented.')
+        data = np.load('all_data/points_shapenet_32x32x32_val.npy')
+        pts, pts_gt = perturb(data, noise=noise)
+
+        pts = torch.tensor(pts, dtype=torch.float32)
+        pts_gt = torch.tensor(pts_gt, dtype=torch.float32)
     
     return pts, pts_gt
 

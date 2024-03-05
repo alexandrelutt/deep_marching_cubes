@@ -19,31 +19,37 @@ if __name__ == '__main__':
     model = DeepMarchingCube()
     model.to(device)
 
+    t = time.time()
+
     for i, (clean_batch, perturbed_batch) in enumerate(train_loader):
         clean_batch = clean_batch.to(device)
         perturbed_batch = perturbed_batch.to(device)
 
-        print(f'Performing forward pass...')
-        t = time.time()
+        # print(f'Performing forward pass...')
+        # t = time.time()
         offset, topology, occupancy = model(perturbed_batch)
-        dt = time.time() - t
-        print(f'Finished computing full forward pass in {dt:.4f} seconds.')
+        # dt = time.time() - t
+        # print(f'Finished computing full forward pass in {dt:.4f} seconds.')
 
-        print('')
-        print(f'Offset shape: {offset.shape}')
-        print(f'Topology shape: {topology.shape}')
-        print(f'Occupancy shape: {occupancy.shape}')
+        # print('')
+        # print(f'Offset shape: {offset.shape}')
+        # print(f'Topology shape: {topology.shape}')
+        # print(f'Occupancy shape: {occupancy.shape}')
+        # print('')
 
-        print(f'Computing loss...')
-        t = time.time()
+        # print(f'Computing loss...')
+        # t = time.time()
         loss = MyLoss().loss(offset, topology, clean_batch, occupancy)
-        dt = time.time() - t
-        print(f'Finished computing loss in {dt:.4f} seconds.')
+        # dt = time.time() - t
+        # print(f'Finished computing loss in {dt:.4f} seconds.')
 
-        print(f'Performing backward pass...')
-        t = time.time()
+        # print(f'Performing backward pass...')
+        # t = time.time()
         loss.backward()
-        dt = time.time() - t
-        print(f'Finished computing full backward pass in {dt:.4f} seconds.')
+        # dt = time.time() - t
+        # print(f'Finished computing full backward pass in {dt:.4f} seconds.')
 
-        break
+        # break
+
+    dt = time.time() - t
+    print(f'Finished full training loop in {dt:.4f} seconds.')

@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
-def train(model, train_loader, test_loader, loss_module, n_epochs, device):
+def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
     print(f'Now training model for {n_epochs} epochs.\n')
     model.to(device)
     train_losses, test_losses = [], []
@@ -21,16 +21,13 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, device):
 
             model.zero_grad()
             loss.backward()
-
-            print(f'Batch loss: {loss.item()}')
+            optimizer.step()
 
             epoch_train_loss += loss.item()
 
             if i > 1:
                 break
             
-
-        print(f'Epoch {t+1} loss: {epoch_train_loss}')
         train_losses.append(epoch_train_loss)
 
         with torch.no_grad():
@@ -48,12 +45,13 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, device):
                 if i > 1:
                     break
 
-            print(f'Test loss: {epoch_test_loss}')
             test_losses.append(epoch_test_loss)
-            if epoch_test_loss < best_test_loss:
-                print('New best model found.')
-                best_test_loss = epoch_test_loss
-                # torch.save(model.state_dict(), '/models/best_model.pth')
-                # print('Model saved.')
+            
+        print(f'Training loss: {epoch_train_loss}, test loss: {epoch_test_loss}')
+        if epoch_test_loss < best_test_loss:
+            print('New best model found.')
+            best_test_loss = epoch_test_loss
+            torch.save(model.state_dict(), '/models/best_model.pth')
+            print('Model saved.')
 
     return train_losses, test_losses

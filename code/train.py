@@ -51,7 +51,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
         if epoch_test_loss < best_test_loss:
             print('New best model found.')
             best_test_loss = epoch_test_loss
-            torch.save(model.state_dict(), '/models/best_model.pth')
+            torch.save(model.state_dict(), 'models/best_model.pth')
             print('Model saved.')
 
     print('Training complete.')

@@ -1,2 +1,3 @@
+numpy
 ninja
 gdown

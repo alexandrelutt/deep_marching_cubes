@@ -3,7 +3,7 @@ import torch
 import time
 
 from code.model import DeepMarchingCube
-from code.loss import MyLoss
+# from code.loss import MyLoss
 from code.loader import get_loader
 
 if __name__ == '__main__':

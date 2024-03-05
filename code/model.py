@@ -155,7 +155,10 @@ class DeepMarchingCube(nn.Module):
         self.N = 32
 
     def forward(self, x):
+        print('Computing features...')
         features = self.feature_extractor(x)
+
+        print('Computing grid pooling...')
         output_grid = self.grid_pooling(x, features)
 
         output_grid = output_grid.permute(0, 4, 1, 2, 3)
@@ -166,7 +169,10 @@ class DeepMarchingCube(nn.Module):
         if next(self.parameters()).is_cuda:
             new_output_grid = new_output_grid.cuda()
 
+        print('Computing encoder...')
         x, intermediate_feat = self.encoder(new_output_grid)
+
+        print('Computing decoder...')
         occupancy, offset = self.decoder(x, intermediate_feat)
         
         N = occupancy.size(2) - 1
@@ -174,6 +180,7 @@ class DeepMarchingCube(nn.Module):
         batch_size = occupancy.size(0)
         topology = torch.zeros(batch_size, N**3, T, device=occupancy.device).float()
         
+        print('Computing topology...')
         for b in range(batch_size):
             topology[b, :, :] = self.occupancy_to_topology(occupancy[b, 0, :, :, :])
 

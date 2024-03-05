@@ -20,7 +20,7 @@ class MyLoss(object):
 
         self.dist_pt_topo = DistPtsTopo()
 
-        self.acceptedTopologies = torch.from_numpy(get_accepted_topologies()).type(torch.LongTensor).cuda()
+        self.acceptedTopologies = torch.Tensor(get_accepted_topologies()).type(torch.LongTensor).cuda()
         indices = torch.arange(self.acceptedTopologies.size()[0]-1, -1, -1).type(torch.LongTensor)
         self.acceptTopologyWithFlip = torch.cat([self.acceptedTopologies, 255-self.acceptedTopologies[indices]], dim=0)
 

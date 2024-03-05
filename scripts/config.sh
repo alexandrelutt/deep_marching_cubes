@@ -3,7 +3,7 @@ pip install -r requirements.txt
 
 sh scripts/build_extensions.sh
 
-python3 -m pip uninstall torch torchvision
+python3 -m pip uninstall -y torch torchvision
 python3 -m pip freeze | grep nvidia- | xargs pip uninstall -y
 python3 -m pip install torch torchvision
 

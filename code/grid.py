@@ -32,10 +32,7 @@ class GridPoolingFct(Function):
         indices = -1*torch.ones(batch_size, 32**3, n_features, device=points.device, dtype=torch.long)
 
         normed_points = (points - points.min()) / (points.max() - points.min() + 1e-4)
-        print(normed_points.min(), normed_points.max())
         voxel_indices = (normed_points // (1/32)).long()
-        print(voxel_indices.min())
-        print(voxel_indices.max())
 
         for b in range(batch_size):
             for i in range(n_points):

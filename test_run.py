@@ -4,7 +4,7 @@ import time
 import faulthandler
 
 from code.model import DeepMarchingCube
-# from code.loss import MyLoss
+from code.loss import MyLoss
 from code.loader import get_loader
 
 if __name__ == '__main__':
@@ -34,16 +34,16 @@ if __name__ == '__main__':
         print(f'Topology shape: {topology.shape}')
         print(f'Occupancy shape: {occupancy.shape}')
 
-        # print(f'Computing loss...')
-        # t = time.time()
-        # loss = MyLoss().loss(offset, topology, clean_batch, occupancy)
-        # dt = time.time() - t
-        # print(f'Finished computing loss in {dt:.4f} seconds.')
+        print(f'Computing loss...')
+        t = time.time()
+        loss = MyLoss().loss(offset, topology, clean_batch, occupancy)
+        dt = time.time() - t
+        print(f'Finished computing loss in {dt:.4f} seconds.')
 
-        # print(f'Performing backward pass...')
-        # t = time.time()
-        # loss.backward()
-        # dt = time.time() - t
-        # print(f'Finished computing full backward pass in {dt:.4f} seconds.')
+        print(f'Performing backward pass...')
+        t = time.time()
+        loss.backward()
+        dt = time.time() - t
+        print(f'Finished computing full backward pass in {dt:.4f} seconds.')
 
         break

@@ -11,7 +11,7 @@ class DistPtsTopoFct(Function):
         N = offset.size(1)
         T = 48
         distances_full = torch.zeros(((N-1)**3, T), dtype=offset.dtype, device=offset.device)
-        indices = -1*torch.ones((points.size(0), T), dtype=torch.int, device=offset.device)
+        indices = -1*torch.ones((points.size(0), T), dtype=torch.long, device=offset.device)
         distance_cuda.pt_topo_distance_cuda_forward(offset, points, distances_full, indices)
         ctx.save_for_backward(offset, points)
         ctx.indices = indices

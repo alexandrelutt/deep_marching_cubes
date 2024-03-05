@@ -25,7 +25,7 @@ if __name__ == '__main__':
     loss_module = MyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-    train_losses, test_losses = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device)
+    train_losses, test_losses, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device)
 
     print('Train losses:')
     print(train_losses)

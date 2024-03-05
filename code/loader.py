@@ -40,8 +40,6 @@ class CustomDataset(Dataset):
 
 def get_loader(set='train', batch_size=8, noise=0.15):
     clean_points, perturbed_points = load_data(set=set, noise=noise)
-    train_set = CustomDataset(clean_points, perturbed_points)
-
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
-
-    return train_loader
+    dataset = CustomDataset(clean_points, perturbed_points)
+    data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    return data_loader

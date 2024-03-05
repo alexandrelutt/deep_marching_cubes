@@ -27,7 +27,7 @@ class MyLoss(object):
     def point_to_mesh(self, offset, topology, pts):
         distances_point_to_topo = self.dist_pt_topo(offset, pts)
 
-        indices = torch.arange(len(self.acceptedTopologies)-1, -1, -1).type(torch.LongTensor)
+        indices = torch.arange(len(self.acceptedTopologies)-1, -1, -1).type(torch.IntTensor)
         accepted_dists = torch.cat([distances_point_to_topo, distances_point_to_topo[:, indices]], dim=1)
 
         accepted_topos = topology[:, self.acceptTopologyWithFlip]

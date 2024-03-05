@@ -45,6 +45,7 @@ if __name__ == '__main__':
 
         # print(f'Performing backward pass...')
         # t = time.time()
+        model.zero_grad()
         loss.backward()
         # dt = time.time() - t
         # print(f'Finished computing full backward pass in {dt:.4f} seconds.')

@@ -3,7 +3,6 @@ import torch
 import time
 
 def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
-    print(f'Training model for {n_epochs} epochs.\n')
     model.to(device)
     train_losses, test_losses = [], []
     best_test_loss = np.inf

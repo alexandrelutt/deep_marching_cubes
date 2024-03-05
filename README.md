@@ -8,5 +8,5 @@ Please follow these instructions to install the required packages:
 python -m venv venv
 source venv/bin/activate
 python3 -m pip install --upgrade pip
-sh scripts/config.sh
+sh config.sh
 ```

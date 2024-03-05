@@ -48,15 +48,14 @@ class MyLoss(object):
     def curvature_loss(self, offset, topology):
         return 0
     
-    def loss(self, offset, topology, pts, occupancy, set='train'):
+    def loss(self, offset, topology, pts, occupancy):
         batch_size = offset.size(0)
         loss = 0
 
         for b in range(batch_size):
             loss += self.weight_point_to_mesh*self.point_to_mesh(offset[b], topology[b], pts[b])
-            if set == 'train':
-                loss += self.weight_occupancy*self.occupancy_loss(occupancy[b])
-                loss += self.weight_smoothness*self.smoothness_loss(occupancy[b])
-                loss += self.weight_curvature*self.curvature_loss(offset[b], topology[b])
+            loss += self.weight_occupancy*self.occupancy_loss(occupancy[b])
+            loss += self.weight_smoothness*self.smoothness_loss(occupancy[b])
+            loss += self.weight_curvature*self.curvature_loss(offset[b], topology[b])
 
         return loss/batch_size

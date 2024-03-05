@@ -58,7 +58,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             print('  New best model has been saved.')
 
         dt = time.time() - t0
-        print(f'Duration: {dt:.2f}s.\n')
+        print(f'Duration: {dt:.2f}s.')
 
     print('Training complete.')
     return train_losses, test_losses, best_model

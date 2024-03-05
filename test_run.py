@@ -8,7 +8,7 @@ from code.model import DeepMarchingCube
 from code.loader import get_loader
 
 if __name__ == '__main__':
-    faulthandler.enable(length=10000)
+    faulthandler.enable()
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f'Using device: {device}')

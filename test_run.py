@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import time
+from tqdm import tqdm
 import faulthandler
 
 from code.model import DeepMarchingCube
@@ -21,7 +22,7 @@ if __name__ == '__main__':
 
     t = time.time()
 
-    for i, (clean_batch, perturbed_batch) in enumerate(train_loader):
+    for i, (clean_batch, perturbed_batch) in tqdm(enumerate(train_loader)):
         clean_batch = clean_batch.to(device)
         perturbed_batch = perturbed_batch.to(device)
 

@@ -743,7 +743,7 @@ void dist_cuda_forward(
     W = offset.size(1)-1;
     H = offset.size(2)-1;
     D = offset.size(3)-1;
-    T = distances.size(1);
+    T = distances_full.size(1);
 
     dim3 dimGrid(W, H, D);
     dim3 dimBlock(T-1, 1, 1);

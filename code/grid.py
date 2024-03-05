@@ -34,6 +34,7 @@ class GridPoolingFct(Function):
         normed_points = (points - points.min()) / (points.max() - points.min() + 1e-6)
         voxel_indices = (normed_points // (1/32)).long()
         print(voxel_indices.min())
+        print(voxel_indices.max())
 
         for b in range(batch_size):
             for i in range(n_points):

@@ -7,6 +7,7 @@ import faulthandler
 from code.model import DeepMarchingCube
 from code.loss import MyLoss
 from code.loader import get_loader
+from code.train import train
 
 if __name__ == '__main__':
     faulthandler.enable()
@@ -16,42 +17,17 @@ if __name__ == '__main__':
 
     batch_size = 8
     train_loader = get_loader(set='train', batch_size=batch_size)
+    test_loader = get_loader(set='test', batch_size=batch_size)
 
     model = DeepMarchingCube()
-    model.to(device)
+    loss_module = MyLoss()
+    n_epochs = 10
 
-    t = time.time()
+    train_losses, test_losses = train(model, train_loader, test_loader, loss_module, n_epochs, device)
+    print('Training complete')
 
-    for i, (clean_batch, perturbed_batch) in tqdm(enumerate(train_loader)):
-        clean_batch = clean_batch.to(device)
-        perturbed_batch = perturbed_batch.to(device)
+    print('Train losses:')
+    print(train_losses)
 
-        # print(f'Performing forward pass...')
-        # t = time.time()
-        offset, topology, occupancy = model(perturbed_batch)
-        # dt = time.time() - t
-        # print(f'Finished computing full forward pass in {dt:.4f} seconds.')
-
-        # print('')
-        # print(f'Offset shape: {offset.shape}')
-        # print(f'Topology shape: {topology.shape}')
-        # print(f'Occupancy shape: {occupancy.shape}')
-        # print('')
-
-        # print(f'Computing loss...')
-        # t = time.time()
-        loss = MyLoss().loss(offset, topology, clean_batch, occupancy)
-        # dt = time.time() - t
-        # print(f'Finished computing loss in {dt:.4f} seconds.')
-
-        # print(f'Performing backward pass...')
-        # t = time.time()
-        model.zero_grad()
-        loss.backward()
-        # dt = time.time() - t
-        # print(f'Finished computing full backward pass in {dt:.4f} seconds.')
-
-        # break
-
-    dt = time.time() - t
-    print(f'Finished full training loop in {dt:.4f} seconds.')
+    print('Test losses:')
+    print(test_losses)

@@ -26,16 +26,21 @@ if __name__ == '__main__':
         dt = time.time() - t
         print(f'Finished computing full forward pass in {dt:.4f} seconds.')
 
-        print(f'Computing loss...')
-        t = time.time()
-        loss = MyLoss().loss(offset, topology, clean_batch, occupancy)
-        dt = time.time() - t
-        print(f'Finished computing loss in {dt:.4f} seconds.')
+        print('')
+        print(f'Offset shape: {offset.shape}')
+        print(f'Topology shape: {topology.shape}')
+        print(f'Occupancy shape: {occupancy.shape}')
 
-        print(f'Performing backward pass...')
-        t = time.time()
-        loss.backward()
-        dt = time.time() - t
-        print(f'Finished computing full backward pass in {dt:.4f} seconds.')
+        # print(f'Computing loss...')
+        # t = time.time()
+        # loss = MyLoss().loss(offset, topology, clean_batch, occupancy)
+        # dt = time.time() - t
+        # print(f'Finished computing loss in {dt:.4f} seconds.')
+
+        # print(f'Performing backward pass...')
+        # t = time.time()
+        # loss.backward()
+        # dt = time.time() - t
+        # print(f'Finished computing full backward pass in {dt:.4f} seconds.')
 
         break

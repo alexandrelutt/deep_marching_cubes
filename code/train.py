@@ -3,14 +3,14 @@ import torch
 import time
 
 def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
-    print(f'Starting training for {n_epochs} epochs.\n')
+    print(f'Training model for {n_epochs} epochs.\n')
     model.to(device)
     train_losses, test_losses = [], []
     best_test_loss = np.inf
 
     for t in range(n_epochs):
         t0 = time.time()
-        print(f'-------------------------------\nEpoch {t+1}\n-------------------------------')
+        print(f'-------------------------------\nEpoch {t+1}/{n_epochs}\n-------------------------------')
         epoch_train_loss = 0
         for i, (clean_batch, perturbed_batch) in enumerate(train_loader):
             clean_batch = clean_batch.to(device)
@@ -29,7 +29,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             if i > 1:
                 break
             
-        train_losses.append(epoch_train_loss)
+        train_losses.append(epoch_train_loss/len(train_loader))
 
         with torch.no_grad():
             epoch_test_loss = 0
@@ -46,7 +46,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
                 if i > 1:
                     break
 
-            test_losses.append(epoch_test_loss)
+            test_losses.append(epoch_test_loss/len(test_loader))
             
         print(f'Training loss: {epoch_train_loss}.')
         print(f'Test loss:     {epoch_test_loss}.')

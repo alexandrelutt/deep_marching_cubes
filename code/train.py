@@ -10,7 +10,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
 
     for t in range(n_epochs):
         t0 = time.time()
-        print(f'Epoch {t+1}\n-------------------------------')
+        print(f'-------------------------------\nEpoch {t+1}\n-------------------------------')
         epoch_train_loss = 0
         for i, (clean_batch, perturbed_batch) in enumerate(train_loader):
             clean_batch = clean_batch.to(device)
@@ -49,7 +49,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             test_losses.append(epoch_test_loss)
             
         print(f'Training loss: {epoch_train_loss}.')
-        print(f'Test loss: {epoch_test_loss}.')
+        print(f'Test loss:     {epoch_test_loss}.')
         if epoch_test_loss < best_test_loss:
             print('  New best model has been found!')
             best_test_loss = epoch_test_loss
@@ -58,7 +58,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             print('  New best model has been saved.')
 
         dt = time.time() - t0
-        print(f'Duration: {dt:.2f}s.')
+        print(f'Duration: {dt:.2f}s.\n')
 
     print('Training complete.')
     return train_losses, test_losses, best_model

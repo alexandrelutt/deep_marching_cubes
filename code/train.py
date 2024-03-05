@@ -3,10 +3,7 @@ import torch
 from tqdm import tqdm
 
 def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
-    n_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f'DeepMarchingCube model has {n_params} parameters.')
-
-    print(f'Now training for {n_epochs} epochs.\n')
+    print(f'Starting training for {n_epochs} epochs.\n')
     model.to(device)
     train_losses, test_losses = [], []
     best_test_loss = np.inf

@@ -5,6 +5,7 @@ import numpy as np
 import scipy
 
 from code.distance import DistPtsTopo
+from code.smoothness import Smoothness
 from code.table import get_accepted_topologies
 
 if torch.cuda.is_available():
@@ -27,7 +28,7 @@ class MyLoss(object):
         self.weight_occupancy = 0.4
         self.weight_smoothness = 0.6
         self.weight_curvature = 0.6
-        
+
         ## utils for point_to_mesh loss
         self.dist_pt_topo = DistPtsTopo()
 
@@ -51,6 +52,9 @@ class MyLoss(object):
         self.neg_weight = torch.from_numpy(neg_weight).type(dtype)
 
         self.fraction_inside = 0.2
+
+        ## utils for smoothness loss
+        self.smoothness = Smoothness()
 
     def point_to_mesh(self, offset, topology, pts):
         distances_point_to_topo = self.dist_pt_topo(offset, pts)
@@ -82,13 +86,12 @@ class MyLoss(object):
         loss = loss_sides + loss_inside
         return loss
 
-    ## ToDo
     def smoothness_loss(self, occupancy):
-        loss = 0
+        loss = self.smoothness(occupancy)
         ## normalize by the dimension of the cube
         loss = loss/self.N**3
         return loss
-
+    
     ## ToDo
     def curvature_loss(self, offset, topology):
         loss = 0

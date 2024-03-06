@@ -3,7 +3,7 @@
 #include <vector>
 
 void connectivity_cuda_forward(
-    torch::Tensor occupancy
+    torch::Tensor occupancy,
     torch::Tensor loss);
 
 

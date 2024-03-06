@@ -15,7 +15,7 @@ void connectivity_cuda_backward(
 void connectivity_forward(
     torch::Tensor occupancy,
     torch::Tensor loss){
-    connectivity_cuda_forward(occupancy);
+    connectivity_cuda_forward(occupancy, loss);
 }
 
 void connectivity_backward(

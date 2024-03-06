@@ -64,7 +64,6 @@ class MyLoss(object):
         loss = torch.sum(accepted_topos.mul(accepted_dists))
         return loss
 
-    ## ToDo
     def occupancy_loss(self, occupancy):
         loss_sides = torch.sum(torch.mul(occupancy, self.neg_weight))
 

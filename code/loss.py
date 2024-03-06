@@ -45,7 +45,7 @@ class MyLoss(object):
         cube_boundaries[:, 0, :] = 1
         cube_boundaries[:, self.N-1, :] = 1
 
-        gaussian_kernel_3D = get_gaussian_kernel_3D()
+        gaussian_kernel_3D = get_gaussian_kernel_3D(kernel_width=3)
         neg_weight = scipy.ndimage.filters.convolve(cube_boundaries, gaussian_kernel_3D)
         neg_weight = neg_weight/np.max(neg_weight)
         neg_weight = neg_weight/np.sum(neg_weight)

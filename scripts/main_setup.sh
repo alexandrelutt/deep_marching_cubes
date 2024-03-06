@@ -12,4 +12,3 @@ sh scripts/fix_cudnn.sh
 
 rm -r occtopology_extension.egg-info
 rm -r distance_extension.egg-info
-rm -r smoothness_extension.egg-info

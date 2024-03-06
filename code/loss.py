@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import numpy as np
 import scipy
 
-from code.distance import DistPtsTopo
+# from code.distance import DistPtsTopo
 from code.smoothness import Smoothness
 from code.table import get_accepted_topologies
 
@@ -29,12 +29,12 @@ class MyLoss(object):
         self.weight_smoothness = 0.6
         self.weight_curvature = 0.6
 
-        ## utils for point_to_mesh loss
-        self.dist_pt_topo = DistPtsTopo()
+        # ## utils for point_to_mesh loss
+        # self.dist_pt_topo = DistPtsTopo()
 
-        self.acceptedTopologies = torch.Tensor(get_accepted_topologies()).type(torch.LongTensor).cuda()
-        indices = torch.arange(self.acceptedTopologies.size()[0]-1, -1, -1).type(torch.IntTensor)
-        self.acceptTopologyWithFlip = torch.cat([self.acceptedTopologies, 255-self.acceptedTopologies[indices]], dim=0)
+        # self.acceptedTopologies = torch.Tensor(get_accepted_topologies()).type(torch.LongTensor).cuda()
+        # indices = torch.arange(self.acceptedTopologies.size()[0]-1, -1, -1).type(torch.IntTensor)
+        # self.acceptTopologyWithFlip = torch.cat([self.acceptedTopologies, 255-self.acceptedTopologies[indices]], dim=0)
 
         ## utils for occupancy loss
         cube_boundaries = np.zeros((self.N+1, self.N+1, self.N+1))
@@ -105,9 +105,9 @@ class MyLoss(object):
         loss = 0
 
         for b in range(batch_size):
-            loss += self.weight_point_to_mesh*self.point_to_mesh(offset[b], topology[b], pts[b])
-            loss += self.weight_occupancy*self.occupancy_loss(occupancy[b])
+            # loss += self.weight_point_to_mesh*self.point_to_mesh(offset[b], topology[b], pts[b])
+            # loss += self.weight_occupancy*self.occupancy_loss(occupancy[b])
             loss += self.weight_smoothness*self.smoothness_loss(occupancy[b])
-            loss += self.weight_curvature*self.curvature_loss(offset[b], topology[b])
+            # loss += self.weight_curvature*self.curvature_loss(offset[b], topology[b])
 
         return loss/batch_size

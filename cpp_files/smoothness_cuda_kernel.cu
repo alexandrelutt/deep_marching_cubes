@@ -5,14 +5,6 @@
 
 #include <vector>
 
-#include <THC.h>
-#include <THCGeneral.h>
-#include <math.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**
  * calculate the loss between two neigboring occupancy status 
  */	
@@ -97,34 +89,34 @@ void connectivity_cuda_forward(
 
     dim3 dimGrid(N, N, N);
 
-    // THCudaTensor *loss_all = THCudaTensor_newWithSize1d(state, W*H*D);
-    // THCudaTensor_zero(state, loss_all);
-    // // lauch the kernel
-    // occupancy_connectivity_kernel<<< dimGrid, 1, 0, THCState_getCurrentStream(state) >>>(
-    //         THCudaTensor_data(state, occupancy),
-    //         THCudaTensor_data(state, loss_all) );
+    auto loss_all = torch::empty({N * N * N});
+    torch::zeros_like(loss_all);
 
-    // float loss_= THCudaTensor_sumall(state, loss_all);
+    occupancy_connectivity_kernel<<<dimGrid>>>(
+        occupancy.data_ptr<float>(),
+        loss_all.data_ptr<float>(),
+    );
 
-    // THCudaTensor_set1d(state, loss, 0, loss_);
-
+    auto loss_ = loss_all.sum().item<float>();
+    loss.fill_(loss_);
 }
 
 
 void connectivity_cuda_backward(
-    torch::Tensor grad_loss,
-    torch::Tensor grad_occupancy,
-    torch::Tensor occupancy){
+    torch::Tensor grad_output,
+    torch::Tensor occupancy,
+    torch::Tensor grad_occupancy){
 
     int N = occupancy.size(0);
 
     dim3 dimGrid(N, N, N);
 
-    // grad_occupancy_connectivity_kernel<<< dimGrid, 1, 0, THCState_getCurrentStream(state) >>>(
-    //         THCudaTensor_data(state, occupancy),
-    //         THCudaTensor_data(state, grad_occupancy) );
+    grad_occupancy_connectivity_kernel<<<dimGrid>>>(
+        occupancy.data_ptr<float>(),
+        grad_occupancy.data_ptr<float>());
 
-    // float grad_output_=THCudaTensor_get1d(state, grad_output, 0);
-    // THCudaTensor_mul(state, grad_occupancy, grad_occupancy, grad_output_);
+    float grad_output_ = grad_output[0].item<float>();
+
+    grad_occupancy *= grad_output_;
 
 }

@@ -10,6 +10,8 @@ class SmoothnessFct(Function):
     def forward(ctx, occupancy):
         loss = torch.zeros(1).type(torch.FloatTensor).cuda()
         smoothness_cuda.connectivity_cuda_forward(occupancy, loss)
+        print(type(loss))
+        print(f'Loss: {loss}')
         ctx.save_for_backward(occupancy)
         return loss
 

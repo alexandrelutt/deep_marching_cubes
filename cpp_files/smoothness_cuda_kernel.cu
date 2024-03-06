@@ -37,7 +37,6 @@ __global__ void occupancy_connectivity_kernel( const float *occupancy, float *lo
       // l1 loss
       loss_ += abs(p1-p4);
   }
-  std::cout << loss_ << std::endl;
   loss[ i*(H+1)*(D+1) + j*(D+1) + k ] = loss_;
 }
 
@@ -91,7 +90,7 @@ void connectivity_cuda_forward(
     dim3 dimGrid(N, N, N);
     
     auto loss_all = torch::empty({N * N * N});
-    torch::zeros_like(loss_all);
+    loss_all = torch::zeros_like(loss_all);
     
     occupancy_connectivity_kernel<<<dimGrid, 1>>>(
         occupancy.data_ptr<float>(),

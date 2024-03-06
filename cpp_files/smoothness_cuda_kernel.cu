@@ -37,6 +37,7 @@ __global__ void occupancy_connectivity_kernel( const float *occupancy, float *lo
       // l1 loss
       loss_ += abs(p1-p4);
   }
+  std::cout << loss_ << std::endl;
   loss[ i*(H+1)*(D+1) + j*(D+1) + k ] = loss_;
 }
 
@@ -96,11 +97,8 @@ void connectivity_cuda_forward(
         occupancy.data_ptr<float>(),
         loss_all.data_ptr<float>());
 
-    std::cout << "loss_all: " << loss_all << std::endl;
     torch::Tensor sum_loss = torch::sum(loss_all);
-    std::cout << "sum_loss: " << sum_loss << std::endl;
     auto loss_ = sum_loss.item<float>();
-    std::cout << "loss_: " << loss_ << std::endl;
     loss[0] = loss_;    
 }
 

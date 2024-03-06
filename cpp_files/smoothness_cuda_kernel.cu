@@ -99,7 +99,7 @@ void connectivity_cuda_forward(
 
     torch::Tensor sum_loss = torch::sum(loss_all);
     auto loss_ = sum_loss.item<float>();
-    loss.fill_(loss_);
+    loss[0] = loss_;    
 }
 
 

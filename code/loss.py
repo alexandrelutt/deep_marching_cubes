@@ -72,8 +72,6 @@ class MyLoss(object):
         return loss
 
     def occupancy_loss(self, occupancy):
-        print(occupancy.shape)
-        print(self.neg_weight.shape)
         loss_sides = torch.sum(torch.mul(occupancy, self.neg_weight))
 
         N = occupancy.size(0)

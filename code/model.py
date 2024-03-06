@@ -186,4 +186,4 @@ class DeepMarchingCube(nn.Module):
             topology[b, :, :] = self.occupancy_to_topology(occupancy[b, 0, :, :, :])
 
         print(f'Topology shape: {topology.shape}')  
-        return offset, topology, occupancy 
+        return offset, topology, occupancy[:, 0, :, :, :]

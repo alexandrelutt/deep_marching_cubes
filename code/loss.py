@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 import scipy
+import torch.nn.functional as F
 
 from code.distance import DistPtsTopo
 from code.smoothness import Smoothness
@@ -55,6 +56,9 @@ class MyLoss(object):
         ## utils for smoothness loss
         self.smoothness = Smoothness()
 
+        ## utils for curvature loss
+        self.curvature = Curvature()
+
     def point_to_mesh(self, offset, topology, pts):
         distances_point_to_topo = self.dist_pt_topo(offset, pts)
 
@@ -92,9 +96,9 @@ class MyLoss(object):
         loss = loss/self.N**3
         return loss
     
-    ## ToDo
     def curvature_loss(self, offset, topology):
-        loss = 0
+        topology_accepted = topology[:, self.acceptTopologyWithFlip]
+        loss = self.curvatureLoss(offset, F.softmax(topology_accepted, dim=1))
         ## normalize by the dimension of the cube
         loss = loss/self.N**3
         return loss

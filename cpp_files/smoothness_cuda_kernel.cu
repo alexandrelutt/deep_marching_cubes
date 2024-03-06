@@ -97,8 +97,11 @@ void connectivity_cuda_forward(
         occupancy.data_ptr<float>(),
         loss_all.data_ptr<float>());
 
+    std::cout << "loss_all: " << loss_all << std::endl;
     torch::Tensor sum_loss = torch::sum(loss_all);
+    std::cout << "sum_loss: " << sum_loss << std::endl;
     auto loss_ = sum_loss.item<float>();
+    std::cout << "loss_: " << loss_ << std::endl;
     loss[0] = loss_;    
 }
 

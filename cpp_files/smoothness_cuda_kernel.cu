@@ -89,15 +89,13 @@ void connectivity_cuda_forward(
 
     dim3 dimGrid(N, N, N);
     
-    auto loss_all = torch::empty({N * N * N});
-    loss_all = torch::zeros_like(loss_all);
+    torch::Tensor loss_all = torch::zeros({N, N, N});
     
     occupancy_connectivity_kernel<<<dimGrid, 1>>>(
         occupancy.data_ptr<float>(),
         loss_all.data_ptr<float>());
 
-    torch::Tensor sum_loss = torch::sum(loss_all);
-    auto loss_ = sum_loss.item<float>();
+    float loss_ = torch::sum(loss_all).item<float>();
     loss[0] = loss_;    
 }
 

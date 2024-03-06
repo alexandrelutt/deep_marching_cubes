@@ -88,12 +88,11 @@ void connectivity_cuda_forward(
     int N = occupancy.size(0);
 
     dim3 dimGrid(N, N, N);
-    const int threads = 1024;
     
     auto loss_all = torch::empty({N * N * N});
     torch::zeros_like(loss_all);
     
-    occupancy_connectivity_kernel<<<dimGrid, threads>>>(
+    occupancy_connectivity_kernel<<<dimGrid, 1>>>(
         occupancy.data_ptr<float>(),
         loss_all.data_ptr<float>());
 
@@ -114,9 +113,8 @@ void connectivity_cuda_backward(
     int N = occupancy.size(0);
 
     dim3 dimGrid(N, N, N);
-    const int threads = 1024;
 
-    grad_occupancy_connectivity_kernel<<<dimGrid, threads>>>(
+    grad_occupancy_connectivity_kernel<<<dimGrid, 1>>>(
         occupancy.data_ptr<float>(),
         grad_occupancy.data_ptr<float>());
 

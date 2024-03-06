@@ -9,3 +9,9 @@ cd dist
 unzip distance_extension-0.0.0-py3.10-linux-x86_64.egg
 cd ..
 mv dist distance_extension
+
+python scripts/build_extension_smoothness.py install
+cd dist
+unzip smoothness_extension-0.0.0-py3.10-linux-x86_64.egg
+cd ..
+mv dist smoothness_extension

@@ -9,3 +9,9 @@ cd dist
 unzip distance_extension-0.0.0-py3.10-linux-x86_64.egg
 cd ..
 mv dist distance_extension
+
+python scripts/build_extension_curvature.py install
+cd dist
+unzip curvature_extension-0.0.0-py3.10-linux-x86_64.egg
+cd ..
+mv dist curvature_extension

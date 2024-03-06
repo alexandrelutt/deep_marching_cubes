@@ -4,6 +4,7 @@ import scipy
 
 from code.distance import DistPtsTopo
 from code.smoothness import Smoothness
+from code.curvature import Curvature
 from code.table import get_accepted_topologies
 
 if torch.cuda.is_available():

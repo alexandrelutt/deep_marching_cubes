@@ -37,13 +37,13 @@ class MyLoss(object):
         self.acceptTopologyWithFlip = torch.cat([self.acceptedTopologies, 255-self.acceptedTopologies[indices]], dim=0)
 
         ## utils for occupancy loss
-        cube_boundaries = np.zeros((self.N, self.N, self.N))
+        cube_boundaries = np.zeros((self.N+1, self.N+1, self.N+1))
         cube_boundaries[0, :, :] = 1
-        cube_boundaries[self.N-1, :, :] = 1
+        cube_boundaries[self.N, :, :] = 1
         cube_boundaries[:, :, 0] = 1
-        cube_boundaries[:, :, self.N-1] = 1
+        cube_boundaries[:, :, self.N] = 1
         cube_boundaries[:, 0, :] = 1
-        cube_boundaries[:, self.N-1, :] = 1
+        cube_boundaries[:, self.N, :] = 1
 
         gaussian_kernel_3D = get_gaussian_kernel_3D(kernel_width=3)
         neg_weight = scipy.ndimage.filters.convolve(cube_boundaries, gaussian_kernel_3D)

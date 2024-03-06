@@ -1,9 +1,10 @@
-#include <torch/extension.h>
+#include <THC.h>
+#include <THCGeneral.h>
+#include <math.h>
 
-#include <cuda.h>
-#include <cuda_runtime.h>
-
-#include <vector>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * calculate the loss between two neigboring occupancy status 
@@ -81,40 +82,66 @@ __global__ void grad_occupancy_connectivity_kernel( const float *occupancy, floa
   }
 }
 
-void connectivity_cuda_forward(
-    torch::Tensor occupancy,
-    torch::Tensor loss){
+/*
+ * Forward function, regularize the neighboring occupancy status to be close 
+ * params: 
+ *  	  occupancy 	input, (W+1)x(H+1)x(D+1)
+ *  	  loss     	output, connectivity loss 
+ *
+ */	
+void connectivity_cuda_forward( THCState *state, THCudaTensor *occupancy, THCudaTensor *loss ){
 
-    int N = occupancy.size(0);
-
-    dim3 dimGrid(N, N, N);
-    
-    torch::Tensor loss_all = torch::zeros({N, N, N});
-    
-    occupancy_connectivity_kernel<<<dimGrid, 1>>>(
-        occupancy.data_ptr<float>(),
-        loss_all.data_ptr<float>());
-
-    float loss_ = torch::sum(loss_all).item<float>();
-    loss[0] = loss_;    
-}
+  int W = THCudaTensor_size(state, occupancy, 0);
+  int H = THCudaTensor_size(state, occupancy, 1);
+  int D = THCudaTensor_size(state, occupancy, 2);
 
 
-void connectivity_cuda_backward(
-    torch::Tensor grad_output,
-    torch::Tensor occupancy,
-    torch::Tensor grad_occupancy){
+  dim3 dimGrid(W, H, D);
 
-    int N = occupancy.size(0);
+  THCudaTensor *loss_all = THCudaTensor_newWithSize1d(state, W*H*D);
+  THCudaTensor_zero(state, loss_all);
+  // lauch the kernel
+  occupancy_connectivity_kernel<<< dimGrid, 1, 0, THCState_getCurrentStream(state) >>>(
+		  THCudaTensor_data(state, occupancy),
+		  THCudaTensor_data(state, loss_all) );
 
-    dim3 dimGrid(N, N, N);
+  float loss_= THCudaTensor_sumall(state, loss_all);
 
-    grad_occupancy_connectivity_kernel<<<dimGrid, 1>>>(
-        occupancy.data_ptr<float>(),
-        grad_occupancy.data_ptr<float>());
-
-    float grad_output_ = grad_output[0].item<float>();
-
-    grad_occupancy *= grad_output_;
+  THCudaTensor_set1d(state, loss, 0, loss_);
+  
+  THCudaTensor_free(state, loss_all);
 
 }
+
+/*
+ * Backward function, propagate the loss to every occupancy status 
+ * params: 
+ * 	  state, 		input, THCState
+ *  	  grad_output 		input, 1, gradient on the loss 
+ *  	  occupancy 		input, (W+1)x(H+1)x(D+1)
+ *  	  grad_occupancy     	output, (W+1)x(H+1)x(D+1), gradient on the occupancy 
+ *
+ */	
+void connectivity_cuda_backward( THCState *state, THCudaTensor *grad_output, THCudaTensor *occupancy, THCudaTensor *grad_occupancy ){
+
+  int W = THCudaTensor_size(state, occupancy, 0);
+  int H = THCudaTensor_size(state, occupancy, 1);
+  int D = THCudaTensor_size(state, occupancy, 2);
+
+
+  dim3 dimGrid(W, H, D);
+
+
+  // lauch the kernel
+  grad_occupancy_connectivity_kernel<<< dimGrid, 1, 0, THCState_getCurrentStream(state) >>>(
+		  THCudaTensor_data(state, occupancy),
+		  THCudaTensor_data(state, grad_occupancy) );
+
+  float grad_output_=THCudaTensor_get1d(state, grad_output, 0);
+  THCudaTensor_mul(state, grad_occupancy, grad_occupancy, grad_output_);
+
+}
+
+#ifdef __cplusplus
+}
+#endif

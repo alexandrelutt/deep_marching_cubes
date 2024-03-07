@@ -2,6 +2,7 @@
 
 #include <cuda.h>
 #include <cuda_runtime.h>
+// #include <ATen/ATen.h>
 
 #include <vector>
 #include <math.h>
@@ -886,16 +887,16 @@ void curvature_cuda_forward(
     torch::Tensor innerTable,
     torch::Tensor loss){
 
-    W = offset.size(1)-1;
-    H = offset.size(2)-1;
-    D = offset.size(3)-1;
+  int W = offset.size(1)-1;
+  int H = offset.size(2)-1;
+  int D = offset.size(3)-1;
 
   dim3 dimGrid(W, H, 1);
   dim3 dimBlock(D, 1, 1);
 
   float loss_ = 0.0;
 
-  auto *xLoss = torch::zeros(W*H*D);
+  torch::Tensor *xLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
         topology.data_ptr<float>(),
@@ -915,7 +916,7 @@ void curvature_cuda_forward(
   loss_ += yLoss.sum().item<float>();
   yLoss.free();
 
-  auto *zLoss = torch::zeros(W*H*D);
+  torch::Tensor *zLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
             offset.data_ptr<float>(),
             topology.data_ptr<float>(),
@@ -925,7 +926,7 @@ void curvature_cuda_forward(
   loss_ += zLoss.sum().item<float>();
   zLoss.free();
 
-  auto *innerLoss = torch::zeros(W*H*D);
+  torch::Tensor *innerLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
             offset.data_ptr<float>(),
             topology.data_ptr<float>(),
@@ -937,11 +938,11 @@ void curvature_cuda_forward(
 
   loss[0] = loss_;
 
-  THCudaTensor_set1d(state, loss, 0, loss_);
+  // THCudaTensor_set1d(state, loss, 0, loss_);
 
-  THCudaCheck(cudaGetLastError());
+  // THCudaCheck(cudaGetLastError());
 
-  AT_CUDA_CHECK(cudaGetLastError());
+  // AT_CUDA_CHECK(cudaGetLastError());
   
 }
 

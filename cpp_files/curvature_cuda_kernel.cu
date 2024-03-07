@@ -896,7 +896,7 @@ void curvature_cuda_forward(
 
   float loss_ = 0.0;
 
-  auto = torch::zeros(W*H*D);
+  auto xLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
         topology.data_ptr<float>(),

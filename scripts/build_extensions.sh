@@ -1,5 +1,5 @@
 python scripts/build_extension_occto.py install
-cd dist
+cd distls
 unzip occtopology_extension-0.0.0-py3.10-linux-x86_64.egg
 cd ..
 mv dist occtopology_extension

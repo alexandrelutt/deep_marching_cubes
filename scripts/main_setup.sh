@@ -12,3 +12,4 @@ sh scripts/build_extensions.sh
 
 # rm -r occtopology_extension.egg-info
 # rm -r distance_extension.egg-info
+# rm -r curvature_extension.egg-info

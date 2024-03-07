@@ -885,7 +885,7 @@ void curvature_cuda_forward(
     torch::Tensor yTable,
     torch::Tensor zTable,
     torch::Tensor innerTable,
-    torch::Tensor loss){
+    torch::Tensor& loss){
 
   int W = offset.size(1)-1;
   int H = offset.size(2)-1;
@@ -896,44 +896,44 @@ void curvature_cuda_forward(
 
   float loss_ = 0.0;
 
-  torch::Tensor xLoss = torch::zeros(W*H*D);
+  auto = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
         topology.data_ptr<float>(),
         xTable.data_ptr<float>(),
         xLoss.data_ptr<float>(),
         0);
-  loss_ += xLoss.sum().item().toFloat<float>();;
+  loss_ += xLoss.sum().item<float>();
   // xLoss.free();
 
-  torch::Tensor yLoss = torch::zeros(W*H*D);
+  auto yLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
         topology.data_ptr<float>(),
         yTable.data_ptr<float>(),
         yLoss.data_ptr<float>(),
         0);
-  loss_ += yLoss.sum().item().toFloat<float>();;
+  loss_ += yLoss.sum().item<float>();
   // yLoss.free();
 
-  torch::Tensor zLoss = torch::zeros(W*H*D);
+  auto zLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
             offset.data_ptr<float>(),
             topology.data_ptr<float>(),
             zTable.data_ptr<float>(),
             zLoss.data_ptr<float>(),
             0);
-  loss_ += zLoss.sum().item().toFloat<float>();;
+  loss_ += zLoss.sum().item<float>();
   // zLoss.free();
 
-  torch::Tensor innerLoss = torch::zeros(W*H*D);
+  auto innerLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
             offset.data_ptr<float>(),
             topology.data_ptr<float>(),
             innerTable.data_ptr<float>(),
             innerLoss.data_ptr<float>(),
             3);
-  loss_ += innerLoss.sum().item().toFloat<float>();;
+  loss_ += innerLoss.sum().item<float>();
   // innerLoss.free();
 
   loss[0] = loss_;

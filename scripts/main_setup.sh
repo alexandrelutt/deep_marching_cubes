@@ -3,12 +3,12 @@ pip install -r requirements.txt
 
 sh scripts/build_extensions.sh
 
-python3 -m pip uninstall -y torch torchvision
-python3 -m pip freeze | grep nvidia- | xargs pip uninstall -y
-python3 -m pip install torch torchvision
+# python3 -m pip uninstall -y torch torchvision
+# python3 -m pip freeze | grep nvidia- | xargs pip uninstall -y
+# python3 -m pip install torch torchvision
 
-sh scripts/download_data.sh
-sh scripts/fix_cudnn.sh
+# sh scripts/download_data.sh
+# sh scripts/fix_cudnn.sh
 
-rm -r occtopology_extension.egg-info
-rm -r distance_extension.egg-info
+# rm -r occtopology_extension.egg-info
+# rm -r distance_extension.egg-info

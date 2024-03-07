@@ -1,6 +1,6 @@
 import torch
 from torch.autograd import Function
-from model.table import get_connected_pairs
+from code.table import get_connected_pairs
 
 from curvature_extension import curvature_cuda
 

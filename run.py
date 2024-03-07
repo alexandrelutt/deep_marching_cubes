@@ -1,10 +1,10 @@
 import torch
 import faulthandler
 
-from code.model import DeepMarchingCube
+# from code.model import DeepMarchingCube
 from code.loss import MyLoss
-from code.loader import get_loader
-from code.train import train
+# from code.loader import get_loader
+# from code.train import train
 
 if __name__ == '__main__':
     faulthandler.enable()

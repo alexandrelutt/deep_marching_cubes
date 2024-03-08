@@ -1,1 +1,1 @@
-gsutil rsync -r outputs gs://npm3d
+gsutil rsync -r outputs gs://npm3dgit config --global user.name

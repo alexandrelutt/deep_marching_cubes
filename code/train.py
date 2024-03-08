@@ -22,9 +22,9 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             loss = loss_module.loss(offset, topology, clean_batch, occupancy)
             epoch_train_loss += loss.item()
 
-            model.zero_grad()
-            loss.backward()
-            optimizer.step()
+            # model.zero_grad()
+            # loss.backward()
+            # optimizer.step()
 
             epoch_train_loss += loss.item()
 

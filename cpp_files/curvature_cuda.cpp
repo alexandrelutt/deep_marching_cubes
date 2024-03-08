@@ -12,8 +12,8 @@ void curvature_cuda_forward(
     torch::Tensor xLoss,
     torch::Tensor yLoss,
     torch::Tensor zLoss,
-    torch::Tensor innerLoss),
-    torch::Tensor loss,;
+    torch::Tensor innerLoss,
+    torch::Tensor loss);
 
 void curvature_cuda_backward(
     torch::Tensor grad_output,

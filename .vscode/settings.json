@@ -73,6 +73,7 @@
         "variant": "cpp",
         "vector": "cpp",
         "algorithm": "cpp",
-        "execution": "cpp"
+        "execution": "cpp",
+        "__memory": "cpp"
     }
 }

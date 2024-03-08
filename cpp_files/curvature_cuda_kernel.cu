@@ -720,7 +720,6 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
 
   float loss_=0;
 
-
   for (int ti=0; ti<T; ti++){
 
     for (int tj=0; tj<T; tj++){
@@ -878,7 +877,7 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
  *  	  loss  		output, smoothness loss on both horizontal and vertical directions, 1 
  *
  */	
-std::vector<torch::Tensor> curvature_cuda_forward(
+torch::Tensor curvature_cuda_forward(
     torch::Tensor offset,
     torch::Tensor topology,
     torch::Tensor xTable,
@@ -939,7 +938,7 @@ std::vector<torch::Tensor> curvature_cuda_forward(
   std::cout << "lossiner: " << lossiner << std::endl;
   loss_ += lossz;
 
-  auto loss = std::vector<float>(1, loss_);
+  torch::Tensor loss = torch::full({1}, loss_);
   return loss;
   
 }

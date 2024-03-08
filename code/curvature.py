@@ -17,7 +17,7 @@ class CurvatureFct(Function):
 			    torch.FloatTensor(z).cuda(),
 			    torch.FloatTensor(inner).cuda())
         ctx.save_for_backward(offset, topology)
-        print(loss)
+        print(loss, type(loss))
         return loss
 
     @staticmethod

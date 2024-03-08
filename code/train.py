@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import time
+from tqdm import tqdm
 
 def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
     model.to(device)
@@ -18,7 +19,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
         epoch_train_loss_smoothness = 0
         epoch_train_loss_curvature = 0
 
-        for i, (clean_batch, perturbed_batch) in enumerate(train_loader):
+        for i, (clean_batch, perturbed_batch) in tqdm(enumerate(train_loader)):
             clean_batch = clean_batch.to(device)
             perturbed_batch = perturbed_batch.to(device)
 

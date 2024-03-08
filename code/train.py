@@ -35,14 +35,11 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             loss.backward()
             optimizer.step()
 
-            if i > 4:
-                break
-            
-        epoch_train_loss /= 5 #len(train_loader)
-        epoch_train_loss_point_to_mesh /= 5 #len(train_loader)
-        epoch_train_loss_occupancy /= 5 #len(train_loader)
-        epoch_train_loss_smoothness /= 5 #len(train_loader)
-        epoch_train_loss_curvature /= 5 #len(train_loader)
+        epoch_train_loss /= len(train_loader)
+        epoch_train_loss_point_to_mesh /= len(train_loader)
+        epoch_train_loss_occupancy /= len(train_loader)
+        epoch_train_loss_smoothness /= len(train_loader)
+        epoch_train_loss_curvature /= len(train_loader)
 
         train_losses.append(epoch_train_loss)
         train_loss_point_to_mesh.append(epoch_train_loss_point_to_mesh)
@@ -69,14 +66,11 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
                 epoch_test_loss_smoothness += loss_smoothness.item()
                 epoch_test_loss_curvature += loss_curvature.item()
 
-                if i > 4:
-                    break
-
-            epoch_test_loss /= 5 #len(test_loader)
-            epoch_test_loss_point_to_mesh /= 5 #len(test_loader)
-            epoch_test_loss_occupancy /= 5 #len(test_loader)
-            epoch_test_loss_smoothness /= 5 #len(test_loader)
-            epoch_test_loss_curvature /= 5 #len(test_loader)
+            epoch_test_loss /= len(test_loader)
+            epoch_test_loss_point_to_mesh /= len(test_loader)
+            epoch_test_loss_occupancy /= len(test_loader)
+            epoch_test_loss_smoothness /= len(test_loader)
+            epoch_test_loss_curvature /= len(test_loader)
 
             test_losses.append(epoch_test_loss)
             test_loss_point_to_mesh.append(epoch_test_loss_point_to_mesh)

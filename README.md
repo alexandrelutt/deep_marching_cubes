@@ -8,6 +8,6 @@ Please follow these instructions to install the required packages:
 python -m venv venv
 source venv/bin/activate
 python3 -m pip install --upgrade pip
-sh scripts/main_setup.sh
+sh main_setup.sh
 python run.py
 ```

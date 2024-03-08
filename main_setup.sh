@@ -15,5 +15,3 @@ rm -r distance_extension.egg-info
 rm -r curvature_extension.egg-info
 
 rm -r build
-
-mkdir models

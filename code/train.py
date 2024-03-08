@@ -91,7 +91,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             print('\n  New best model has been found!')
             best_test_loss = epoch_test_loss
             best_model = model
-            torch.save(model.state_dict(), 'models/best_model.pth')
+            torch.save(model.state_dict(), 'outputs/models/best_model.pth')
             print('  New best model has been saved.')
 
         dt = time.time() - t0

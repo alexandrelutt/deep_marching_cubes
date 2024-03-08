@@ -5,8 +5,8 @@ def plot_losses(train_losses, test_losses, loss_type='all'):
     n_epochs = len(train_losses)
     fig = plt.figure(figsize=(10, 5))
 
-    plt.plot(range(n_epochs), train_losses, label='Train loss')
-    plt.plot(range(n_epochs), test_losses, label='Test loss')
+    plt.plot(range(1, 1+n_epochs), train_losses, label='Train loss')
+    plt.plot(range(1, 1+n_epochs), test_losses, label='Test loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
 
@@ -22,4 +22,4 @@ def plot_losses(train_losses, test_losses, loss_type='all'):
         plt.title('Train and test curvature loss')
 
     plt.legend()    
-    plt.savefig(f'./figures/{loss_type}_training.png')
+    plt.savefig(f'outputs/figures/{loss_type}_training.png')

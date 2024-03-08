@@ -313,7 +313,7 @@ def get_triangle_table(symmetry=1):
     elif symmetry == 0:
         # insert free and occupied cases into middle to keep consistency with the symmetry case
         # insert the free case
-        loc = len(table)/2
+        loc = len(table)//2
         table.insert(loc, [])
         ind.insert(loc, 0)
         num_tri.insert(loc, 0)

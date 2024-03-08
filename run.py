@@ -1,5 +1,7 @@
 import torch
 import faulthandler
+from torch.utils.tensorboard import SummaryWriter
+writer = SummaryWriter()
 
 from code.model import DeepMarchingCube
 from code.loss import MyLoss
@@ -23,8 +25,10 @@ if __name__ == '__main__':
     loss_module = MyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
-    train_losses, test_losses, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device)
+    train_losses, test_losses, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device, writer)
 
+    writer.flush()
+    writer.close()
     print('Train losses:')
     print(train_losses)
 

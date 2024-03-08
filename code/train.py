@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import time
 
-def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
+def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device, writer):
     model.to(device)
     train_losses, test_losses = [], []
     best_test_loss = np.inf
@@ -29,6 +29,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
                 break
             
         train_losses.append(epoch_train_loss/len(train_loader))
+        writer.add_scalar('Loss/train', epoch_train_loss/len(train_loader), t)
 
         with torch.no_grad():
             epoch_test_loss = 0
@@ -44,6 +45,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
                     break
 
             test_losses.append(epoch_test_loss/len(test_loader))
+            writer.add_scalar('Loss/test', epoch_test_loss/len(test_loader), t)
             
         print(f'Training loss: {epoch_train_loss}.')
         print(f'Test loss:     {epoch_test_loss}.')

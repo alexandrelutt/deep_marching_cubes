@@ -97,7 +97,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
         dt = time.time() - t0
         print(f'\nEpoch duration: {dt:.2f}s.\n')
 
-    print('Training complete.')
+    print('Training complete!\n')
     train_losses_dict = {
         'all': train_losses,
         'loss_point_to_mesh': train_loss_point_to_mesh,

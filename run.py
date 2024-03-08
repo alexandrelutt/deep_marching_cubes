@@ -26,5 +26,7 @@ if __name__ == '__main__':
 
     train_losses_dict, test_losses_dict, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device)
 
+    print('Now plotting losses...')
     for key, value in train_losses_dict.items():
         plot_losses(value, test_losses_dict[key], loss_type=key)
+    print('Done!')

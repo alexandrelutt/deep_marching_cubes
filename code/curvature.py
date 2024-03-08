@@ -26,12 +26,8 @@ class CurvatureFct(Function):
                 loss_Z,
                 loss_inner)
         ctx.save_for_backward(offset, topology)
-        print(loss_X, type(loss_X))
-        print(loss_Y, type(loss_Y))
-        print(loss_Z, type(loss_Z))
-        print(loss_inner, type(loss_inner))
-        loss = loss_X + loss_Y + loss_Z + loss_inner
-        return torch.sum(loss)
+        loss = torch.sum(loss_X + loss_Y + loss_Z + loss_inner)
+        return loss
 
     @staticmethod
     def backward(ctx, grad_output):

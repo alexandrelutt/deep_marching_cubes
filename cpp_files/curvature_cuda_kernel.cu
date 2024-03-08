@@ -936,6 +936,7 @@ void curvature_cuda_forward(
   loss_ += lossz;
 
   loss[0] = loss_;
+  std::cout << "loss size: " << loss.size() << std::endl;
   
 }
 

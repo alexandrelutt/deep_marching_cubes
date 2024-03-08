@@ -12,15 +12,14 @@ def plot_losses(train_losses, test_losses, loss_type='all'):
 
     if loss_type == 'all':
         plt.title('Train and test global loss')
-    elif loss_type == 'point_to_mesh':
+    elif loss_type == 'loss_point_to_mesh':
         plt.title('Train and test point_to_mesh loss')
-    elif loss_type == 'occupancy':
+    elif loss_type == 'loss_occupancy':
         plt.title('Train and test occupancy loss')
-    elif loss_type == 'smoothness':
+    elif loss_type == 'loss_smoothness':
         plt.title('Train and test smoothness loss')
-    elif loss_type == 'curvature':
+    elif loss_type == 'loss_curvature':
         plt.title('Train and test curvature loss')
 
-    plt.legend()
-
-    plt.show()
+    plt.legend()    
+    plt.savefig(f'./figures/{loss_type}_training.png')

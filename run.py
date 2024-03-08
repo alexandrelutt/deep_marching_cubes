@@ -24,6 +24,7 @@ if __name__ == '__main__':
     loss_module = MyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
-    train_losses, test_losses, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device)
+    train_losses_dict, test_losses_dict, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device)
 
-    plot_losses(train_losses, test_losses)
+    for key, value in train_losses_dict.items():
+        plot_losses(value, test_losses_dict[key], loss_type=key)

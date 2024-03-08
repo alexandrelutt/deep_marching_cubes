@@ -72,7 +72,6 @@ class MyLoss(object):
 
         ## normalize by the dimension of the cube
         loss = loss/self.N**3
-        print(f'Point to mesh loss: {loss}')
         return loss
 
     def occupancy_loss(self, occupancy):
@@ -89,14 +88,12 @@ class MyLoss(object):
 
         loss = loss_sides + loss_inside
         ## no need to normalize by the dimension of the cube
-        print(f'Occupancy loss: {loss}')
         return loss
 
     def smoothness_loss(self, occupancy):
         loss = self.smoothness(occupancy)
         ## normalize by the dimension of the cube
         loss = loss/self.N**3
-        print(f'Smoothness loss: {loss}')
         return loss
     
     def curvature_loss(self, offset, topology):
@@ -104,7 +101,6 @@ class MyLoss(object):
         loss = self.curvature(offset, F.softmax(topology_accepted, dim=1))
         ## normalize by the dimension of the cube
         loss = loss/self.N**3
-        print(f'Curvature loss: {loss}')
         return loss
     
     def loss(self, offset, topology, pts, occupancy):

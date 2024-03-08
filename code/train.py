@@ -85,6 +85,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             test_loss_curvature.append(epoch_test_loss_curvature)
             
         print(f'Training loss: {epoch_train_loss}.')
+        print(f'Train loss curvature: {test_loss_curvature}.')
         print(f'Test loss:     {epoch_test_loss}.')
 
         if epoch_test_loss < best_test_loss:

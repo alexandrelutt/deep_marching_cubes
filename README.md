@@ -20,7 +20,7 @@ Then press Ctrl+b and d
 python run.py
 tmux detach
 ```
-...
+After training:
 ```bash
 tmux attach
 sh scripts/download_outputs.sh

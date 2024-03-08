@@ -111,8 +111,8 @@ class MyLoss(object):
             loss += self.weight_point_to_mesh*self.point_to_mesh(offset[b], topology[b], pts[b])
             loss += self.weight_occupancy*self.occupancy_loss(occupancy[b])
             loss += self.weight_smoothness*self.smoothness_loss(occupancy[b])
-            print(loss.shape)
-            print(self.curvature_loss(offset[b], topology[b]).shape)
-            loss += self.weight_curvature*self.curvature_loss(offset[b], topology[b])
+            # print(loss.shape)
+            # print(self.curvature_loss(offset[b], topology[b]).shape)
+            # loss += self.weight_curvature*self.curvature_loss(offset[b], topology[b])
 
         return loss/batch_size

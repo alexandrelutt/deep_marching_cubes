@@ -277,7 +277,7 @@ def get_triangle_table(symmetry=1):
     table = []
     ind = []
     num_tri = []
-    for i in range(len(triangle_table)/(symmetry+1)):
+    for i in range(len(triangle_table)//(symmetry+1)):
         edges = np.asarray(triangle_table[i])
         edges = edges[np.where(edges>-1)]
 

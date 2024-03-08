@@ -2,7 +2,7 @@
 
 #include <vector>
 
-std::vector curvature_cuda_forward(
+std::vector<torch::Tensor> curvature_cuda_forward(
     torch::Tensor offset,
     torch::Tensor topology,
     torch::Tensor xTable,
@@ -20,7 +20,7 @@ void curvature_cuda_backward(
     torch::Tensor innerTable,
     torch::Tensor grad_offset);
 
-std::vector curvature_forward(
+std::vector<torch::Tensor> curvature_forward(
     torch::Tensor offset,
     torch::Tensor topology,
     torch::Tensor xTable,

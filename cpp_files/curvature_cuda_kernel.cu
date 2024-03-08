@@ -999,8 +999,8 @@ void curvature_cuda_backward(
         innerTable.data_ptr<float>(),
         3);
 
-  float grad_output_ = grad_output[0].item<float>();
+  // float grad_output_ = grad_output[0].item<float>();
 
-  grad_offset = torch::mul(grad_offset, grad_output_);
+  // grad_offset = torch::mul(grad_offset, grad_output_);
  
  }

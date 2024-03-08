@@ -1,1 +1,1 @@
-gsutil rsync -r outputs gs://bucket
+gsutil rsync -r outputs gs://npm3d

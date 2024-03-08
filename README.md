@@ -11,8 +11,21 @@ python3 -m pip install --upgrade pip
 sh main_setup.sh
 ```
 
-To train the model and upload outputs to GCP, please run
+To train the model and upload outputs to GCP, please use Tmux:
+```bash
+tmux
+```
+Then press Ctrl+b and d
 ```bash
 python run.py
+tmux detach
+```
+...
+```bash
+tmux attach
 sh scripts/download_outputs.sh
+```
+Then press Ctrl+b and :
+```bash
+kill-session
 ```

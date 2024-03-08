@@ -16,9 +16,6 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             perturbed_batch = perturbed_batch.to(device)
 
             offset, topology, occupancy = model(perturbed_batch)
-            print(f'offset: {offset.shape}')
-            print(f'topology: {topology.shape}')
-            print(f'occupancy: {occupancy.shape}')
             loss = loss_module.loss(offset, topology, clean_batch, occupancy)
             epoch_train_loss += loss.item()
 
@@ -28,7 +25,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
 
             epoch_train_loss += loss.item()
 
-            if i > 1:
+            if i > 2:
                 break
             
         train_losses.append(epoch_train_loss/len(train_loader))

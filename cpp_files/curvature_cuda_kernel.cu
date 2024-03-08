@@ -877,13 +877,17 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
  *  	  loss  		output, smoothness loss on both horizontal and vertical directions, 1 
  *
  */	
-torch::Tensor curvature_cuda_forward(
+void curvature_cuda_forward(
     torch::Tensor offset,
     torch::Tensor topology,
     torch::Tensor xTable,
     torch::Tensor yTable,
     torch::Tensor zTable,
-    torch::Tensor innerTable){
+    torch::Tensor innerTable,
+    torch::Tensor xLoss,
+    torch::Tensor yLoss,
+    torch::Tensor zLoss,
+    torch::Tensor innerLoss){
 
   int W = offset.size(1)-1;
   int H = offset.size(2)-1;
@@ -894,58 +898,45 @@ torch::Tensor curvature_cuda_forward(
 
   float loss_ = 0.0;
 
-  torch::Tensor xLoss = torch::empty(W*H*D);
-  float* xLoss_data = xLoss.data_ptr<float>();
   pairwise_loss<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
         topology.data_ptr<float>(),
         xTable.data_ptr<float>(),
-        xLoss_data.data_ptr<float>(),
+        xLoss.data_ptr<float>(),
         0);
-  float lossx = xLoss_data.sum().item<float>();
+  float lossx = xLoss.sum().item<float>();
   std::cout << "lossx: " << lossx << std::endl;
   loss_ += lossx;
 
-  torch::Tensor yLoss = torch::empty(W*H*D);
-  float* yLoss_data = yLoss.data_ptr<float>();
   pairwise_loss<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
         topology.data_ptr<float>(),
         yTable.data_ptr<float>(),
-        yLoss_data,
+        yLoss.data_ptr<float>(),
         0);
-
-  float lossy = yLoss_data.sum().item<float>();
+  float lossy = yLoss.sum().item<float>();
   std::cout << "lossy: " << lossy << std::endl;
   loss_ += lossy;
 
-  torch::Tensor zLoss = torch::empty(W*H*D);
-  float* zLoss_data = zLoss.data_ptr<float>();
   pairwise_loss<<<dimGrid, dimBlock>>>(
             offset.data_ptr<float>(),
             topology.data_ptr<float>(),
             zTable.data_ptr<float>(),
-            zLoss_data,
+            zLoss.data_ptr<float>(),
             0);
-  float lossz = zLoss_data.sum().item<float>();
+  float lossz = zLoss.sum().item<float>();
   std::cout << "lossz: " << lossz << std::endl;
   loss_ += lossz;
 
-  torch::Tensor inerLoss = torch::empty(W*H*D);
-  float* inerLoss_data = inerLoss.data_ptr<float>();
   pairwise_loss<<<dimGrid, dimBlock>>>(
             offset.data_ptr<float>(),
             topology.data_ptr<float>(),
             innerTable.data_ptr<float>(),
-            inerLoss,
+            innerLoss.data_ptr<float>(),
             3);
-  float lossiner = inerLoss_data.sum().item<float>();
+  float lossiner = innerLoss.sum().item<float>();
   std::cout << "lossiner: " << lossiner << std::endl;
   loss_ += lossz;
-
-  torch::Tensor loss = torch::zeros({1});
-  loss[0] = loss_;
-  return loss;
   
 }
 

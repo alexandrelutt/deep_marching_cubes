@@ -2,13 +2,17 @@
 
 #include <vector>
 
-torch::Tensor curvature_cuda_forward(
+void curvature_cuda_forward(
     torch::Tensor offset,
     torch::Tensor topology,
     torch::Tensor xTable,
     torch::Tensor yTable,
     torch::Tensor zTable,
-    torch::Tensor innerTable);
+    torch::Tensor innerTable,
+    torch::Tensor xLoss,
+    torch::Tensor yLoss,
+    torch::Tensor zLoss,
+    torch::Tensor innerLoss);
 
 void curvature_cuda_backward(
     torch::Tensor grad_output,
@@ -20,14 +24,18 @@ void curvature_cuda_backward(
     torch::Tensor innerTable,
     torch::Tensor grad_offset);
 
-torch::Tensor curvature_forward(
+void curvature_forward(
     torch::Tensor offset,
     torch::Tensor topology,
     torch::Tensor xTable,
     torch::Tensor yTable,
     torch::Tensor zTable,
-    torch::Tensor innerTable){
-    return curvature_cuda_forward(offset, topology, xTable, yTable, zTable, innerTable);
+    torch::Tensor innerTable,
+    torch::Tensor xLoss,
+    torch::Tensor yLoss,
+    torch::Tensor zLoss,
+    torch::Tensor innerLoss){
+    return curvature_cuda_forward(offset, topology, xTable, yTable, zTable, innerTable, xLoss, yLoss, zLoss, innerLoss);
     }
 
 void curvature_backward(

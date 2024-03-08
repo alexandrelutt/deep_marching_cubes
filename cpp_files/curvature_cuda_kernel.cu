@@ -878,7 +878,7 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
  *  	  loss  		output, smoothness loss on both horizontal and vertical directions, 1 
  *
  */	
-std::vector curvature_cuda_forward(
+std::vector<torch::Tensor> curvature_cuda_forward(
     torch::Tensor offset,
     torch::Tensor topology,
     torch::Tensor xTable,
@@ -935,11 +935,11 @@ std::vector curvature_cuda_forward(
             innerTable.data_ptr<float>(),
             innerLoss.data_ptr<float>(),
             3);
-  lossiner = innerLoss.sum().item<float>();
+  float lossiner = innerLoss.sum().item<float>();
   std::cout << "lossiner: " << lossiner << std::endl;
   loss_ += lossz;
 
-  loss = std::vector<float>(1, loss_);
+  auto loss = std::vector<float>(1, loss_);
   return loss;
   
 }

@@ -14,5 +14,5 @@ sh main_setup.sh
 To train the model and upload outputs to GCP, please run
 ```bash
 python run.py
-sh download_outputs.sh
+sh scripts/download_outputs.sh
 ```

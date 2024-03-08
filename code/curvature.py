@@ -44,6 +44,7 @@ class CurvatureFct(Function):
 		    torch.FloatTensor(inner).cuda(),
 		    grad_offset)
         grad_topology = torch.zeros(topology.size()).cuda()
+        print(f'grad_output: {torch.sum(grad_output)}')
         return grad_offset, grad_topology 
 
 

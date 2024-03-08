@@ -979,7 +979,7 @@ void curvature_cuda_backward(
         0);
 
   float grad_offset_sum_1 = grad_offset.sum().item<float>();
-  std::cout << "grad_offset_sum: " << grad_offset_sum_1 << std::endl;
+  std::cout << "grad_offset_sum1: " << grad_offset_sum_1 << std::endl;
 
   pairwise_grad<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
@@ -989,7 +989,7 @@ void curvature_cuda_backward(
         1);
 
   float grad_offset_sum_2 = grad_offset.sum().item<float>();
-  std::cout << "grad_offset_sum: " << grad_offset_sum_2 << std::endl;
+  std::cout << "grad_offset_sum2: " << grad_offset_sum_2 << std::endl;
 
   pairwise_grad<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
@@ -999,7 +999,7 @@ void curvature_cuda_backward(
         2);
 
   float grad_offset_sum_3 = grad_offset.sum().item<float>();
-  std::cout << "grad_offset_sum: " << grad_offset_sum_3 << std::endl;
+  std::cout << "grad_offset_sum3: " << grad_offset_sum_3 << std::endl;
 
   pairwise_grad<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
@@ -1009,6 +1009,6 @@ void curvature_cuda_backward(
         3);
 
   float grad_offset_sum_4 = grad_offset.sum().item<float>();
-  std::cout << "grad_offset_sum: " << grad_offset_sum_4 << std::endl;
+  std::cout << "grad_offset_sum4: " << grad_offset_sum_4 << std::endl;
 
  }

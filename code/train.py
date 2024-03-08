@@ -72,7 +72,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
                 if i > 4:
                     break
 
-            epoch_test_loss /= len(test_loader)
+            epoch_test_loss /= 5 #len(test_loader)
             epoch_test_loss_point_to_mesh /= 5 #len(test_loader)
             epoch_test_loss_occupancy /= 5 #len(test_loader)
             epoch_test_loss_smoothness /= 5 #len(test_loader)

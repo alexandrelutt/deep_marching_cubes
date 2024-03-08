@@ -943,7 +943,8 @@ torch::Tensor curvature_cuda_forward(
   std::cout << "lossiner: " << lossiner << std::endl;
   loss_ += lossz;
 
-  torch::Tensor loss = torch::full({1}, loss_);
+  torch::Tensor loss = torch::zeros({1});
+  loss[0] = loss_;
   return loss;
   
 }

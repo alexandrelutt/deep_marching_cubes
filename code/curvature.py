@@ -13,7 +13,7 @@ class CurvatureFct(Function):
         curvature_cuda.curvature_constraint_cuda_forward(
 			    offset,
 			    topology[:, torch.LongTensor(topology_to_triangles).cuda()],
-			    topology[:, -1],
+			    # topology[:, -1],
 			    torch.FloatTensor(x).cuda(),
 			    torch.FloatTensor(y).cuda(),
 			    torch.FloatTensor(z).cuda(),
@@ -29,7 +29,7 @@ class CurvatureFct(Function):
             grad_output,
 		    offset,
 		    topology[:, torch.LongTensor(topology_to_triangles).cuda()],
-		    topology[:, -1],			    
+		    # topology[:, -1],			    
             torch.FloatTensor(x).cuda(),
 			torch.FloatTensor(y).cuda(),
 		    torch.FloatTensor(z).cuda(),

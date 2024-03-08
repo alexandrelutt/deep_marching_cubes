@@ -14,6 +14,7 @@ class CurvatureFct(Function):
         loss_Y = torch.zeros(W, D, H).cuda()
         loss_Z = torch.zeros(W, D, H).cuda()
         loss_inner = torch.zeros(W, D, H).cuda()
+        loss = torch.zeros(1).cuda()
         curvature_cuda.curvature_constraint_cuda_forward(
 			    offset,
 			    topology[:, torch.LongTensor(topology_to_triangles).cuda()],
@@ -24,9 +25,9 @@ class CurvatureFct(Function):
                 loss_X,
                 loss_Y,
                 loss_Z,
-                loss_inner)
+                loss_inner,
+                loss)
         ctx.save_for_backward(offset, topology)
-        loss = torch.sum(loss_X + loss_Y + loss_Z + loss_inner)
         return loss
 
     @staticmethod

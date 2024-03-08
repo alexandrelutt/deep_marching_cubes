@@ -887,7 +887,8 @@ void curvature_cuda_forward(
     torch::Tensor xLoss,
     torch::Tensor yLoss,
     torch::Tensor zLoss,
-    torch::Tensor innerLoss){
+    torch::Tensor innerLoss,
+    torch::Tensor loss){
 
   int W = offset.size(1)-1;
   int H = offset.size(2)-1;
@@ -905,7 +906,6 @@ void curvature_cuda_forward(
         xLoss.data_ptr<float>(),
         0);
   float lossx = xLoss.sum().item<float>();
-  std::cout << "lossx: " << lossx << std::endl;
   loss_ += lossx;
 
   pairwise_loss<<<dimGrid, dimBlock>>>(
@@ -915,7 +915,6 @@ void curvature_cuda_forward(
         yLoss.data_ptr<float>(),
         0);
   float lossy = yLoss.sum().item<float>();
-  std::cout << "lossy: " << lossy << std::endl;
   loss_ += lossy;
 
   pairwise_loss<<<dimGrid, dimBlock>>>(
@@ -925,7 +924,6 @@ void curvature_cuda_forward(
             zLoss.data_ptr<float>(),
             0);
   float lossz = zLoss.sum().item<float>();
-  std::cout << "lossz: " << lossz << std::endl;
   loss_ += lossz;
 
   pairwise_loss<<<dimGrid, dimBlock>>>(
@@ -935,8 +933,9 @@ void curvature_cuda_forward(
             innerLoss.data_ptr<float>(),
             3);
   float lossiner = innerLoss.sum().item<float>();
-  std::cout << "lossiner: " << lossiner << std::endl;
   loss_ += lossz;
+
+  loss[0] = loss_;
   
 }
 

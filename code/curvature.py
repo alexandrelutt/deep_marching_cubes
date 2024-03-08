@@ -34,7 +34,6 @@ class CurvatureFct(Function):
     def backward(ctx, grad_output):
         offset, topology = ctx.saved_tensors
         grad_offset = torch.zeros(offset.size()).cuda()
-        print(grad_offset.sum())
         curvature_cuda.curvature_constraint_cuda_backward(
             grad_output,
 		    offset,
@@ -44,7 +43,6 @@ class CurvatureFct(Function):
 		    torch.FloatTensor(z).cuda(),
 		    torch.FloatTensor(inner).cuda(),
 		    grad_offset)
-        print(grad_offset.sum())
         grad_topology = torch.zeros(topology.size()).cuda()
         return grad_offset, grad_topology 
 

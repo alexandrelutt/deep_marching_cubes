@@ -2,3 +2,4 @@ numpy
 ninja
 gdown
 scipy
+matplotlib

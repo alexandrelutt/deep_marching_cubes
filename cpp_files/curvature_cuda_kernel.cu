@@ -745,7 +745,7 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
     }
   }
 
-  loss[ind1] = loss_;
+  *loss[ind1] = loss_;
 
   __syncthreads();
  

@@ -10,5 +10,4 @@ class Smoothness(torch.nn.Module):
         diff_z = occupancy[:, :, :-1] - occupancy[:, :, 1:]
         
         loss = torch.sum(torch.abs(diff_x)) + torch.sum(torch.abs(diff_y)) + torch.sum(torch.abs(diff_z))
-        print(loss, type(loss))
         return loss

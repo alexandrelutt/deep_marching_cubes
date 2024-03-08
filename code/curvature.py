@@ -9,16 +9,13 @@ x, y, z, inner, topology_to_triangles = get_connected_pairs()
 class CurvatureFct(Function):
     @staticmethod
     def forward(ctx, offset, topology):
-        loss = torch.zeros(1).type(torch.FloatTensor).cuda()
-        curvature_cuda.curvature_constraint_cuda_forward(
+        loss = curvature_cuda.curvature_constraint_cuda_forward(
 			    offset,
 			    topology[:, torch.LongTensor(topology_to_triangles).cuda()],
-			    # topology[:, -1],
 			    torch.FloatTensor(x).cuda(),
 			    torch.FloatTensor(y).cuda(),
 			    torch.FloatTensor(z).cuda(),
-			    torch.FloatTensor(inner).cuda(),
-			    loss)
+			    torch.FloatTensor(inner).cuda())
         ctx.save_for_backward(offset, topology)
         print(loss)
         return loss
@@ -31,7 +28,6 @@ class CurvatureFct(Function):
             grad_output,
 		    offset,
 		    topology[:, torch.LongTensor(topology_to_triangles).cuda()],
-		    # topology[:, -1],			    
             torch.FloatTensor(x).cuda(),
 			torch.FloatTensor(y).cuda(),
 		    torch.FloatTensor(z).cuda(),

@@ -31,7 +31,7 @@ class CurvatureFct(Function):
         print(loss_Z, type(loss_Z))
         print(loss_inner, type(loss_inner))
         loss = loss_X + loss_Y + loss_Z + loss_inner
-        return loss
+        return torch.sum(loss)
 
     @staticmethod
     def backward(ctx, grad_output):

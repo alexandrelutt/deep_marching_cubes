@@ -894,47 +894,52 @@ torch::Tensor curvature_cuda_forward(
 
   float loss_ = 0.0;
 
-  auto xLoss = torch::ones(W*H*D);
+  torch::Tensor xLoss = torch::empty(W*H*D);
+  float* xLoss_data = xLoss.data_ptr<float>();
   pairwise_loss<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
         topology.data_ptr<float>(),
         xTable.data_ptr<float>(),
-        xLoss.data_ptr<float>(),
+        xLoss_data.data_ptr<float>(),
         0);
-  float lossx = xLoss.sum().item<float>();
+  float lossx = xLoss_data.sum().item<float>();
   std::cout << "lossx: " << lossx << std::endl;
   loss_ += lossx;
 
-  auto yLoss = torch::zeros(W*H*D);
+  torch::Tensor yLoss = torch::empty(W*H*D);
+  float* yLoss_data = yLoss.data_ptr<float>();
   pairwise_loss<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
         topology.data_ptr<float>(),
         yTable.data_ptr<float>(),
-        yLoss.data_ptr<float>(),
+        yLoss_data,
         0);
-  float lossy = yLoss.sum().item<float>();
+
+  float lossy = yLoss_data.sum().item<float>();
   std::cout << "lossy: " << lossy << std::endl;
   loss_ += lossy;
 
-  auto zLoss = torch::zeros(W*H*D);
+  torch::Tensor zLoss = torch::empty(W*H*D);
+  float* zLoss_data = zLoss.data_ptr<float>();
   pairwise_loss<<<dimGrid, dimBlock>>>(
             offset.data_ptr<float>(),
             topology.data_ptr<float>(),
             zTable.data_ptr<float>(),
-            zLoss.data_ptr<float>(),
+            zLoss_data,
             0);
-  float lossz = zLoss.sum().item<float>();
+  float lossz = zLoss_data.sum().item<float>();
   std::cout << "lossz: " << lossz << std::endl;
   loss_ += lossz;
 
-  auto innerLoss = torch::zeros(W*H*D);
+  torch::Tensor inerLoss = torch::empty(W*H*D);
+  float* inerLoss_data = inerLoss.data_ptr<float>();
   pairwise_loss<<<dimGrid, dimBlock>>>(
             offset.data_ptr<float>(),
             topology.data_ptr<float>(),
             innerTable.data_ptr<float>(),
-            innerLoss.data_ptr<float>(),
+            inerLoss,
             3);
-  float lossiner = innerLoss.sum().item<float>();
+  float lossiner = inerLoss_data.sum().item<float>();
   std::cout << "lossiner: " << lossiner << std::endl;
   loss_ += lossz;
 

@@ -902,7 +902,9 @@ std::vector curvature_cuda_forward(
         xTable.data_ptr<float>(),
         xLoss.data_ptr<float>(),
         0);
-  loss_ += xLoss.sum().item<float>();
+  float lossx = xLoss.sum().item<float>();
+  std::cout << "lossx: " << lossx << std::endl;
+  loss_ += lossx;
 
   auto yLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
@@ -911,7 +913,9 @@ std::vector curvature_cuda_forward(
         yTable.data_ptr<float>(),
         yLoss.data_ptr<float>(),
         0);
-  loss_ += yLoss.sum().item<float>();
+  float lossy = yLoss.sum().item<float>();
+  std::cout << "lossy: " << lossy << std::endl;
+  loss_ += lossy;
 
   auto zLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
@@ -920,7 +924,9 @@ std::vector curvature_cuda_forward(
             zTable.data_ptr<float>(),
             zLoss.data_ptr<float>(),
             0);
-  loss_ += zLoss.sum().item<float>();
+  float lossz = zLoss.sum().item<float>();
+  std::cout << "lossz: " << lossz << std::endl;
+  loss_ += lossz;
 
   auto innerLoss = torch::zeros(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
@@ -929,7 +935,9 @@ std::vector curvature_cuda_forward(
             innerTable.data_ptr<float>(),
             innerLoss.data_ptr<float>(),
             3);
-  loss_ += innerLoss.sum().item<float>();
+  lossiner = innerLoss.sum().item<float>();
+  std::cout << "lossiner: " << lossiner << std::endl;
+  loss_ += lossz;
 
   loss = std::vector<float>(1, loss_);
   return loss;

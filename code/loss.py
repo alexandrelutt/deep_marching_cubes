@@ -98,7 +98,7 @@ class MyLoss(object):
     
     def curvature_loss(self, offset, topology):
         topology_accepted = topology[:, self.acceptTopologyWithFlip]
-        loss = self.curvatureLoss(offset, F.softmax(topology_accepted, dim=1))
+        loss = self.curvature(offset, F.softmax(topology_accepted, dim=1))
         ## normalize by the dimension of the cube
         loss = loss/self.N**3
         return loss

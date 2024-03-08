@@ -39,16 +39,16 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
                 break
             
         epoch_train_loss /= len(train_loader)
-        epoch_loss_point_to_mesh /= len(train_loader)
-        epoch_loss_occupancy /= len(train_loader)
-        epoch_loss_smoothness /= len(train_loader)
-        epoch_loss_curvature /= len(train_loader)
+        epoch_train_loss_point_to_mesh /= len(train_loader)
+        epoch_train_loss_occupancy /= len(train_loader)
+        epoch_train_loss_smoothness /= len(train_loader)
+        epoch_train_loss_curvature /= len(train_loader)
 
         train_losses.append(epoch_train_loss)
-        train_loss_point_to_mesh.append(epoch_loss_point_to_mesh)
-        train_loss_occupancy.append(epoch_loss_occupancy)
-        train_loss_smoothness.append(epoch_loss_smoothness)
-        train_loss_curvature.append(epoch_loss_curvature)
+        train_loss_point_to_mesh.append(epoch_train_loss_point_to_mesh)
+        train_loss_occupancy.append(epoch_train_loss_occupancy)
+        train_loss_smoothness.append(epoch_train_loss_smoothness)
+        train_loss_curvature.append(epoch_train_loss_curvature)
 
         with torch.no_grad():
             epoch_test_loss = 0

@@ -28,7 +28,7 @@ class CurvatureFct(Function):
                 loss_inner,
                 loss)
         ctx.save_for_backward(offset, topology)
-        return loss
+        return loss[0]
 
     @staticmethod
     def backward(ctx, grad_output):

@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import time
 
-def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device, writer):
+def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
     model.to(device)
     train_losses, test_losses = [], []
     best_test_loss = np.inf
@@ -16,7 +16,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             perturbed_batch = perturbed_batch.to(device)
 
             offset, topology, occupancy = model(perturbed_batch)
-            loss = loss_module.loss(offset, topology, clean_batch, occupancy)
+            loss, loss_point_to_mesh, loss_occupancy, loss_smoothness, loss_curvature = loss_module.loss(offset, topology, clean_batch, occupancy)
             epoch_train_loss += loss.item()
 
             model.zero_grad()
@@ -28,8 +28,8 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             if i > 2:
                 break
             
-        train_losses.append(epoch_train_loss/len(train_loader))
-        writer.add_scalar('Loss/train', epoch_train_loss/len(train_loader), t)
+        epoch_train_loss /= len(train_loader)
+        train_losses.append(epoch_train_loss)
 
         with torch.no_grad():
             epoch_test_loss = 0
@@ -38,14 +38,14 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
                 perturbed_batch = perturbed_batch.to(device)
 
                 offset, topology, occupancy = model(perturbed_batch)
-                loss = loss_module.loss(offset, topology, clean_batch, occupancy)
+                loss, loss_point_to_mesh, loss_occupancy, loss_smoothness, loss_curvature = loss_module.loss(offset, topology, clean_batch, occupancy)
                 epoch_test_loss += loss.item()
 
                 if i > 1:
                     break
 
-            test_losses.append(epoch_test_loss/len(test_loader))
-            writer.add_scalar('Loss/test', epoch_test_loss/len(test_loader), t)
+            epoch_test_loss /= len(test_loader)
+            test_losses.append(epoch_test_loss)
             
         print(f'Training loss: {epoch_train_loss}.')
         print(f'Test loss:     {epoch_test_loss}.')

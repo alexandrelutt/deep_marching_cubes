@@ -745,7 +745,7 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
     }
   }
 
-  *loss[ind1] = loss_;
+  loss[ind1] = loss_;
 
   __syncthreads();
  
@@ -894,7 +894,7 @@ torch::Tensor curvature_cuda_forward(
 
   float loss_ = 0.0;
 
-  auto xLoss = torch::zeros(W*H*D);
+  auto xLoss = torch::ones(W*H*D);
   pairwise_loss<<<dimGrid, dimBlock>>>(
         offset.data_ptr<float>(),
         topology.data_ptr<float>(),

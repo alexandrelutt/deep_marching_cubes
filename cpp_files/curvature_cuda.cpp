@@ -9,7 +9,7 @@ void curvature_cuda_forward(
     torch::Tensor yTable,
     torch::Tensor zTable,
     torch::Tensor innerTable,
-    torch::Tensor loss);
+    torch::Tensor& loss);
 
 void curvature_cuda_backward(
     torch::Tensor grad_output,
@@ -28,7 +28,7 @@ void curvature_forward(
     torch::Tensor yTable,
     torch::Tensor zTable,
     torch::Tensor innerTable,
-    torch::Tensor loss){
+    torch::Tensor& loss){
     curvature_cuda_forward(offset, topology, xTable, yTable, zTable, innerTable, loss);
     }
 

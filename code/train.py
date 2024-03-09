@@ -110,7 +110,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
 
         print('Now plotting losses...')
         for key, value in train_losses_dict.items():
-            plot_losses(t, value, test_losses_dict[key], loss_type=key)
+            plot_losses(value, test_losses_dict[key], loss_type=key)
         print('Done!')
 
         dt = time.time() - t0

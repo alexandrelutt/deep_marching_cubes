@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from tqdm import tqdm
 
 from code.table import get_accepted_topologies
 
@@ -55,7 +56,7 @@ def save_occupancy_fig(pts, occupancy, grid, i):
 def visualize(model, test_loader, device):
     model.to(device)
     with torch.no_grad():
-        for i, (clean_batch, perturbed_batch) in enumerate(test_loader):
+        for i, (clean_batch, perturbed_batch) in tqdm(enumerate(test_loader)):
             clean_batch = clean_batch.to(device)
             perturbed_batch = perturbed_batch.to(device)
 

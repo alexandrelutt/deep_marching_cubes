@@ -140,5 +140,4 @@ def visualize(model, test_loader, device):
                     np.arange(0, 32+1),
                     i)
 
-            if i > 3:
-                break
+            break

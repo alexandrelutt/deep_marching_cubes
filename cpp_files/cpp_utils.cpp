@@ -321,9 +321,7 @@ torch::Tensor offset_to_vertices(torch::Tensor offset, int x, int y, int z){
 std::tuple<torch::Tensor, torch::Tensor, int, int> pred_to_mesh(torch::Tensor offset,
                  torch::Tensor topology,
                  torch::Tensor vertices_all,
-                 torch::Tensor faces_all,
-                 torch::Tensor vertice_number,
-                 torch::Tensor face_number){
+                 torch::Tensor faces_all){
     
     int N = offset.size(1)-1;
     int vertice_cnt = 0;
@@ -352,7 +350,6 @@ std::tuple<torch::Tensor, torch::Tensor, int, int> pred_to_mesh(torch::Tensor of
             }
         }
     }
-    
     return std::make_tuple(vertices_all, faces_all, vertice_cnt, face_cnt);
 }
 

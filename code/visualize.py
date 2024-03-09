@@ -71,13 +71,15 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     faces = faces[0:num_faces, :].numpy()
 
     # vertices = np.asarray(vertices)
-    # vertices_unique, indices = unique_rows(vertices)
+    vertices_unique, indices = unique_rows(vertices)
     # faces = np.asarray(faces).flatten()
     # faces_unique = faces[indices].reshape((-1, 3))
 
     # save_mesh_helper(vertices_unique, faces_unique, i)
 
     print(vertices, vertices.shape)
+    print(vertices_unique, vertices_unique.shape)
+    print(indices, indices.shape)
 
     print(faces, faces.shape)
 

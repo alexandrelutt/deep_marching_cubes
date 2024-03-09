@@ -338,7 +338,7 @@ std::tuple<torch::Tensor, torch::Tensor, int, int> pred_to_mesh(torch::Tensor of
                         int topology_ind = visTopology[0][t];
                         
                         for (int _i=0; _i<3; _i++){
-                            vertices_all[vertice_cnt][_i] = vertices[_i][triTable[topology_ind][tri_ind][vertex_ind]] + offset_c[_i];
+                            vertices_all[vertice_cnt][_i] = vertices[_i][triTable[topology_ind][tri_ind*3+vertex_ind]] + offset_c[_i];
                             faces_all[face_cnt][vertex_ind] = vertice_cnt;
                             vertice_cnt++;
                         }

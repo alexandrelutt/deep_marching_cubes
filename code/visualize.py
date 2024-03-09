@@ -67,8 +67,8 @@ def save_mesh_fig(pts, offset, topology, grid, i, save_mesh=True):
 
     vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.data.cpu(), topology_max.data.cpu(), vertices, faces)
 
-    vertices = vertices[0:num_vertices[0], :].numpy()
-    faces = faces[0:num_faces[0], :].numpy()
+    vertices = vertices[0:num_vertices, :].numpy()
+    faces = faces[0:num_faces, :].numpy()
 
     vertices = np.asarray(vertices)
     vertices_unique, indices = unique_rows(vertices)

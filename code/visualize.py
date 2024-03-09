@@ -73,30 +73,14 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     vertices_unique, indices = unique_rows(vertices)
     faces = np.asarray(faces).flatten()
     faces_unique = faces[indices].reshape((-1, 3))
-    # faces = np.asarray(faces)
-    # indices_to_keep = []
-    # indices = np.unique(indices)
-    # for k, face in enumerate(faces):
-    #     if (int(face[0]) in indices) and (int(face[1]) in indices) and (int(face[2]) in indices):
-    #         indices_to_keep.append(k)
-    # indices_to_keep = np.array(indices_to_keep)
-    # faces_unique = faces[indices_to_keep, :]
 
     vertices_unique = vertices_unique[:, [2, 0, 1]]
 
     save_mesh_helper(vertices_unique, faces_unique, i)
 
-    xv_cls, yv_cls, zv_cls = np.meshgrid(grid[:-1], grid[:-1], grid[:-1], indexing='ij')
-    xv_cls = xv_cls.flatten()
-    yv_cls = yv_cls.flatten()
-    zv_cls = zv_cls.flatten()
-
     fig = plt.figure(0)
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
-
-    print(np.max(vertices_unique, axis=0), np.min(vertices_unique, axis=0))
-    print(np.max(pts, axis=0), np.min(pts, axis=0))
 
     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
 
@@ -133,19 +117,19 @@ def visualize(model, test_loader, device):
             topology_fused = np.maximum(topology_fused[:, 0:128],
                                         topology_fused[:, 256:127:-1])
             topology_fused = topology_fused[:, get_accepted_topologies()]
-            # save_occupancy_fig(
-            #         clean_batch[-1].data.cpu().numpy(),
-            #         occupancy[-1].data.cpu().numpy(),
-            #         np.arange(0, 32+1),
-            #         i)
-
-            topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies())]
-
-            save_mesh_fig(
+            save_occupancy_fig(
                     clean_batch[-1].data.cpu().numpy(),
-                    offset[-1],
-                    topology_vis[-1],
+                    occupancy[-1].data.cpu().numpy(),
                     np.arange(0, 32+1),
                     i)
+
+            # topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies())]
+
+            # save_mesh_fig(
+            #         clean_batch[-1].data.cpu().numpy(),
+            #         offset[-1],
+            #         topology_vis[-1],
+            #         np.arange(0, 32+1),
+            #         i)
 
             break

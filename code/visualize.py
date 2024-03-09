@@ -65,12 +65,7 @@ def save_mesh_fig(pts, offset, topology, grid, i, save_mesh=True):
     vertices = torch.zeros(num_cells**3 * 12, 3).float()
     faces = torch.zeros(num_cells**3 * 12, 3).float()
 
-    print(offset.data.cpu().shape)
-    print(topology_max.data.cpu().shape)
-    print(vertices)
-    print(faces)
-
-    vertices, faces, num_vertices, num_vertices = cpp_utils.pred_to_mesh(offset.data.cpu(), topology_max.data.cpu(), vertices, faces)
+    vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.data.cpu(), topology_max.data.cpu(), vertices, faces)
 
     vertices = vertices[0:num_vertices[0], :].numpy()
     faces = faces[0:num_faces[0], :].numpy()

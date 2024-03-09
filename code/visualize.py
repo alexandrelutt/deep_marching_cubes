@@ -41,7 +41,19 @@ def save_occupancy_fig(pts, occupancy, grid, i):
 
     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.',
             color='#727272', zorder=1)
-    
+
+    ax.set_xlim(grid.min(), grid.max())
+    ax.set_ylim(grid.min(), grid.max())
+    ax.set_zlim(grid.min(), grid.max())
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+
+    plt.savefig(f'outputs/figures/test_example_true_occupancy_{i}.png')
+
+    fig = plt.figure()
+    fig.clear()
+    ax = fig.add_subplot(111, projection='3d')
     rgba_x = np.zeros((len(xv_cls), 4))
     rgba_x[:, 0] = 1.0
     rgba_x[:, 3] = occupancy.flatten()
@@ -55,7 +67,7 @@ def save_occupancy_fig(pts, occupancy, grid, i):
     ax.set_ylabel('Y Label')
     ax.set_zlabel('Z Label')
 
-    plt.savefig(f'outputs/figures/test_example_occupancy_{i}.png')
+    plt.savefig(f'outputs/figures/test_example_pred_occupancy_{i}.png')
 
 def save_mesh_fig(pts, offset, topology, grid, i):
     num_cells = len(grid)-1

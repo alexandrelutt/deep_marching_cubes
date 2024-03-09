@@ -95,16 +95,20 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
 
+    print(pts)
+    print(vertices_unique)
+
     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
 
     color = [0.8, 0.5, 0.5]
     ax.plot_trisurf(vertices_unique[:, 0],
-                        vertices_unique[:, 1],
-                        vertices_unique[:, 2],
-                        triangles=faces_unique,
-                        color=color,
-                        edgecolor='none',
-                        alpha=1.0)
+                    vertices_unique[:, 1],
+                    vertices_unique[:, 2],
+                    triangles=faces_unique,
+                    color=color,
+                    edgecolor='none',
+                    alpha=1.0
+                    )
 
     ax.set_xlim(grid.min(), grid.max())
     ax.set_ylim(grid.min(), grid.max())

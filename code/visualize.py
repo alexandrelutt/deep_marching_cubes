@@ -95,8 +95,8 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
 
-    print(pts)
-    print(vertices_unique)
+    print(np.max(vertices_unique, axis=0), np.min(vertices_unique, axis=0))
+    print(np.max(pts, axis=0), np.min(pts, axis=0))
 
     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
 

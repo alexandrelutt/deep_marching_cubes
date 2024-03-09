@@ -299,9 +299,9 @@ torch::Tensor offset_to_vertices(torch::Tensor offset, int x, int y, int z){
     vertices[7][1] = 0.5 - offset[1][x][y+1][z+1];
     vertices[7][2] = 1;
 
-    vertices[8][0] = 0.5 - offset[0][x+1][y+1][z+1];
+    vertices[8][0] = 0;
     vertices[8][1] = 1;
-    vertices[8][2] = 0.5 - offset[2][x+1][y+1][z+1];
+    vertices[8][2] = 0.5 - offset[2][x][y+1][z+1];
 
     vertices[9][0] = 1;
     vertices[9][1] = 1;
@@ -313,7 +313,7 @@ torch::Tensor offset_to_vertices(torch::Tensor offset, int x, int y, int z){
 
     vertices[11][0] = 0;
     vertices[11][1] = 0;
-    vertices[11][2] = 0.5 - offset[2][x+1][y][z+1];
+    vertices[11][2] = 0.5 - offset[2][x][y][z+1];
 
     return vertices;
 }

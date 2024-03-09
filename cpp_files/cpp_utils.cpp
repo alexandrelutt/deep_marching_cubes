@@ -333,6 +333,7 @@ std::tuple<torch::Tensor, torch::Tensor, int, int> pred_to_mesh(torch::Tensor of
         for (int j=0; j<N; j++){
             for (int k=0; k<N; k++){
                 int t = topology[i*N*N+j*N+k].item<int>();
+                std::cout << t << std::endl;
                 float offset_c[3]={(float)i, (float)j, (float)k};
             
                 torch::Tensor vertices = offset_to_vertices(offset, i, j, k);

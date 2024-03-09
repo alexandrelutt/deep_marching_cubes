@@ -75,6 +75,7 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     indices_to_keep = []
     indices = np.unique(indices)
     for k, face in enumerate(faces):
+        print(face)
         if (int(face[0]) in indices) and (int(face[1]) in indices) and (int(face[2]) in indices):
             indices_to_keep.append(k)
     indices_to_keep = np.array(indices_to_keep)

@@ -67,8 +67,15 @@ def save_mesh_fig(pts, offset, topology, grid, i, save_mesh=True):
     num_vertices = torch.LongTensor(1)
     num_faces = torch.LongTensor(1)
 
-    print(cpp_utils.pred_to_mesh(offset.data.cpu(), topology_max.data.cpu(),
-            vertices, faces, num_vertices, num_faces))
+    print(offset.data.cpu().shape)
+    print(topology_max.data.cpu().shape)
+    print(vertices.shape)
+    print(faces.shape)
+    print(num_vertices.shape)
+    print(num_faces.shape)
+
+    vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.data.cpu(), topology_max.data.cpu(),
+            vertices, faces, num_vertices, num_faces)
 
     vertices = vertices[0:num_vertices[0], :].numpy()
     faces = faces[0:num_faces[0], :].numpy()

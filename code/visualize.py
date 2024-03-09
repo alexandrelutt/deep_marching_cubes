@@ -69,15 +69,20 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     vertices = vertices[:num_vertices, :].numpy()
     faces = faces[:num_faces, :].numpy()
 
+    vertices = np.asarray(vertices)
     vertices_unique, indices = unique_rows(vertices)
-    faces = np.asarray(faces)
-    indices_to_keep = []
-    indices = np.unique(indices)
-    for k, face in enumerate(faces):
-        if (int(face[0]) in indices) and (int(face[1]) in indices) and (int(face[2]) in indices):
-            indices_to_keep.append(k)
-    indices_to_keep = np.array(indices_to_keep)
-    faces_unique = faces[indices_to_keep, :]
+    faces = np.asarray(faces).flatten()
+    faces_unique = faces[indices].reshape((-1, 3))
+    # faces = np.asarray(faces)
+    # indices_to_keep = []
+    # indices = np.unique(indices)
+    # for k, face in enumerate(faces):
+    #     if (int(face[0]) in indices) and (int(face[1]) in indices) and (int(face[2]) in indices):
+    #         indices_to_keep.append(k)
+    # indices_to_keep = np.array(indices_to_keep)
+    # faces_unique = faces[indices_to_keep, :]
+
+    vertices_unique = vertices_unique[:, [2, 0, 1]]
 
     save_mesh_helper(vertices_unique, faces_unique, i)
 

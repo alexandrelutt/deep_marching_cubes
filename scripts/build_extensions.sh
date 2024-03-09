@@ -15,3 +15,9 @@ cd dist
 unzip curvature_extension-0.0.0-py3.10-linux-x86_64.egg
 cd ..
 mv dist curvature_extension
+
+python scripts/build_extension_utils.py install
+cd dist
+unzip utils_extension-0.0.0-py3.10-linux-x86_64.egg
+cd ..
+mv dist utils_extension

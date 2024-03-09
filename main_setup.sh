@@ -13,9 +13,11 @@ sh scripts/fix_cudnn.sh
 rm -r occtopology_extension.egg-info
 rm -r distance_extension.egg-info
 rm -r curvature_extension.egg-info
+rm -r utils_extension.egg-info
 
 rm -r build
 
 mkdir outputs
 mkdir outputs/models
 mkdir outputs/figures
+mkdir outputs/meshes

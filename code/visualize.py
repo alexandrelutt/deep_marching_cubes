@@ -72,48 +72,50 @@ def save_mesh_fig(pts, offset, topology, grid, i):
 
     # vertices = np.asarray(vertices)
     vertices_unique, indices = unique_rows(vertices)
-    # faces = np.asarray(faces).flatten()
-    # faces_unique = faces[indices].reshape((-1, 3))
+    faces = np.asarray(faces)#.flatten()
+    indices_to_keep = []
+    for face in faces:
+        if np.all(face in indices):
+            indices_to_keep.append(face)
+    indices_to_keep = np.array(indices_to_keep)
+    faces_unique = faces[indices_to_keep]#.reshape((-1, 3))
 
     # save_mesh_helper(vertices_unique, faces_unique, i)
 
-    print(vertices, vertices.shape)
     print(vertices_unique, vertices_unique.shape)
-    print(indices, indices.shape)
-    print(len(np.unique(indices)))
 
-    print(faces, faces.shape)
+    print(faces_unique, faces_unique.shape)
 
-    # xv_cls, yv_cls, zv_cls = np.meshgrid(grid[:-1], grid[:-1], grid[:-1], indexing='ij')
-    # xv_cls = xv_cls.flatten()
-    # yv_cls = yv_cls.flatten()
-    # zv_cls = zv_cls.flatten()
+    xv_cls, yv_cls, zv_cls = np.meshgrid(grid[:-1], grid[:-1], grid[:-1], indexing='ij')
+    xv_cls = xv_cls.flatten()
+    yv_cls = yv_cls.flatten()
+    zv_cls = zv_cls.flatten()
 
-    # fig = plt.figure(0)
-    # fig.clear()
-    # ax = fig.add_subplot(111, projection='3d')
+    fig = plt.figure(0)
+    fig.clear()
+    ax = fig.add_subplot(111, projection='3d')
 
-    # # plot the scattered points
-    # ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
+    # plot the scattered points
+    ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
 
-    # # plot the mesh
-    # color = [0.8, 0.5, 0.5]
-    # ax.plot_trisurf(vertices_unique[:, 0],
-    #                     vertices_unique[:, 1],
-    #                     vertices_unique[:, 2],
-    #                     triangles=faces_unique,
-    #                     color=color,
-    #                     edgecolor='none',
-    #                     alpha=1.0)
+    # plot the mesh
+    color = [0.8, 0.5, 0.5]
+    ax.plot_trisurf(vertices_unique[:, 0],
+                        vertices_unique[:, 1],
+                        vertices_unique[:, 2],
+                        triangles=faces_unique,
+                        color=color,
+                        edgecolor='none',
+                        alpha=1.0)
 
-    # ax.set_xlim(grid.min(), grid.max())
-    # ax.set_ylim(grid.min(), grid.max())
-    # ax.set_zlim(grid.min(), grid.max())
-    # ax.set_xlabel('X Label')
-    # ax.set_ylabel('Y Label')
-    # ax.set_zlabel('Z Label')
+    ax.set_xlim(grid.min(), grid.max())
+    ax.set_ylim(grid.min(), grid.max())
+    ax.set_zlim(grid.min(), grid.max())
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
 
-    # plt.savefig(f'outputs/figures/test_example_mesh_{i}.png')
+    plt.savefig(f'outputs/figures/test_example_mesh_{i}.png')
 
 
 def visualize(model, test_loader, device):

@@ -75,39 +75,42 @@ def save_mesh_fig(pts, offset, topology, grid, i, save_mesh=True):
     faces = np.asarray(faces).flatten()
     faces_unique = faces[indices].reshape((-1, 3))
 
-    if save_mesh:
-        save_mesh_helper(vertices_unique, faces_unique, i)
+    save_mesh_helper(vertices_unique, faces_unique, i)
 
-    xv_cls, yv_cls, zv_cls = np.meshgrid(grid[:-1], grid[:-1], grid[:-1], indexing='ij')
-    xv_cls = xv_cls.flatten()
-    yv_cls = yv_cls.flatten()
-    zv_cls = zv_cls.flatten()
+    print(vertices_unique)
 
-    fig = plt.figure(0)
-    fig.clear()
-    ax = fig.add_subplot(111, projection='3d')
+    print(faces_unique)
 
-    # plot the scattered points
-    ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
+    # xv_cls, yv_cls, zv_cls = np.meshgrid(grid[:-1], grid[:-1], grid[:-1], indexing='ij')
+    # xv_cls = xv_cls.flatten()
+    # yv_cls = yv_cls.flatten()
+    # zv_cls = zv_cls.flatten()
 
-    # plot the mesh
-    color = [0.8, 0.5, 0.5]
-    ax.plot_trisurf(vertices_unique[:, 0],
-                        vertices_unique[:, 1],
-                        vertices_unique[:, 2],
-                        triangles=faces_unique,
-                        color=color,
-                        edgecolor='none',
-                        alpha=1.0)
+    # fig = plt.figure(0)
+    # fig.clear()
+    # ax = fig.add_subplot(111, projection='3d')
 
-    ax.set_xlim(grid.min(), grid.max())
-    ax.set_ylim(grid.min(), grid.max())
-    ax.set_zlim(grid.min(), grid.max())
-    ax.set_xlabel('X Label')
-    ax.set_ylabel('Y Label')
-    ax.set_zlabel('Z Label')
+    # # plot the scattered points
+    # ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
 
-    plt.savefig(f'outputs/figures/test_example_mesh_{i}.png')
+    # # plot the mesh
+    # color = [0.8, 0.5, 0.5]
+    # ax.plot_trisurf(vertices_unique[:, 0],
+    #                     vertices_unique[:, 1],
+    #                     vertices_unique[:, 2],
+    #                     triangles=faces_unique,
+    #                     color=color,
+    #                     edgecolor='none',
+    #                     alpha=1.0)
+
+    # ax.set_xlim(grid.min(), grid.max())
+    # ax.set_ylim(grid.min(), grid.max())
+    # ax.set_zlim(grid.min(), grid.max())
+    # ax.set_xlabel('X Label')
+    # ax.set_ylabel('Y Label')
+    # ax.set_zlabel('Z Label')
+
+    # plt.savefig(f'outputs/figures/test_example_mesh_{i}.png')
 
 
 def visualize(model, test_loader, device):

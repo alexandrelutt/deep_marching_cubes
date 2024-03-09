@@ -324,8 +324,8 @@ std::tuple<torch::Tensor, torch::Tensor, int, int> pred_to_mesh(torch::Tensor of
                  torch::Tensor faces_all,
                  torch::Tensor vertice_number,
                  torch::Tensor face_number){
-
-    int N = offset.size(1) - 1;
+    
+    int N = offset.size(1)-1;
     int vertice_cnt = 0;
     int face_cnt = 0;
 
@@ -334,21 +334,21 @@ std::tuple<torch::Tensor, torch::Tensor, int, int> pred_to_mesh(torch::Tensor of
             for (int k=0; k<N; k++){
                 int t = topology[i*N*N+j*N+k].item<int>();
                 std::cout << t << std::endl;
-                float offset_c[3]={(float)i, (float)j, (float)k};
+                // float offset_c[3]={(float)i, (float)j, (float)k};
             
-                torch::Tensor vertices = offset_to_vertices(offset, i, j, k);
-                for (int tri_ind = 0; tri_ind<visTopology[1][t]; tri_ind++){
-                    for (int vertex_ind = 0; vertex_ind<3; vertex_ind++){
-                        int topology_ind = visTopology[0][t];
+                // torch::Tensor vertices = offset_to_vertices(offset, i, j, k);
+                // for (int tri_ind = 0; tri_ind<visTopology[1][t]; tri_ind++){
+                //     for (int vertex_ind = 0; vertex_ind<3; vertex_ind++){
+                //         int topology_ind = visTopology[0][t];
                         
-                        for (int _i=0; _i<3; _i++){
-                            vertices_all[(12*(32*32*32))*vertice_cnt + _i] = vertices[_i*3 + triTable[topology_ind][tri_ind*3+vertex_ind]] + offset_c[_i];
-                            faces_all[(12*(32*32*32))*face_cnt + vertex_ind] = vertice_cnt;
-                            vertice_cnt++;
-                        }
-                        face_cnt++;
-                    }        
-                }
+                //         for (int _i=0; _i<3; _i++){
+                //             vertices_all[(12*(32*32*32))*vertice_cnt + _i] = vertices[_i*3 + triTable[topology_ind][tri_ind*3+vertex_ind]] + offset_c[_i];
+                //             faces_all[(12*(32*32*32))*face_cnt + vertex_ind] = vertice_cnt;
+                //             vertice_cnt++;
+                //         }
+                //         face_cnt++;
+                //     }        
+                // }
             }
         }
     }

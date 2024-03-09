@@ -8,55 +8,55 @@ static int visTopology[2][140]={{0, 1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 15, 
 // OFFSET HAS SHAPE 3x(N+1)x(N+1)x(N+1)
 
 torch::Tensor* offset_to_vertices(torch::Tensor *offset, int x, int y, int z){
-    torch::Tensor *vertices = torch::empty({3, 12}); 
-    int N = 32
+    torch::Tensor vertices = torch::empty({3, 12}); 
+    int N = 32;
 
     vertices[3*0 + 0] = 0.5 - offset[0*((N+1)**3) + (x+1)*((N+1)**2) + (y+1)*(N+1) + z];
-    vertices[3*0 + 1] = 1.0;
-    vertices[3*0 + 2] = 0.0;
+    vertices[3*0 + 1] = 1;
+    vertices[3*0 + 2] = 0;
 
-    vertices[3*1 + 0] = 1.0;
+    vertices[3*1 + 0] = 1;
     vertices[3*1 + 1] = 0.5 - offset[1*((N+1)**3) + (x+1)*((N+1)**2) + (y+1)*(N+1) + z];
-    vertices[3*1 + 2] = 0.0;
+    vertices[3*1 + 2] = 0;
 
     vertices[3*2 + 0] = 0.5 - offset[0*((N+1)**3) + (x+1)*((N+1)**2) + y*(N+1) + z];
-    vertices[3*2 + 1] = 0.0;
-    vertices[3*2 + 2] = 0.0;
+    vertices[3*2 + 1] = 0;
+    vertices[3*2 + 2] = 0;
 
-    vertices[3*3 + 0] = 0.0;
+    vertices[3*3 + 0] = 0;
     vertices[3*3 + 1] = 0.5 - offset[1*((N+1)**3) + x*((N+1)**2) + (y+1)*(N+1) + z];
-    vertices[3*3 + 2] = 0.0;
+    vertices[3*3 + 2] = 0;
 
     vertices[3*4 + 0] = 0.5 - offset[0*((N+1)**3) + (x+1)*((N+1)**2) + (y+1)*(N+1) + (z+1)];
-    vertices[3*4 + 1] = 1.0;
-    vertices[3*4 + 2] = 1.0;
+    vertices[3*4 + 1] = 1;
+    vertices[3*4 + 2] = 1;
 
-    vertices[3*5 + 0] = 1.0;
+    vertices[3*5 + 0] = 1;
     vertices[3*5 + 1] = 0.5 - offset[1*((N+1)**3) + (x+1)*((N+1)**2) + (y+1)*(N+1) + (z+1)];
-    vertices[3*5 + 2] = 1.0;
+    vertices[3*5 + 2] = 1;
 
     vertices[3*6 + 0] = 0.5 - offset[0*((N+1)**3) + (x+1)*((N+1)**2) + y*(N+1) + (z+1)];
-    vertices[3*6 + 1] = 0.0;
-    vertices[3*6 + 2] = 1.0;
+    vertices[3*6 + 1] = 0;
+    vertices[3*6 + 2] = 1;
 
-    vertices[3*7 + 0] = 0.0;
+    vertices[3*7 + 0] = 0;
     vertices[3*7 + 1] = 0.5 - offset[1*((N+1)**3) + x*((N+1)**2) + (y+1)*(N+1) + (z+1)];
-    vertices[3*7 + 2] = 1.0;
+    vertices[3*7 + 2] = 1;
 
     vertices[3*8 + 0] = 0.5 - offset[0*((N+1)**3) + (x+1)*((N+1)**2) + (y+1)*(N+1) + (z+1)];
-    vertices[3*8 + 1] = 1.0;
+    vertices[3*8 + 1] = 1;
     vertices[3*8 + 2] = 0.5 - offset[2*((N+1)**3) + (x+1)*((N+1)**2) + (y+1)*(N+1) + (z+1)];
 
-    vertices[3*9 + 0] = 1.0;
-    vertices[3*9 + 1] = 1.0;
+    vertices[3*9 + 0] = 1;
+    vertices[3*9 + 1] = 1;
     vertices[3*9 + 2] = 0.5 - offset[2*((N+1)**3) + (x+1)*((N+1)**2) + (y+1)*(N+1) + (z+1)];
 
-    vertices[3*10 + 0] = 1.0;
-    vertices[3*10 + 1] = 0.0;
+    vertices[3*10 + 0] = 1;
+    vertices[3*10 + 1] = 0;
     vertices[3*10 + 2] = 0.5 - offset[2*((N+1)**3) + (x+1)*((N+1)**2) + y*(N+1) + (z+1)];
 
-    vertices[3*11 + 0] = 0.0;
-    vertices[3*11 + 1] = 0.0;
+    vertices[3*11 + 0] = 0;
+    vertices[3*11 + 1] = 0;
     vertices[3*11 + 2] = 0.5 - offset[2*((N+1)**3) + (x+1)*((N+1)**2) + y*(N+1) + (z+1)];
 
     return vertices;

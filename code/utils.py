@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_losses(train_losses, test_losses, loss_type='all'):
+def plot_losses(t, train_losses, test_losses, loss_type='all'):
     n_epochs = len(train_losses)
     fig = plt.figure(figsize=(10, 5))
 
@@ -22,4 +22,4 @@ def plot_losses(train_losses, test_losses, loss_type='all'):
         plt.title('Train and test curvature loss')
 
     plt.legend()    
-    plt.savefig(f'outputs/figures/{loss_type}_training.png')
+    plt.savefig(f'outputs/figures/{loss_type}_training_after_{t+1}_epochs.png')

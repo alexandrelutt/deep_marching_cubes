@@ -3,7 +3,9 @@ import torch
 import time
 from tqdm import tqdm
 
-def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
+from code.utils import plot_losses
+
+def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device):
     model.to(device)
     train_losses, test_losses = [], []
     train_loss_point_to_mesh, train_loss_occupancy, train_loss_smoothness, train_loss_curvature = [], [], [], []
@@ -41,6 +43,8 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
         epoch_train_loss_occupancy /= len(train_loader)
         epoch_train_loss_smoothness /= len(train_loader)
         epoch_train_loss_curvature /= len(train_loader)
+
+        scheduler.step(epoch_train_loss)
 
         train_losses.append(epoch_train_loss)
         train_loss_point_to_mesh.append(epoch_train_loss_point_to_mesh)
@@ -87,24 +91,31 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             best_test_loss = epoch_test_loss
             best_model = model
             torch.save(model.state_dict(), 'outputs/models/best_model.pth')
-            print('  New best model has been saved.')
+            print('  New best model has been saved.\n')
+
+        train_losses_dict = {
+            'all': train_losses,
+            'loss_point_to_mesh': train_loss_point_to_mesh,
+            'loss_occupancy': train_loss_occupancy,
+            'loss_smoothness': train_loss_smoothness,
+            'loss_curvature': train_loss_curvature
+        }
+        test_losses_dict = {
+            'all': test_losses,
+            'loss_point_to_mesh': test_loss_point_to_mesh,
+            'loss_occupancy': test_loss_occupancy,
+            'loss_smoothness': test_loss_smoothness,
+            'loss_curvature': test_loss_curvature
+        }
+
+        print('Now plotting losses...')
+        for key, value in train_losses_dict.items():
+            plot_losses(t, value, test_losses_dict[key], loss_type=key)
+        print('Done!')
 
         dt = time.time() - t0
         print(f'\nEpoch duration: {dt:.2f}s.\n')
 
     print('Training complete!\n')
-    train_losses_dict = {
-        'all': train_losses,
-        'loss_point_to_mesh': train_loss_point_to_mesh,
-        'loss_occupancy': train_loss_occupancy,
-        'loss_smoothness': train_loss_smoothness,
-        'loss_curvature': train_loss_curvature
-    }
-    test_losses_dict = {
-        'all': test_losses,
-        'loss_point_to_mesh': test_loss_point_to_mesh,
-        'loss_occupancy': test_loss_occupancy,
-        'loss_smoothness': test_loss_smoothness,
-        'loss_curvature': test_loss_curvature
-    }
+
     return train_losses_dict, test_losses_dict, best_model

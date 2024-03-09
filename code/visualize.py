@@ -57,7 +57,7 @@ def save_occupancy_fig(pts, occupancy, grid, i):
 
     plt.savefig(f'outputs/figures/test_example_occupancy_{i}.png')
 
-def save_mesh_fig(pts, offset, topology, grid, i, save_mesh=True):
+def save_mesh_fig(pts, offset, topology, grid, i):
     num_cells = len(grid)-1
     _, topology_max = torch.max(topology, dim=1)
     topology_max = topology_max.view(num_cells, num_cells, num_cells)
@@ -70,16 +70,16 @@ def save_mesh_fig(pts, offset, topology, grid, i, save_mesh=True):
     vertices = vertices[0:num_vertices, :].numpy()
     faces = faces[0:num_faces, :].numpy()
 
-    vertices = np.asarray(vertices)
-    vertices_unique, indices = unique_rows(vertices)
-    faces = np.asarray(faces).flatten()
-    faces_unique = faces[indices].reshape((-1, 3))
+    # vertices = np.asarray(vertices)
+    # vertices_unique, indices = unique_rows(vertices)
+    # faces = np.asarray(faces).flatten()
+    # faces_unique = faces[indices].reshape((-1, 3))
 
-    save_mesh_helper(vertices_unique, faces_unique, i)
+    # save_mesh_helper(vertices_unique, faces_unique, i)
 
-    print(vertices_unique)
+    print(vertices.shape)
 
-    print(faces_unique)
+    print(faces.shape)
 
     # xv_cls, yv_cls, zv_cls = np.meshgrid(grid[:-1], grid[:-1], grid[:-1], indexing='ij')
     # xv_cls = xv_cls.flatten()

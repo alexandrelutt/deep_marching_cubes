@@ -352,10 +352,7 @@ std::tuple<torch::Tensor, torch::Tensor, int, int> pred_to_mesh(torch::Tensor of
             }
         }
     }
-
-    vertice_number[0] = vertice_cnt;
-    face_number[0] = face_cnt;
-
+    
     return std::make_tuple(vertices_all, faces_all, vertice_cnt, face_cnt);
 }
 

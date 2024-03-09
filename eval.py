@@ -1,11 +1,9 @@
 import torch
 import faulthandler
 
-from code.model import DeepMarchingCube, load_model
-from code.loss import MyLoss
+from code.model import DeepMarchingCube
 from code.loader import get_loader
 from code.visualize import visualize
-from code.utils import plot_losses
 
 if __name__ == '__main__':
     faulthandler.enable()

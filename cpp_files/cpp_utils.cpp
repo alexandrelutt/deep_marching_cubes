@@ -267,52 +267,52 @@ torch::Tensor offset_to_vertices(torch::Tensor offset, int x, int y, int z){
     torch::Tensor vertices = torch::empty({3, 12}); 
 
     vertices[0][0] = 0.5 - offset[0][x+1][y+1][z];
-    vertices[0][1] = 1;
-    vertices[0][2] = 0;
-
     vertices[1][0] = 1;
-    vertices[1][1] = 0.5 - offset[1][x+1][y+1][z];
-    vertices[1][2] = 0;
+    vertices[2][0] = 0;
 
-    vertices[2][0] = 0.5 - offset[0][x+1][y][z];
+    vertices[0][1] = 1;
+    vertices[1][1] = 0.5 - offset[1][x+1][y+1][z];
     vertices[2][1] = 0;
+
+    vertices[0][2] = 0.5 - offset[0][x+1][y][z];
+    vertices[1][2] = 0;
     vertices[2][2] = 0;
 
-    vertices[3][0] = 0;
-    vertices[3][1] = 0.5 - offset[1][x][y+1][z];
-    vertices[3][2] = 0;
+    vertices[0][3] = 0;
+    vertices[1][3] = 0.5 - offset[1][x][y+1][z];
+    vertices[2][3] = 0;
 
-    vertices[4][0] = 0.5 - offset[0][x+1][y+1][z+1];
-    vertices[4][1] = 1;
-    vertices[4][2] = 1;
+    vertices[0][4] = 0.5 - offset[0][x+1][y+1][z+1];
+    vertices[1][4] = 1;
+    vertices[2][4] = 1;
 
-    vertices[5][0] = 1;
-    vertices[5][1] = 0.5 - offset[1][x+1][y+1][z+1];
-    vertices[5][2] = 1;
+    vertices[0][5] = 1;
+    vertices[1][5] = 0.5 - offset[1][x+1][y+1][z+1];
+    vertices[2][5] = 1;
 
-    vertices[6][0] = 0.5 - offset[0][x+1][y][z+1];
-    vertices[6][1] = 0;
-    vertices[6][2] = 1;
+    vertices[0][6] = 0.5 - offset[0][x+1][y][z+1];
+    vertices[1][6] = 0;
+    vertices[2][6] = 1;
 
-    vertices[7][0] = 0;
-    vertices[7][1] = 0.5 - offset[1][x][y+1][z+1];
-    vertices[7][2] = 1;
+    vertices[0][7] = 0;
+    vertices[1][7] = 0.5 - offset[1][x][y+1][z+1];
+    vertices[2][7] = 1;
 
-    vertices[8][0] = 0;
-    vertices[8][1] = 1;
-    vertices[8][2] = 0.5 - offset[2][x][y+1][z+1];
+    vertices[0][8] = 0;
+    vertices[1][8] = 1;
+    vertices[2][8] = 0.5 - offset[2][x][y+1][z+1];
 
-    vertices[9][0] = 1;
-    vertices[9][1] = 1;
-    vertices[9][2] = 0.5 - offset[2][x+1][y+1][z+1];
+    vertices[0][9] = 1;
+    vertices[1][9] = 1;
+    vertices[2][9] = 0.5 - offset[2][x+1][y+1][z+1];
 
-    vertices[10][0] = 1;
-    vertices[10][1] = 0;
-    vertices[10][2] = 0.5 - offset[2][x+1][y][z+1];
+    vertices[0][10] = 1;
+    vertices[1][10] = 0;
+    vertices[2][10] = 0.5 - offset[2][x+1][y][z+1];
 
-    vertices[11][0] = 0;
-    vertices[11][1] = 0;
-    vertices[11][2] = 0.5 - offset[2][x][y][z+1];
+    vertices[0][11] = 0;
+    vertices[1][11] = 0;
+    vertices[2][11] = 0.5 - offset[2][x][y][z+1];
 
     return vertices;
 }

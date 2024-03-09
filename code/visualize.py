@@ -70,22 +70,17 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     vertices = vertices[:num_vertices, :].numpy()
     faces = faces[:num_faces, :].numpy()
 
-    # vertices = np.asarray(vertices)
     vertices_unique, indices = unique_rows(vertices)
-    faces = np.asarray(faces)#.flatten()
+    faces = np.asarray(faces)
     indices_to_keep = []
     indices = np.unique(indices)
     for k, face in enumerate(faces):
         if (int(face[0]) in indices) and (int(face[1]) in indices) and (int(face[2]) in indices):
             indices_to_keep.append(k)
     indices_to_keep = np.array(indices_to_keep)
-    faces_unique = faces[indices_to_keep, :]#.reshape((-1, 3))
+    faces_unique = faces[indices_to_keep, :]
 
-    # save_mesh_helper(vertices_unique, faces_unique, i)
-
-    print(vertices_unique, vertices_unique.shape)
-
-    print(faces_unique, faces_unique.shape)
+    save_mesh_helper(vertices_unique, faces_unique, i)
 
     xv_cls, yv_cls, zv_cls = np.meshgrid(grid[:-1], grid[:-1], grid[:-1], indexing='ij')
     xv_cls = xv_cls.flatten()
@@ -96,10 +91,8 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
 
-    # plot the scattered points
     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
 
-    # plot the mesh
     color = [0.8, 0.5, 0.5]
     ax.plot_trisurf(vertices_unique[:, 0],
                         vertices_unique[:, 1],

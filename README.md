@@ -16,13 +16,10 @@ To train the model and upload outputs to GCP, please use Tmux:
 ```bash
 sudo apt install tmux
 tmux
-```
-Then press Ctrl+b and d
-```bash
 source venv/bin/activate
 python run.py
 ```
-After training:
+You can now leave GCP VM window. After training, reconnect to the VM:
 ```bash
 tmux attach
 sh scripts/download_outputs.sh
@@ -31,3 +28,4 @@ Then press Ctrl+b and :
 ```bash
 kill-session
 ```
+If you want to exit the tmux window, press Ctrl+b and d.

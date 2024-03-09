@@ -267,53 +267,53 @@ torch::Tensor offset_to_vertices(torch::Tensor offset, int x, int y, int z){
     torch::Tensor vertices = torch::empty({3, 12}); 
     int N = 32;
 
-    vertices[3*0 + 0] = 0.5 - offset[0*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + (y+1)*(N+1) + z];
-    vertices[3*0 + 1] = 1;
-    vertices[3*0 + 2] = 0;
+    vertices[0][0] = 0.5 - offset[0][x+1][y+1][z];
+    vertices[0][1] = 1;
+    vertices[0][2] = 0;
 
-    vertices[3*1 + 0] = 1;
-    vertices[3*1 + 1] = 0.5 - offset[1*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + (y+1)*(N+1) + z];
-    vertices[3*1 + 2] = 0;
+    vertices[1][0] = 1;
+    vertices[1][1] = 0.5 - offset[1][x+1][y+1][z];
+    vertices[1][2] = 0;
 
-    vertices[3*2 + 0] = 0.5 - offset[0*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + y*(N+1) + z];
-    vertices[3*2 + 1] = 0;
-    vertices[3*2 + 2] = 0;
+    vertices[2][0] = 0.5 - offset[0][x+1][y][z];
+    vertices[2][1] = 0;
+    vertices[2][2] = 0;
 
-    vertices[3*3 + 0] = 0;
-    vertices[3*3 + 1] = 0.5 - offset[1*((N+1)*(N+1)*(N+1)) + x*((N+1)*(N+1)) + (y+1)*(N+1) + z];
-    vertices[3*3 + 2] = 0;
+    vertices[3][0] = 0;
+    vertices[3][1] = 0.5 - offset[1][x][y+1][z];
+    vertices[3][2] = 0;
 
-    vertices[3*4 + 0] = 0.5 - offset[0*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + (y+1)*(N+1) + (z+1)];
-    vertices[3*4 + 1] = 1;
-    vertices[3*4 + 2] = 1;
+    vertices[4][0] = 0.5 - offset[0][x+1][y+1][z+1];
+    vertices[4][1] = 1;
+    vertices[4][2] = 1;
 
-    vertices[3*5 + 0] = 1;
-    vertices[3*5 + 1] = 0.5 - offset[1*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + (y+1)*(N+1) + (z+1)];
-    vertices[3*5 + 2] = 1;
+    vertices[5][0] = 1;
+    vertices[5][1] = 0.5 - offset[1][x+1][y+1][z+1];
+    vertices[5][2] = 1;
 
-    vertices[3*6 + 0] = 0.5 - offset[0*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + y*(N+1) + (z+1)];
-    vertices[3*6 + 1] = 0;
-    vertices[3*6 + 2] = 1;
+    vertices[6][0] = 0.5 - offset[0][x+1][y][z+1];
+    vertices[6][1] = 0;
+    vertices[6][2] = 1;
 
-    vertices[3*7 + 0] = 0;
-    vertices[3*7 + 1] = 0.5 - offset[1*((N+1)*(N+1)*(N+1)) + x*((N+1)*(N+1)) + (y+1)*(N+1) + (z+1)];
-    vertices[3*7 + 2] = 1;
+    vertices[7][0] = 0;
+    vertices[7][1] = 0.5 - offset[1][x][y+1][z+1];
+    vertices[7][2] = 1;
 
-    vertices[3*8 + 0] = 0.5 - offset[0*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + (y+1)*(N+1) + (z+1)];
-    vertices[3*8 + 1] = 1;
-    vertices[3*8 + 2] = 0.5 - offset[2*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + (y+1)*(N+1) + (z+1)];
+    vertices[8][0] = 0.5 - offset[0][x+1][y+1][z+1];
+    vertices[8][1] = 1;
+    vertices[8][2] = 0.5 - offset[2][x+1][y+1][z+1];
 
-    vertices[3*9 + 0] = 1;
-    vertices[3*9 + 1] = 1;
-    vertices[3*9 + 2] = 0.5 - offset[2*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + (y+1)*(N+1) + (z+1)];
+    vertices[9][0] = 1;
+    vertices[9][1] = 1;
+    vertices[9][2] = 0.5 - offset[2][x+1][y+1][z+1];
 
-    vertices[3*10 + 0] = 1;
-    vertices[3*10 + 1] = 0;
-    vertices[3*10 + 2] = 0.5 - offset[2*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + y*(N+1) + (z+1)];
+    vertices[10][0] = 1;
+    vertices[10][1] = 0;
+    vertices[10][2] = 0.5 - offset[2][x+1][y][z+1];
 
-    vertices[3*11 + 0] = 0;
-    vertices[3*11 + 1] = 0;
-    vertices[3*11 + 2] = 0.5 - offset[2*((N+1)*(N+1)*(N+1)) + (x+1)*((N+1)*(N+1)) + y*(N+1) + (z+1)];
+    vertices[11][0] = 0;
+    vertices[11][1] = 0;
+    vertices[11][2] = 0.5 - offset[2][x+1][y][z+1];
 
     return vertices;
 }
@@ -331,22 +331,21 @@ std::tuple<torch::Tensor, torch::Tensor, int, int> pred_to_mesh(torch::Tensor of
         for (int j=0; j<N; j++){
             for (int k=0; k<N; k++){
                 int t = topology[i][j][k].item<int>();
-                std::cout << t << std::endl;
-                // float offset_c[3]={(float)i, (float)j, (float)k};
+                float offset_c[3]={(float)i, (float)j, (float)k};
             
-                // torch::Tensor vertices = offset_to_vertices(offset, i, j, k);
-                // for (int tri_ind = 0; tri_ind<visTopology[1][t]; tri_ind++){
-                //     for (int vertex_ind = 0; vertex_ind<3; vertex_ind++){
-                //         int topology_ind = visTopology[0][t];
+                torch::Tensor vertices = offset_to_vertices(offset, i, j, k);
+                for (int tri_ind = 0; tri_ind<visTopology[1][t]; tri_ind++){
+                    for (int vertex_ind = 0; vertex_ind<3; vertex_ind++){
+                        int topology_ind = visTopology[0][t];
                         
-                //         for (int _i=0; _i<3; _i++){
-                //             vertices_all[(12*(32*32*32))*vertice_cnt + _i] = vertices[_i*3 + triTable[topology_ind][tri_ind*3+vertex_ind]] + offset_c[_i];
-                //             faces_all[(12*(32*32*32))*face_cnt + vertex_ind] = vertice_cnt;
-                //             vertice_cnt++;
-                //         }
-                //         face_cnt++;
-                //     }        
-                // }
+                        for (int _i=0; _i<3; _i++){
+                            vertices_all[vertice_cnt][_i] = vertices[_i][triTable[topology_ind][tri_ind][vertex_ind]] + offset_c[_i];
+                            faces_all[face_cnt][vertex_ind] = vertice_cnt;
+                            vertice_cnt++;
+                        }
+                        face_cnt++;
+                    }        
+                }
             }
         }
     }

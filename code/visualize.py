@@ -77,9 +77,9 @@ def save_mesh_fig(pts, offset, topology, grid, i):
 
     # save_mesh_helper(vertices_unique, faces_unique, i)
 
-    print(vertices.shape)
+    print(vertices, vertices.shape)
 
-    print(faces.shape)
+    print(faces, faces.shape)
 
     # xv_cls, yv_cls, zv_cls = np.meshgrid(grid[:-1], grid[:-1], grid[:-1], indexing='ij')
     # xv_cls = xv_cls.flatten()

@@ -79,7 +79,7 @@ std::tuple<torch::Tensor, torch::Tensor, int, int> pred_to_mesh(torch::Tensor of
                 int t = topology[i*N*N+j*N+k].item<int>();
                 float offset_c[3]={(float)i, (float)j, (float)k};
             
-                torch::Tensor *vertices = offset_to_vertices(offset, i, j, k);
+                torch::Tensor vertices = offset_to_vertices(offset, i, j, k);
                 for (int tri_ind = 0; tri_ind<visTopology[1][t]; tri_ind++){
                     for (int vertex_ind = 0; vertex_ind<3; vertex_ind++){
                         int topology_ind = visTopology[0][t];

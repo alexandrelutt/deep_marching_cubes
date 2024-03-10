@@ -71,7 +71,7 @@ class MyLoss(object):
         loss = torch.sum(accepted_topos.mul(accepted_dists))
 
         ## normalize by the dimension of the cube
-        loss = loss/self.N**3
+        loss = loss#/self.N**3
         return loss
 
     def occupancy_loss(self, occupancy):

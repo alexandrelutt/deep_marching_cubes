@@ -24,10 +24,10 @@ class MyLoss(object):
         self.N = 32
 
         ## weights
-        self.weight_point_to_mesh = 5.0 # 1.0
-        self.weight_occupancy = 10.0 # 0.4
-        self.weight_smoothness = 3.0 # 0.6
-        self.weight_curvature = 3.0 # 0.6
+        self.weight_point_to_mesh = 1.0 # 1.0
+        self.weight_occupancy = 1.0 # 0.4
+        self.weight_smoothness = 1.0 # 0.6
+        self.weight_curvature = 1.0 # 0.6
 
         ## utils for point_to_mesh loss
         self.dist_pt_topo = DistPtsTopo()
@@ -68,10 +68,7 @@ class MyLoss(object):
         accepted_topos = topology[:, self.acceptTopologyWithFlip]
         probas_sum = torch.sum(accepted_topos, dim=1, keepdim=True).clamp(min=1e-6)
         accepted_topos = accepted_topos/probas_sum
-        loss = torch.sum(accepted_topos.mul(accepted_dists))
-
-        ## normalize by the dimension of the cube
-        loss = loss/self.N**3
+        loss = torch.sum(accepted_topos.mul(accepted_dists))/self.N**3
         return loss
 
     def occupancy_loss(self, occupancy):
@@ -91,16 +88,12 @@ class MyLoss(object):
         return loss
 
     def smoothness_loss(self, occupancy):
-        loss = self.smoothness(occupancy)
-        ## normalize by the dimension of the cube
-        loss = loss/self.N**3
+        loss = self.smoothness(occupancy)/self.N**3
         return loss
     
     def curvature_loss(self, offset, topology):
         topology_accepted = topology[:, self.acceptTopologyWithFlip]
-        loss = self.curvature(offset, F.softmax(topology_accepted, dim=1))[0]
-        ## normalize by the dimension of the cube
-        loss = loss/self.N**3
+        loss = self.curvature(offset, F.softmax(topology_accepted, dim=1))[0]/self.N**3
         return loss
     
     def loss(self, offset, topology, pts, occupancy):

@@ -177,4 +177,4 @@ class DeepMarchingCube(nn.Module):
         for b in range(batch_size):
             topology[b, :, :] = self.occupancy_to_topology(occupancy[b, 0, :, :, :])
 
-        return offset, topology, occupancy[:, 0, :, :, :]
+        return offset, topology, occupancy

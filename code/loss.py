@@ -21,7 +21,7 @@ def get_gaussian_kernel_3D(kernel_width, sigma=1):
 
 class MyLoss(object):
     def __init__(self):
-        self.N = 16
+        self.N = 32
 
         ## weights
         self.weight_point_to_mesh = 5.0 # 1.0

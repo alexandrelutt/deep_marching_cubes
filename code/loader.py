@@ -3,7 +3,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 
 def perturb(clean_points, noise):
-    num_cells = 16
+    num_cells = 32
 
     perturbed_points = clean_points
     perturbed_points = perturbed_points + np.random.normal(0, noise*num_cells/2, perturbed_points.shape)

@@ -152,7 +152,7 @@ class DeepMarchingCube(nn.Module):
         self.decoder = SurfaceDecoder(True)
         self.occupancy_to_topology = OccupancyToTopology()
 
-        self.N = 16
+        self.N = 32
 
     def forward(self, x):
         features = self.feature_extractor(x)

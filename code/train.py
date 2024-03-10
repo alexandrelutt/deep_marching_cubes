@@ -33,11 +33,6 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
             offset, topology, occupancy = model(perturbed_batch)
             loss, loss_point_to_mesh, loss_occupancy, loss_smoothness, loss_curvature = loss_module.loss(offset, topology, clean_batch, occupancy)
 
-            print(f'loss: {loss}')
-            print(f'loss_point_to_mesh: {loss_point_to_mesh}')
-            print(f'loss_occupancy: {loss_occupancy}')
-            print(f'loss_smoothness: {loss_smoothness}')
-
             epoch_train_loss += loss.item()
             epoch_train_loss_point_to_mesh += loss_point_to_mesh.item()
             epoch_train_loss_occupancy += loss_occupancy.item()

@@ -7,6 +7,8 @@ python3 -m pip uninstall -y torch torchvision
 python3 -m pip freeze | grep nvidia- | xargs pip uninstall -y
 python3 -m pip install torch torchvision
 
+pip install google-cloud-storage
+
 sh scripts/download_data.sh
 sh scripts/fix_cudnn.sh
 

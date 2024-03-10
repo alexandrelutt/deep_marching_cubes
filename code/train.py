@@ -2,10 +2,15 @@ import numpy as np
 import torch
 import time
 from tqdm import tqdm
+from google.cloud import storage
 
 from code.utils import plot_losses
 
 def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device):
+
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket('npm3d')
+
     model.to(device)
     train_losses, test_losses = [], []
     train_loss_point_to_mesh, train_loss_occupancy, train_loss_smoothness, train_loss_curvature = [], [], [], []
@@ -111,6 +116,9 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
         print('Now plotting losses...')
         for key, value in train_losses_dict.items():
             plot_losses(value, test_losses_dict[key], loss_type=key)
+            blob = bucket.blob(f'figures/{key}_training.png')
+            blob.upload_from_filename(f'outputs/figures/{key}_training.png')
+
         print('Done!')
 
         dt = time.time() - t0

@@ -23,3 +23,4 @@ def plot_losses(train_losses, test_losses, loss_type='all'):
 
     plt.legend()    
     plt.savefig(f'outputs/figures/{loss_type}_training.png')
+    plt.close()

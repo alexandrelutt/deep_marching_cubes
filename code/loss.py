@@ -24,10 +24,10 @@ class MyLoss(object):
         self.N = 32
 
         ## weights
-        self.weight_point_to_mesh = 1.0
-        self.weight_occupancy = 0.4
-        self.weight_smoothness = 0.6
-        self.weight_curvature = 0.6
+        self.weight_point_to_mesh = 5.0 # 1.0
+        self.weight_occupancy = 10.0 # 0.4
+        self.weight_smoothness = 3.0 # 0.6
+        self.weight_curvature = 3.0 # 0.6
 
         ## utils for point_to_mesh loss
         self.dist_pt_topo = DistPtsTopo()
@@ -100,7 +100,7 @@ class MyLoss(object):
         topology_accepted = topology[:, self.acceptTopologyWithFlip]
         loss = self.curvature(offset, F.softmax(topology_accepted, dim=1))
         ## normalize by the dimension of the cube
-        loss = loss[0]/self.N**3
+        loss = loss/self.N**3
         return loss
     
     def loss(self, offset, topology, pts, occupancy):

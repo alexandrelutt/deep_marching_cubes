@@ -21,7 +21,7 @@ def get_gaussian_kernel_3D(kernel_width, sigma=1):
 
 class MyLoss(object):
     def __init__(self):
-        self.N = 32
+        self.N = 16
 
         ## weights
         self.weight_point_to_mesh = 5.0 # 1.0
@@ -71,7 +71,7 @@ class MyLoss(object):
         loss = torch.sum(accepted_topos.mul(accepted_dists))
 
         ## normalize by the dimension of the cube
-        loss = loss#/self.N**3
+        loss = loss/self.N**3
         return loss
 
     def occupancy_loss(self, occupancy):

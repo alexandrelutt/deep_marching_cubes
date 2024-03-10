@@ -27,17 +27,19 @@ class GridPoolingFct(Function):
         batch_size, n_points, _ = points.size()
         _, _, n_features = features.size()
 
-        output_grid = torch.zeros(batch_size, 32, 32, 32, n_features, device=points.device)
+        N = 32
 
-        indices = -1*torch.ones(batch_size, 32**3, n_features, device=points.device, dtype=torch.long)
+        output_grid = torch.zeros(batch_size, N, N, N, n_features, device=points.device)
+
+        indices = -1*torch.ones(batch_size, N**3, n_features, device=points.device, dtype=torch.long)
 
         normed_points = (points - points.min()) / (points.max() - points.min() + 1e-4)
-        voxel_indices = (normed_points // (1/32)).long()
+        voxel_indices = (normed_points // (1/N)).long()
 
         for b in range(batch_size):
             for i in range(n_points):
                 voxel_index = voxel_indices[b, i]
-                global_index = voxel_index[0]*32*32 + voxel_index[1]*32 + voxel_index[2]
+                global_index = voxel_index[0]*N*N + voxel_index[1]*N + voxel_index[2]
 
                 global_t = torch.cat([output_grid[b, voxel_index[0], voxel_index[1], voxel_index[2]].reshape(n_features, -1), features[b, i].reshape(n_features, -1)], dim=1)
                 max_values, max_indices = torch.max(global_t, dim=1)
@@ -60,6 +62,8 @@ class GridPoolingFct(Function):
         n_points = ctx.n_points
         n_features = ctx.n_features
 
+        N = 32
+
         grad_points = torch.zeros((batch_size, n_points, n_features))
         for b in range(batch_size):
             for i in range(n_points):
@@ -67,7 +71,7 @@ class GridPoolingFct(Function):
                     current_indices = indices[b, i, c]
                     if current_indices == -1:
                         continue
-                    grad_points[b, i, c] = grad_output[b, current_indices//32//32, (current_indices//32)%32, current_indices%32, c]
+                    grad_points[b, i, c] = grad_output[b, current_indices//N//N, (current_indices//N)%N, current_indices%N, c]
         return grad_points, None
 
 class GridPooling(nn.Module):

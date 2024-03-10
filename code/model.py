@@ -155,12 +155,9 @@ class DeepMarchingCube(nn.Module):
         self.N = 16
 
     def forward(self, x):
-        print(x.shape)
         features = self.feature_extractor(x)
-        print(features.shape)
 
         output_grid = self.grid_pooling(x, features)
-        print(output_grid.shape)
         output_grid = output_grid.permute(0, 4, 1, 2, 3)
         
         curr_size = output_grid.size()

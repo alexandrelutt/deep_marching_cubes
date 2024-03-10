@@ -31,9 +31,6 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
             perturbed_batch = perturbed_batch.to(device)
 
             offset, topology, occupancy = model(perturbed_batch)
-            print(f'offset: {offset.shape}')
-            print(f'topology: {topology.shape}')
-            print(f'occupancy: {occupancy.shape}')
             loss, loss_point_to_mesh, loss_occupancy, loss_smoothness, loss_curvature = loss_module.loss(offset, topology, clean_batch, occupancy)
 
             print(f'loss: {loss}')

@@ -27,7 +27,7 @@ class GridPoolingFct(Function):
         batch_size, n_points, _ = points.size()
         _, _, n_features = features.size()
 
-        N = 32
+        N = 16
 
         output_grid = torch.zeros(batch_size, N, N, N, n_features, device=points.device)
 
@@ -62,7 +62,7 @@ class GridPoolingFct(Function):
         n_points = ctx.n_points
         n_features = ctx.n_features
 
-        N = 32
+        N = 16
 
         grad_points = torch.zeros((batch_size, n_points, n_features))
         for b in range(batch_size):

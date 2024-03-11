@@ -25,7 +25,7 @@ def load_data(set, noise):
         pts = torch.tensor(pts, dtype=torch.float32)
         pts_gt = torch.tensor(pts_gt, dtype=torch.float32)
     
-    return pts[128:, :, :], pts_gt[64:, :, :]
+    return pts[:128, :, :], pts_gt[:64, :, :]
 
 class CustomDataset(Dataset):
     def __init__(self, clean_points, perturbed_points):

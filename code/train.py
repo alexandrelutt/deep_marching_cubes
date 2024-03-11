@@ -6,7 +6,7 @@ from google.cloud import storage
 
 from code.utils import plot_losses
 
-def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device):
+def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
 
     storage_client = storage.Client()
     bucket = storage_client.get_bucket('npm3d')
@@ -39,7 +39,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
             epoch_train_loss_point_to_mesh += loss_point_to_mesh.item()
             epoch_train_loss_occupancy += loss_occupancy.item()
             epoch_train_loss_smoothness += loss_smoothness.item()
-            # epoch_train_loss_curvature += loss_curvature.item()
+            epoch_train_loss_curvature += loss_curvature.item()
 
             model.zero_grad()
             loss.backward()
@@ -51,7 +51,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
         epoch_train_loss_smoothness /= len(train_loader)
         epoch_train_loss_curvature /= len(train_loader)
 
-        scheduler.step(epoch_train_loss)
+        # scheduler.step(epoch_train_loss)
 
         train_losses.append(epoch_train_loss)
         train_loss_point_to_mesh.append(epoch_train_loss_point_to_mesh)
@@ -77,7 +77,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
                 epoch_test_loss_point_to_mesh += loss_point_to_mesh.item()
                 epoch_test_loss_occupancy += loss_occupancy.item()
                 epoch_test_loss_smoothness += loss_smoothness.item()
-                # epoch_test_loss_curvature += loss_curvature.item()
+                epoch_test_loss_curvature += loss_curvature.item()
 
             epoch_test_loss /= len(test_loader)
             epoch_test_loss_point_to_mesh /= len(test_loader)
@@ -102,14 +102,14 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
             print('  New best model has been saved.\n')
 
         train_losses_dict = {
-            'all': train_losses,
+            'global': train_losses,
             'loss_point_to_mesh': train_loss_point_to_mesh,
             'loss_occupancy': train_loss_occupancy,
             'loss_smoothness': train_loss_smoothness,
             'loss_curvature': train_loss_curvature
         }
         test_losses_dict = {
-            'all': test_losses,
+            'global': test_losses,
             'loss_point_to_mesh': test_loss_point_to_mesh,
             'loss_occupancy': test_loss_occupancy,
             'loss_smoothness': test_loss_smoothness,

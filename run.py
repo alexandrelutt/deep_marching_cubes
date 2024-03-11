@@ -5,7 +5,6 @@ from code.model import DeepMarchingCube
 from code.loss import MyLoss
 from code.loader import get_loader
 from code.train import train
-from code.utils import plot_losses
 
 if __name__ == '__main__':
     faulthandler.enable()
@@ -23,6 +22,6 @@ if __name__ == '__main__':
     model = DeepMarchingCube()
     loss_module = MyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=6)
+    # scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=6)
 
-    train_losses_dict, test_losses_dict, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device)
+    train_losses_dict, test_losses_dict, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device)

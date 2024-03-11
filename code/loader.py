@@ -27,7 +27,7 @@ def load_data(set, noise):
     
     return pts[:128, :, :], pts_gt[:64, :, :]
 
-class CustomDataset(Dataset):s
+class CustomDataset(Dataset):
     def __init__(self, clean_points, perturbed_points):
         self.clean_points = clean_points
         self.perturbed_points = perturbed_points

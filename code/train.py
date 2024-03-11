@@ -123,8 +123,8 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
             blob.upload_from_filename(f'outputs/figures/{key}_training.png')
 
             plot_losses(value, test_losses_dict[key], loss_type=key, log=True)
-            blob = bucket.blob(f'figures/{key}_training.png')
-            blob.upload_from_filename(f'outputs/figures/{key}_log_training.png')
+            blob = bucket.blob(f'figures/{key}_training_log.png')
+            blob.upload_from_filename(f'outputs/figures/{key}_training_log.png')
 
         print('Done!')
 

@@ -25,6 +25,9 @@ def plot_losses(train_losses, test_losses, loss_type='all', log=False):
     elif loss_type == 'loss_curvature':
         plt.title('Train and test curvature loss')
 
-    plt.legend()    
-    plt.savefig(f'outputs/figures/{loss_type}_training.png')
+    plt.legend()  
+    if log:
+        plt.savefig(f'outputs/figures/{loss_type}_training_log.png')
+    else:
+        plt.savefig(f'outputs/figures/{loss_type}_training.png')
     plt.close()

@@ -48,7 +48,6 @@ class MyLoss(object):
         gaussian_kernel_3D = get_gaussian_kernel_3D(kernel_width=3)
         neg_weight = scipy.ndimage.filters.convolve(cube_boundaries, gaussian_kernel_3D)
         neg_weight = neg_weight/np.max(neg_weight)
-        neg_weight = neg_weight/np.sum(neg_weight)
         self.neg_weight = torch.from_numpy(neg_weight).type(dtype)
 
         self.fraction_inside = 0.2
@@ -72,7 +71,7 @@ class MyLoss(object):
         return loss
 
     def occupancy_loss(self, occupancy):
-        loss_sides = torch.sum(torch.mul(occupancy, self.neg_weight))
+        loss_sides = torch.sum(torch.mul(occupancy, self.neg_weight)) / torch.sum(self.neg_weight)
 
         N = occupancy.size(0)
         sorted_cube,_ = torch.sort(occupancy.detach().view(-1), 0, descending=True)
@@ -109,5 +108,5 @@ class MyLoss(object):
             loss_smoothness += self.weight_smoothness*self.smoothness_loss(occupancy[b, 0])
             # loss_curvature += self.weight_curvature*self.curvature_loss(offset[b], topology[b])
             
-        loss = (loss_point_to_mesh + loss_occupancy + loss_smoothness + loss_curvature)/batch_size
-        return loss, loss_point_to_mesh/batch_size, loss_occupancy/batch_size, loss_smoothness/batch_size, loss_curvature/batch_size
+        loss = loss_point_to_mesh + loss_occupancy + loss_smoothness + loss_curvature
+        return loss/batch_size, loss_point_to_mesh/batch_size, loss_occupancy/batch_size, loss_smoothness/batch_size, loss_curvature/batch_size

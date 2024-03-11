@@ -1,12 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def plot_losses(train_losses, test_losses, loss_type='all'):
+def plot_losses(train_losses, test_losses, loss_type='all', log=False):
     n_epochs = len(train_losses)
     fig = plt.figure(figsize=(10, 5))
 
-    plt.plot(range(1, 1+n_epochs), train_losses, label='Train loss')
-    plt.plot(range(1, 1+n_epochs), test_losses, label='Test loss')
+    if log:
+        plt.plot(range(1, 1+n_epochs), np.log(train_losses), label='Train loss')
+        plt.plot(range(1, 1+n_epochs), np.log(test_losses), label='Test loss')
+    else:
+        plt.plot(range(1, 1+n_epochs), train_losses, label='Train loss')
+        plt.plot(range(1, 1+n_epochs), test_losses, label='Test loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
 

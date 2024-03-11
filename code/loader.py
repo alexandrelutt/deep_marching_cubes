@@ -15,17 +15,17 @@ def load_data(set, noise):
         data = np.load('all_data/points_shapenet_32x32x32_train.npy')
         pts, pts_gt = perturb(data, noise=noise)
 
-        pts = torch.tensor(pts, dtype=torch.float32)
-        pts_gt = torch.tensor(pts_gt, dtype=torch.float32)
+        pts = torch.tensor(pts, dtype=torch.float32)[:128, :, :]
+        pts_gt = torch.tensor(pts_gt, dtype=torch.float32)[:128, :, :]
 
     else:
         data = np.load('all_data/points_shapenet_32x32x32_val.npy')
         pts, pts_gt = perturb(data, noise=noise)
 
-        pts = torch.tensor(pts, dtype=torch.float32)
-        pts_gt = torch.tensor(pts_gt, dtype=torch.float32)
+        pts = torch.tensor(pts, dtype=torch.float32)[:64, :, :]
+        pts_gt = torch.tensor(pts_gt, dtype=torch.float32)[:64, :, :]
     
-    return pts[:128, :, :], pts_gt[:64, :, :]
+    return pts, pts_gt
 
 class CustomDataset(Dataset):
     def __init__(self, clean_points, perturbed_points):
@@ -40,7 +40,6 @@ class CustomDataset(Dataset):
 
 def get_loader(set='train', batch_size=8, noise=0.15):
     clean_points, perturbed_points = load_data(set=set, noise=noise)
-    print(clean_points.shape, perturbed_points.shape)
     dataset = CustomDataset(clean_points, perturbed_points)
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     return data_loader

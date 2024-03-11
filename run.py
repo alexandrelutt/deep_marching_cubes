@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
     batch_size = 8
     n_epochs = 100 # base 500
-    learning_rate = 5e-4 ## base 5e-4
+    learning_rate = 5e-5 ## base 5e-4
     weight_decay = 1e-3
 
     train_loader = get_loader(set='train', batch_size=batch_size)
@@ -23,6 +23,6 @@ if __name__ == '__main__':
     model = DeepMarchingCube()
     loss_module = MyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=2)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=6)
 
     train_losses_dict, test_losses_dict, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device)

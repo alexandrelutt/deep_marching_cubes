@@ -13,8 +13,8 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     batch_size = 8
-    n_epochs = 10 # base 500
-    learning_rate = 5e-3 ## base 5e-4
+    n_epochs = 100 # base 500
+    learning_rate = 5e-4 ## base 5e-4
     weight_decay = 1e-3
 
     train_loader = get_loader(set='train', batch_size=batch_size)

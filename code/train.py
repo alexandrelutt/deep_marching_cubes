@@ -39,7 +39,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
             epoch_train_loss_point_to_mesh += loss_point_to_mesh.item()
             epoch_train_loss_occupancy += loss_occupancy.item()
             epoch_train_loss_smoothness += loss_smoothness.item()
-            # epoch_train_loss_curvature += loss_curvature.item()
+            epoch_train_loss_curvature += loss_curvature.item()
 
             model.zero_grad()
             loss.backward()
@@ -77,7 +77,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
                 epoch_test_loss_point_to_mesh += loss_point_to_mesh.item()
                 epoch_test_loss_occupancy += loss_occupancy.item()
                 epoch_test_loss_smoothness += loss_smoothness.item()
-                # epoch_test_loss_curvature += loss_curvature.item()
+                epoch_test_loss_curvature += loss_curvature.item()
 
             epoch_test_loss /= len(test_loader)
             epoch_test_loss_point_to_mesh /= len(test_loader)

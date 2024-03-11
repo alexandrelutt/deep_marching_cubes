@@ -58,6 +58,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
         train_loss_curvature.append(epoch_train_loss_curvature)
 
         with torch.no_grad():
+            model.eval()
             epoch_test_loss = 0
             epoch_test_loss_point_to_mesh = 0
             epoch_test_loss_occupancy = 0

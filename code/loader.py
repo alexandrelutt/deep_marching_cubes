@@ -27,7 +27,7 @@ def load_data(set, noise):
     
     return pts[:128, :, :], pts_gt[:64, :, :]
 
-class CustomDataset(Dataset):
+class CustomDataset(Dataset):s
     def __init__(self, clean_points, perturbed_points):
         self.clean_points = clean_points
         self.perturbed_points = perturbed_points
@@ -40,6 +40,7 @@ class CustomDataset(Dataset):
 
 def get_loader(set='train', batch_size=8, noise=0.15):
     clean_points, perturbed_points = load_data(set=set, noise=noise)
+    print(clean_points.shape, perturbed_points.shape)
     dataset = CustomDataset(clean_points, perturbed_points)
     data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     return data_loader

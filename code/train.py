@@ -26,6 +26,8 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
         epoch_train_loss_smoothness = 0
         epoch_train_loss_curvature = 0
 
+        model.train()
+        
         for (clean_batch, perturbed_batch) in tqdm(train_loader):
             clean_batch = clean_batch.to(device)
             perturbed_batch = perturbed_batch.to(device)

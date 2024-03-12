@@ -1,12 +1,34 @@
 import numpy as np
 import torch
 import time
+import pickle
 from tqdm import tqdm
 from google.cloud import storage
 
 from code.utils import plot_losses
 
+## Early stopping (stolen from https://stackoverflow.com/questions/71998978/early-stopping-in-pytorch)
+
+class EarlyStopper:
+    def __init__(self, patience=1, min_delta=0.025):
+        self.patience = patience
+        self.min_delta = min_delta
+        self.counter = 0
+        self.min_validation_loss = float('inf')
+
+    def early_stop(self, validation_loss):
+        if validation_loss < self.min_validation_loss:
+            self.min_validation_loss = validation_loss
+            self.counter = 0
+        elif validation_loss > (self.min_validation_loss + self.min_delta):
+            self.counter += 1
+            if self.counter >= self.patience:
+                return True
+        return False
+
 def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device):
+
+    early_stopper = EarlyStopper(patience=3, min_delta=10)
 
     storage_client = storage.Client()
     bucket = storage_client.get_bucket('npm3d')
@@ -118,6 +140,11 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
             'loss_curvature': test_loss_curvature
         }
 
+        with open('outputs/results/train_losses_dict.pkl', 'wb') as f:
+            pickle.dump(train_losses_dict, f)
+        with open('outputs/results/test_losses_dict.pkl', 'wb') as f:
+            pickle.dump(test_losses_dict, f)
+
         print('Now plotting losses...')
         for key, value in train_losses_dict.items():
             plot_losses(value, test_losses_dict[key], loss_type=key)
@@ -133,6 +160,8 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
         dt = time.time() - t0
         print(f'\nEpoch duration: {dt:.2f}s.\n')
 
-    print('Training complete!\n')
+        if early_stopper.early_stop(epoch_test_loss): 
+            print('Early stopping!')            
+            break
 
-    return train_losses_dict, test_losses_dict, best_model
+    print('Training complete!\n')

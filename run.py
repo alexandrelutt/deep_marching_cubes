@@ -1,5 +1,4 @@
 import torch
-import pickle
 import faulthandler
 
 from code.model import DeepMarchingCube
@@ -25,9 +24,4 @@ if __name__ == '__main__':
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=10)
 
-    train_losses_dict, test_losses_dict, best_model = train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device)
-
-    with open('outputs/results/train_losses_dict.pkl', 'wb') as f:
-        pickle.dump(train_losses_dict, f)
-    with open('outputs/results/test_losses_dict.pkl', 'wb') as f:
-        pickle.dump(test_losses_dict, f)
+    train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device)

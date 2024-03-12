@@ -6,7 +6,7 @@ from google.cloud import storage
 
 from code.utils import plot_losses
 
-def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
+def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device):
 
     storage_client = storage.Client()
     bucket = storage_client.get_bucket('npm3d')
@@ -51,8 +51,6 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
         epoch_train_loss_smoothness /= len(train_loader)
         epoch_train_loss_curvature /= len(train_loader)
 
-        # scheduler.step(epoch_train_loss)
-
         train_losses.append(epoch_train_loss)
         train_loss_point_to_mesh.append(epoch_train_loss_point_to_mesh)
         train_loss_occupancy.append(epoch_train_loss_occupancy)
@@ -90,6 +88,8 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             test_loss_occupancy.append(epoch_test_loss_occupancy)
             test_loss_smoothness.append(epoch_test_loss_smoothness)
             test_loss_curvature.append(epoch_test_loss_curvature)
+
+        scheduler.step(epoch_test_loss)
             
         print(f'Training loss: {epoch_train_loss}.')
         print(f'Test loss:     {epoch_test_loss}.')

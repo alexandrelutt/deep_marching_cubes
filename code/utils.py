@@ -11,12 +11,18 @@ def plot_losses(train_losses, test_losses, loss_type='global', log=False):
     else:
         plt.plot(range(1, 1+n_epochs), train_losses, label='Train loss')
         plt.plot(range(1, 1+n_epochs), test_losses, label='Test loss')
+    
+    ylabel = 'Loss'
+    if log:
+        ylabel += ' (log scale)'
     plt.xlabel('Epoch')
-    plt.ylabel('Loss')
+    plt.ylabel(ylabel)
 
     str_title = f'Train and test {loss_type} loss'
     if log:
         str_title += ' (log scale)'
+
+    plt.title(str_title)
 
     plt.legend()  
     if log:

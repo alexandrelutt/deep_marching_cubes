@@ -28,7 +28,7 @@ class EarlyStopper:
 
 def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device):
 
-    early_stopper = EarlyStopper(patience=3, min_delta=10)
+    early_stopper = EarlyStopper()
 
     storage_client = storage.Client()
     bucket = storage_client.get_bucket('npm3d')
@@ -119,7 +119,6 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
         if epoch_test_loss < best_test_loss:
             print('\n  New best model has been found!')
             best_test_loss = epoch_test_loss
-            best_model = model
             torch.save(model.state_dict(), 'outputs/models/best_model.pth')
             blob = bucket.blob(f'models/best_model.pth')
             blob.upload_from_filename(f'outputs/models/best_model.pth')

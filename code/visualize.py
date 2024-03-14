@@ -80,21 +80,13 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     vertices = torch.zeros(num_cells**3 * 12, 3).float()
     faces = torch.zeros(num_cells**3 * 12, 3).float()
 
-    np_offset = offset.detach().cpu().numpy()
-
-
-    min_ = np.min(np.min(np.min(np_offset, axis=1), axis=1), axis=1)
-    max_ = np.max(np.max(np.max(np_offset, axis=1), axis=1), axis=1)
-    print(min_)
-    print(max_)
-
     vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.detach().cpu(), topology_max.detach().cpu(), vertices, faces)
 
     vertices = vertices[:num_vertices, :].numpy()
     faces = faces[:num_faces, :].numpy()
 
-    print(np.min(vertices.numpy(), axis=0))
-    print(np.max(vertices.numpy(), axis=0))
+    print(np.min(vertices, axis=0))
+    print(np.max(vertices, axis=0))
     print(vertices.shape)
 
     vertices = np.asarray(vertices)

@@ -91,7 +91,7 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     vertices_unique = vertices_unique[:, [2, 0, 1]]
 
     print(vertices_unique.shape, faces_unique.shape)
-    print(vertices_unique.min(), vertices_unique.max())
+    print(np.min(vertices_unique, axis=0), np.max(vertices_unique, axis=0))
     print(faces_unique)
 
     save_mesh_helper(vertices_unique, faces_unique, i)

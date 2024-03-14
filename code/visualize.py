@@ -79,7 +79,8 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     vertices = torch.zeros(num_cells**3 * 12, 3).float()
     faces = torch.zeros(num_cells**3 * 12, 3).float()
 
-    vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.data.cpu(), topology_max.data.cpu(), vertices, faces)
+    vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.detach().cpu(), topology_max.detach().cpu(), vertices, faces)
+    
     vertices = vertices[:num_vertices, :].numpy()
     faces = faces[:num_faces, :].numpy()
 
@@ -89,10 +90,6 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     faces_unique = faces[indices].reshape((-1, 3))
 
     vertices_unique = vertices_unique[:, [2, 0, 1]]
-
-    print(vertices_unique.shape, faces_unique.shape)
-    print(np.min(vertices_unique, axis=0), np.max(vertices_unique, axis=0))
-    print(faces_unique)
 
     save_mesh_helper(vertices_unique, faces_unique, i)
 
@@ -142,13 +139,12 @@ def visualize(model, test_loader, device):
             #         i)
 
             topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies(4))]
-            print(topology_vis.shape)
 
-            # save_mesh_fig(
-            #         clean_batch[-1].data.cpu().numpy(),
-            #         offset[-1],
-            #         topology_vis[-1],
-            #         np.arange(0, 32+1),
-            #         i)
+            save_mesh_fig(
+                    clean_batch[-1].data.cpu().numpy(),
+                    offset[-1],
+                    topology_vis[-1],
+                    np.arange(0, 32+1),
+                    i)
 
             break

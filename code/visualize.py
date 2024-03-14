@@ -82,8 +82,10 @@ def save_mesh_fig(pts, offset, topology, grid, i):
 
     np_offset = offset.detach().cpu().numpy()
 
-    print(np.min(np_offset, axis=[0, 1, 2]))
-    print(np.max(np_offset, axis=[0, 1, 2]))
+    min_ = np.min(np.min(np.min(np_offset, axis=1), axis=2), axis=3)
+    max_ = np.max(np.max(np.max(np_offset, axis=1), axis=2), axis=3)
+    print(min_)
+    print(max_)
 
     vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.detach().cpu(), topology_max.detach().cpu(), vertices, faces)
 

@@ -128,9 +128,9 @@ def save_mesh_fig(pts, offset, topology, grid, i):
                     alpha=1.0
                     )
 
-    ax.set_xlim(grid.min(), grid.max())
-    ax.set_ylim(grid.min(), grid.max())
-    ax.set_zlim(grid.min(), grid.max())
+    # ax.set_xlim(grid.min(), grid.max())
+    # ax.set_ylim(grid.min(), grid.max())
+    # ax.set_zlim(grid.min(), grid.max())
     ax.set_xlabel('X Label')
     ax.set_ylabel('Y Label')
     ax.set_zlabel('Z Label')

@@ -157,5 +157,3 @@ def visualize(model, test_loader, device):
                     topology_vis[-1],
                     np.arange(0, 32+1),
                     i)
-
-            break

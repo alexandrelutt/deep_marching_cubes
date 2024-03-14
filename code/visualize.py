@@ -39,22 +39,6 @@ def save_occupancy_fig(pts, occupancy, grid, i):
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
 
-    # Define the rotation angle (90 degrees)
-    angle = np.pi / 2  # in radians
-
-    # Define the rotation matrix for rotation about the x-axis
-    rotation_matrix = np.array([
-        [0, np.cos(angle), np.sin(angle)],
-        [1, 0, 0],
-        [0, -np.sin(angle), np.cos(angle)]
-    ])
-
-    # Apply the rotation matrix to the points
-    barycenter = np.mean(pts, axis=0)
-    pts = pts - barycenter
-    pts = np.dot(pts, rotation_matrix)
-    pts = pts + barycenter
-
     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.',
             color='#727272', zorder=1)
 
@@ -75,10 +59,6 @@ def save_occupancy_fig(pts, occupancy, grid, i):
     rgba_x[:, 3] = occupancy.flatten()
 
     pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
-    pred_barycenter = np.mean(pred_points, axis=0)
-    pred_points = pred_points - pred_barycenter
-    pred_points = np.dot(pred_points, rotation_matrix)
-    pred_points = pred_points + pred_barycenter
 
     ax.scatter(pred_points[:, 0], pred_points[:, 1], pred_points[:, 2], '.', color=rgba_x, zorder=1)
 
@@ -128,9 +108,9 @@ def save_mesh_fig(pts, offset, topology, grid, i):
                     alpha=1.0
                     )
 
-    # ax.set_xlim(grid.min(), grid.max())
-    # ax.set_ylim(grid.min(), grid.max())
-    # ax.set_zlim(grid.min(), grid.max())
+    ax.set_xlim(grid.min(), grid.max())
+    ax.set_ylim(grid.min(), grid.max())
+    ax.set_zlim(grid.min(), grid.max())
     ax.set_xlabel('X Label')
     ax.set_ylabel('Y Label')
     ax.set_zlabel('Z Label')

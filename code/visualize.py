@@ -76,51 +76,48 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     _, topology_max = torch.max(topology, dim=1)
 
     topology_max = topology_max.view(num_cells, num_cells, num_cells)
-    topology_max_values = topology_max.data.cpu().numpy()
-    ## count values in topology_max
-    print(np.unique(topology_max_values, return_counts=True))
 
-    # vertices = torch.zeros(num_cells**3 * 12, 3).float()
-    # faces = torch.zeros(num_cells**3 * 12, 3).float()
+    vertices = torch.zeros(num_cells**3 * 12, 3).float()
+    faces = torch.zeros(num_cells**3 * 12, 3).float()
 
-    # vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.detach().cpu(), topology_max.detach().cpu(), vertices, faces)
+    vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.detach().cpu(), topology_max.detach().cpu(), vertices, faces)
 
-    # vertices = vertices[:num_vertices, :].numpy()
-    # faces = faces[:num_faces, :].numpy()
+    vertices = vertices[:num_vertices, :].numpy()
+    faces = faces[:num_faces, :].numpy()
 
-    # vertices = np.asarray(vertices)
-    # vertices_unique, indices = unique_rows(vertices)
-    # faces = np.asarray(faces).flatten()
-    # faces_unique = faces[indices].reshape((-1, 3))
+    vertices = np.asarray(vertices)
+    vertices_unique, indices = unique_rows(vertices)
+    faces = np.asarray(faces).flatten()
+    faces_unique = faces[indices].reshape((-1, 3))
 
-    # vertices_unique = vertices_unique[:, [2, 0, 1]]
+    vertices_unique = vertices_unique[:, [2, 0, 1]]
 
-    # save_mesh_helper(vertices_unique, faces_unique, i)
+    save_mesh_helper(vertices_unique, faces_unique, i)
 
-    # fig = plt.figure(0)
-    # fig.clear()
-    # ax = fig.add_subplot(111, projection='3d')
+    fig = plt.figure(0)
+    fig.clear()
+    ax = fig.add_subplot(111, projection='3d')
 
-    # ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
+    ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
 
-    # color = [0.8, 0.5, 0.5]
-    # ax.plot_trisurf(vertices_unique[:, 0],
-    #                 vertices_unique[:, 1],
-    #                 vertices_unique[:, 2],
-    #                 triangles=faces_unique,
-    #                 color=color,
-    #                 edgecolor='none',
-    #                 alpha=1.0
-    #                 )
+    color = [0.8, 0.5, 0.5]
+    ax.plot_trisurf(vertices_unique[:, 0],
+                    vertices_unique[:, 1],
+                    vertices_unique[:, 2],
+                    triangles=faces_unique,
+                    color=color,
+                    edgecolor='none',
+                    alpha=1.0
+                    )
 
-    # ax.set_xlim(grid.min(), grid.max())
-    # ax.set_ylim(grid.min(), grid.max())
-    # ax.set_zlim(grid.min(), grid.max())
-    # ax.set_xlabel('X Label')
-    # ax.set_ylabel('Y Label')
-    # ax.set_zlabel('Z Label')
+    ax.set_xlim(grid.min(), grid.max())
+    ax.set_ylim(grid.min(), grid.max())
+    ax.set_zlim(grid.min(), grid.max())
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
 
-    # plt.savefig(f'outputs/figures/test_example_mesh_{i}.png')
+    plt.savefig(f'outputs/figures/test_example_mesh_{i}.png')
 
 
 def visualize(model, test_loader, device):
@@ -132,22 +129,22 @@ def visualize(model, test_loader, device):
 
             offset, topology, occupancy = model(perturbed_batch)
 
-            # topology_fused = topology[-1].data.cpu().numpy()
-            # topology_fused = np.maximum(topology_fused[:, 0:128],
-            #                             topology_fused[:, 256:127:-1])
-            # topology_fused = topology_fused[:, get_accepted_topologies()]
-            # save_occupancy_fig(
-            #         clean_batch[-1].data.cpu().numpy(),
-            #         occupancy[-1].data.cpu().numpy(),
-            #         np.arange(0, 32+1),
-            #         i)
-
-            topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies(4))]
-
-            save_mesh_fig(
+            topology_fused = topology[-1].data.cpu().numpy()
+            topology_fused = np.maximum(topology_fused[:, 0:128],
+                                        topology_fused[:, 256:127:-1])
+            topology_fused = topology_fused[:, get_accepted_topologies()]
+            save_occupancy_fig(
                     clean_batch[-1].data.cpu().numpy(),
-                    offset[-1],
-                    topology_vis[-1],
+                    occupancy[-1].data.cpu().numpy(),
                     np.arange(0, 32+1),
                     i)
+
+            # topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies(4))]
+
+            # save_mesh_fig(
+            #         clean_batch[-1].data.cpu().numpy(),
+            #         offset[-1],
+            #         topology_vis[-1],
+            #         np.arange(0, 32+1),
+            #         i)
             

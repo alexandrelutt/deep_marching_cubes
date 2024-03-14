@@ -76,31 +76,22 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     _, topology_max = torch.max(topology, dim=1)
 
     topology_max = topology_max.view(num_cells, num_cells, num_cells)
+    topology_max_values = topology_max.data.cpu().numpy()
+    ## count values in topology_max
+    print(np.unique(topology_max_values, return_counts=True))
 
     vertices = torch.zeros(num_cells**3 * 12, 3).float()
     faces = torch.zeros(num_cells**3 * 12, 3).float()
 
     vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.detach().cpu(), topology_max.detach().cpu(), vertices, faces)
 
-    print(np.min(vertices.numpy(), axis=0))
-    print(np.max(vertices.numpy(), axis=0))
-    print(vertices.shape)
-
     vertices = vertices[:num_vertices, :].numpy()
     faces = faces[:num_faces, :].numpy()
-
-    print(np.min(vertices, axis=0))
-    print(np.max(vertices, axis=0))
-    print(vertices.shape)
 
     vertices = np.asarray(vertices)
     vertices_unique, indices = unique_rows(vertices)
     faces = np.asarray(faces).flatten()
     faces_unique = faces[indices].reshape((-1, 3))
-
-    print(np.min(vertices_unique, axis=0))
-    print(np.max(vertices_unique, axis=0))
-    print(vertices_unique.shape)
 
     vertices_unique = vertices_unique[:, [2, 0, 1]]
 

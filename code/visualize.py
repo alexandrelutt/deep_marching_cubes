@@ -74,10 +74,12 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     rgba_x[:, 0] = 1.0
     rgba_x[:, 3] = occupancy.flatten()
 
-    pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
-    pred_points = pred_points[occupancy.flatten() > 0.5]
+    proba_treshold = 0.4
 
-    ax.scatter(pred_points[:, 0], pred_points[:, 1], pred_points[:, 2], '.', color=rgba_x[occupancy.flatten() > 0.5], zorder=1)
+    pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
+    pred_points = pred_points[occupancy.flatten() > proba_treshold]
+
+    ax.scatter(pred_points[:, 0], pred_points[:, 1], pred_points[:, 2], '.', color=rgba_x[occupancy.flatten() > proba_treshold], zorder=1)
 
     ax.set_xlim(grid.min(), grid.max())
     ax.set_ylim(grid.min(), grid.max())

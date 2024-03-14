@@ -144,6 +144,8 @@ def visualize(model, test_loader, device):
 
             topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies(4))]
 
+            print(f'Topology_vis: {topology_vis[-1].shape}')
+
             save_mesh_fig(
                     clean_batch[-1].data.cpu().numpy(),
                     offset[-1],

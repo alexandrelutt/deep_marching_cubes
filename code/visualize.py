@@ -25,7 +25,7 @@ def unique_rows(a):
     _, idx, inverse = np.unique(b, return_index=True, return_inverse=True)
     return a[idx], inverse 
 
-def save_occupancy_fig(pts, occupancy, grid, i):
+def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     xv_cls, yv_cls, zv_cls = np.meshgrid(
             range(len(grid)),
             range(len(grid)),
@@ -34,6 +34,22 @@ def save_occupancy_fig(pts, occupancy, grid, i):
     xv_cls = xv_cls.flatten()
     yv_cls = yv_cls.flatten()
     zv_cls = zv_cls.flatten()
+
+    fig = plt.figure()
+    fig.clear()
+    ax = fig.add_subplot(111, projection='3d')
+
+    ax.scatter(input_pts[:, 0], input_pts[:, 1], input_pts[:, 2], '.',
+            color='#727272', zorder=1)
+
+    ax.set_xlim(grid.min(), grid.max())
+    ax.set_ylim(grid.min(), grid.max())
+    ax.set_zlim(grid.min(), grid.max())
+    ax.set_xlabel('X Label')
+    ax.set_ylabel('Y Label')
+    ax.set_zlabel('Z Label')
+
+    plt.savefig(f'outputs/figures/test_example_input_occupancy_{i}.png')
 
     fig = plt.figure()
     fig.clear()
@@ -134,6 +150,7 @@ def visualize(model, test_loader, device):
                                         topology_fused[:, 256:127:-1])
             topology_fused = topology_fused[:, get_accepted_topologies()]
             save_occupancy_fig(
+                    perturbed_batch[-1].data.cpu().numpy(),
                     clean_batch[-1].data.cpu().numpy(),
                     occupancy[-1].data.cpu().numpy(),
                     np.arange(0, 32+1),

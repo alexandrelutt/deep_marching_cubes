@@ -12,7 +12,7 @@ python3 -m pip install --upgrade pip
 sh main_setup.sh
 ```
 
-Then, install the [data](https://s3.eu-central-1.amazonaws.com/avg-projects/deep_marching_cubes_data.zip) and store it in a 'all_data' folder.
+Then, install the [data](https://s3.eu-central-1.amazonaws.com/avg-projects/deep_marching_cubes_data.zip) and store it in a `all_data` folder.
 
 To train the model and upload outputs to GCP, please use Tmux:
 ```bash

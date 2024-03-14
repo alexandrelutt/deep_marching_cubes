@@ -71,12 +71,10 @@ def save_occupancy_fig(pts, occupancy, grid, i):
     rgba_x[:, 0] = 1.0
     rgba_x[:, 3] = occupancy.flatten()
 
-    ## apply the rotation matrix to the points
-    xv_cls = np.dot(xv_cls, rotation_matrix)
-    yv_cls = np.dot(yv_cls, rotation_matrix)
-    zv_cls = np.dot(zv_cls, rotation_matrix)
+    pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
+    pred_points = np.dot(pred_points, rotation_matrix)
     
-    ax.scatter(xv_cls, yv_cls, zv_cls, '.', color=rgba_x, zorder=1)
+    ax.scatter(pred_points[:, 0], pred_points[:, 1], pred_points[:, 2], '.', color=rgba_x, zorder=1)
 
     ax.set_xlim(grid.min(), grid.max())
     ax.set_ylim(grid.min(), grid.max())

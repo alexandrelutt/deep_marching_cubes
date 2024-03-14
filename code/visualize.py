@@ -39,6 +39,19 @@ def save_occupancy_fig(pts, occupancy, grid, i):
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
 
+    # Define the rotation angle (90 degrees)
+    angle = np.pi / 2  # in radians
+
+    # Define the rotation matrix for rotation about the y-axis
+    rotation_matrix = np.array([
+        [np.cos(angle), 0, np.sin(angle)],
+        [0, 1, 0],
+        [-np.sin(angle), 0, np.cos(angle)]
+    ])
+
+    # Apply the rotation matrix to the points
+    pts = np.dot(pts, rotation_matrix)
+
     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.',
             color='#727272', zorder=1)
 
@@ -57,6 +70,11 @@ def save_occupancy_fig(pts, occupancy, grid, i):
     rgba_x = np.zeros((len(xv_cls), 4))
     rgba_x[:, 0] = 1.0
     rgba_x[:, 3] = occupancy.flatten()
+
+    ## apply the rotation matrix to the points
+    xv_cls = np.dot(xv_cls, rotation_matrix)
+    yv_cls = np.dot(yv_cls, rotation_matrix)
+    zv_cls = np.dot(zv_cls, rotation_matrix)
     
     ax.scatter(xv_cls, yv_cls, zv_cls, '.', color=rgba_x, zorder=1)
 

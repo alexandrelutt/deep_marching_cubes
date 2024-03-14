@@ -74,17 +74,13 @@ def save_occupancy_fig(pts, occupancy, grid, i):
 def save_mesh_fig(pts, offset, topology, grid, i):
     num_cells = len(grid)-1
     _, topology_max = torch.max(topology, dim=1)
+    print(topology_max)
     topology_max = topology_max.view(num_cells, num_cells, num_cells)
 
     vertices = torch.zeros(num_cells**3 * 12, 3).float()
     faces = torch.zeros(num_cells**3 * 12, 3).float()
 
-    print(offset.shape, topology_max.shape)
-
     vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.detach().cpu(), topology_max.detach().cpu(), vertices, faces)
-
-    print(f'Num vertices: {num_vertices}, Num faces: {num_faces}')
-    print(f'Vertices: {vertices.shape}, Faces: {faces.shape}')
 
     vertices = vertices[:num_vertices, :].numpy()
     faces = faces[:num_faces, :].numpy()
@@ -133,8 +129,6 @@ def visualize(model, test_loader, device):
 
             offset, topology, occupancy = model(perturbed_batch)
 
-            print(f'Offset: {offset[-1].shape}, Topology: {topology[-1].shape}, Occupancy: {occupancy[-1].shape}')
-
             # topology_fused = topology[-1].data.cpu().numpy()
             # topology_fused = np.maximum(topology_fused[:, 0:128],
             #                             topology_fused[:, 256:127:-1])
@@ -146,8 +140,6 @@ def visualize(model, test_loader, device):
             #         i)
 
             topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies())]
-
-            print(f'Topology_vis: {topology_vis[-1]}')
 
             save_mesh_fig(
                     clean_batch[-1].data.cpu().numpy(),

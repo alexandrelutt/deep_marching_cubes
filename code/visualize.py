@@ -83,6 +83,9 @@ def save_mesh_fig(pts, offset, topology, grid, i):
 
     vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.detach().cpu(), topology_max.detach().cpu(), vertices, faces)
 
+    print(f'Num vertices: {num_vertices}, Num faces: {num_faces}')
+    print(f'Vertices: {vertices.shape}, Faces: {faces.shape}')
+
     vertices = vertices[:num_vertices, :].numpy()
     faces = faces[:num_faces, :].numpy()
 

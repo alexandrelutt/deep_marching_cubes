@@ -73,18 +73,7 @@ def save_occupancy_fig(pts, occupancy, grid, i):
 
 def save_mesh_fig(pts, offset, topology, grid, i):
     num_cells = len(grid)-1
-    topology_max, _ = torch.max(topology, dim=1)
-    # print(_)
-    # print(topology_max)
-
-    # topology_values = topology_max.detach().cpu().numpy()
-
-    # ## plot histogram of topologies
-
-    # fig = plt.figure()
-    # fig.clear()
-    # plt.hist(topology_values, bins=32)
-    # plt.savefig(f'outputs/figures/test_example_topology_{i}.png')
+    _, topology_max = torch.max(topology, dim=1)
 
     topology_max = topology_max.view(num_cells, num_cells, num_cells)
 
@@ -92,6 +81,9 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     faces = torch.zeros(num_cells**3 * 12, 3).float()
 
     vertices, faces, num_vertices, num_faces = cpp_utils.pred_to_mesh(offset.detach().cpu(), topology_max.detach().cpu(), vertices, faces)
+
+    print(vertices)
+    print(vertices.shape)
 
     vertices = vertices[:num_vertices, :].numpy()
     faces = faces[:num_faces, :].numpy()

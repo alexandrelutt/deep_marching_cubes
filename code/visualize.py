@@ -74,7 +74,8 @@ def save_occupancy_fig(pts, occupancy, grid, i):
 def save_mesh_fig(pts, offset, topology, grid, i):
     num_cells = len(grid)-1
     _, topology_max = torch.max(topology, dim=1)
-    print(topology_max.shape)
+    print(_)
+    print(topology_max)
 
     topology_values = topology_max.detach().cpu().numpy()
 
@@ -157,3 +158,5 @@ def visualize(model, test_loader, device):
                     topology_vis[-1],
                     np.arange(0, 32+1),
                     i)
+            
+            break

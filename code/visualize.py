@@ -90,6 +90,10 @@ def save_mesh_fig(pts, offset, topology, grid, i):
 
     vertices_unique = vertices_unique[:, [2, 0, 1]]
 
+    print(vertices_unique.shape, faces_unique.shape)
+    print(vertices_unique.min(), vertices_unique.max())
+    print(faces_unique)
+
     save_mesh_helper(vertices_unique, faces_unique, i)
 
     fig = plt.figure(0)
@@ -131,11 +135,11 @@ def visualize(model, test_loader, device):
             topology_fused = np.maximum(topology_fused[:, 0:128],
                                         topology_fused[:, 256:127:-1])
             topology_fused = topology_fused[:, get_accepted_topologies()]
-            save_occupancy_fig(
-                    clean_batch[-1].data.cpu().numpy(),
-                    occupancy[-1].data.cpu().numpy(),
-                    np.arange(0, 32+1),
-                    i)
+            # save_occupancy_fig(
+            #         clean_batch[-1].data.cpu().numpy(),
+            #         occupancy[-1].data.cpu().numpy(),
+            #         np.arange(0, 32+1),
+            #         i)
 
             topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies())]
 

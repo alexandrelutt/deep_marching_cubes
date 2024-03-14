@@ -130,10 +130,12 @@ def visualize(model, test_loader, device):
 
             offset, topology, occupancy = model(perturbed_batch)
 
-            topology_fused = topology[-1].data.cpu().numpy()
-            topology_fused = np.maximum(topology_fused[:, 0:128],
-                                        topology_fused[:, 256:127:-1])
-            topology_fused = topology_fused[:, get_accepted_topologies()]
+            print(f'Offset: {offset[-1].shape}, Topology: {topology[-1].shape}, Occupancy: {occupancy[-1].shape}')
+
+            # topology_fused = topology[-1].data.cpu().numpy()
+            # topology_fused = np.maximum(topology_fused[:, 0:128],
+            #                             topology_fused[:, 256:127:-1])
+            # topology_fused = topology_fused[:, get_accepted_topologies()]
             # save_occupancy_fig(
             #         clean_batch[-1].data.cpu().numpy(),
             #         occupancy[-1].data.cpu().numpy(),

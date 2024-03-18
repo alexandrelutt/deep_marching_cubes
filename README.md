@@ -12,10 +12,16 @@ python3 -m pip install --upgrade pip
 sh main_setup.sh
 ```
 
-If you want to download the pretrained models as long as plots generated during validation, run:
+If you want to download the pretrained models as well as plots generated during validation, run:
 
 ```bash
 sh scripts/download_from_gcp.sh
+```
+
+To run the evaluation script:
+
+```bash
+python eval.py
 ```
 
 To train the model and upload outputs to GCP, please use Tmux:

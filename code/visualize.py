@@ -182,7 +182,8 @@ def get_hamming_dist(true_points, occupancy, grid):
         local_true_points = true_points[i]
         max_value = np.max(local_true_points, axis=0)
         min_value = np.min(local_true_points, axis=0)
-        local_occupancy = (local_true_points - min_value) / (max_value - min_value)//N
+        local_occupancy = (local_true_points - min_value) / (max_value - min_value)
+        local_occupancy = np.round(local_occupancy * (N-1)).astype(int)
         new_true_points = np.zeros((N, N, N))
         new_true_points[local_true_points[:, 0], local_true_points[:, 1], local_true_points[:, 2]] = 1
         dist += hamming(local_occupancy.flatten(), new_true_points.flatten())

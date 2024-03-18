@@ -157,20 +157,20 @@ def get_chamfer_dist(true_points, occupancy, grid):
     yv_cls = yv_cls.flatten()
     zv_cls = zv_cls.flatten()
 
+    batch_size, num_point = true_points.shape[:2]
     proba_treshold = 0.4
-    pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
-    pred_points = pred_points[occupancy.flatten() > proba_treshold]
-
-    array1 = true_points.cpu().numpy()
-    array2 = pred_points.cpu().numpy()
-
-    batch_size, num_point = array1.shape[:2]
     dist = 0
     for i in range(batch_size):
-        tree1 = KDTree(array1[i], leaf_size=num_point + 1)
-        tree2 = KDTree(array2[i], leaf_size=num_point + 1)
-        distances1, _ = tree1.query(array2[i])
-        distances2, _ = tree2.query(array1[i])
+        pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
+        pred_points = pred_points[occupancy[i].flatten() > proba_treshold]
+
+        array1 = true_points[i].cpu().numpy()
+        array2 = pred_points.cpu().numpy()
+
+        tree1 = KDTree(array1, leaf_size=num_point + 1)
+        tree2 = KDTree(array2, leaf_size=num_point + 1)
+        distances1, _ = tree1.query(array2)
+        distances2, _ = tree2.query(array1)
         av_dist1 = np.mean(distances1)
         av_dist2 = np.mean(distances2)
         dist += av_dist1 + av_dist2

@@ -183,7 +183,11 @@ def get_hamming_dist(true_points, occupancy):
         local_true_points = np.round(local_true_points * (N-1)).astype(int)
         new_true_points = np.zeros((N, N, N))
         new_true_points[local_true_points[:, 0], local_true_points[:, 1], local_true_points[:, 2]] = 1
-        dist += hamming(local_occupancy.flatten(), new_true_points.flatten())
+
+        local_occupancy = local_occupancy.flatten()
+        new_true_points = new_true_points.flatten()[local_occupancy == 1]
+
+        dist += hamming(local_occupancy, new_true_points)
 
     return dist/batch_size
 

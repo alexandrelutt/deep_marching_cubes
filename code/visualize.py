@@ -176,8 +176,18 @@ def get_chamfer_dist(true_points, occupancy, grid):
 def get_hamming_dist(true_points, occupancy, grid):
     batch_size = true_points.shape[0]
     dist = 0
-    print(occupancy.shape)
-    print(true_points.shape)
+    for i in range(batch_size):
+        local_true_points = true_points[i]
+        local_occupancy = occupancy[i, 0]
+        N = local_occupancy.shape[0]
+        local_occupancy = local_occupancy.flatten()
+        max_value = np.max(local_occupancy, axis=0)
+        min_value = np.min(local_occupancy, axis=0)
+        local_occupancy = (local_occupancy - min_value) / (max_value - min_value)//N
+        new_occupancy = np.zeros((N, N, N))
+        new_occupancy[local_occupancy[:, 0], local_occupancy[:, 1], local_occupancy[:, 2]] = 1
+        dist += hamming(local_true_points.flatten(), new_occupancy.flatten())
+
     return dist/batch_size
 
 def visualize(model, test_loader, device):

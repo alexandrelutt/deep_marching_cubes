@@ -19,5 +19,8 @@ if __name__ == '__main__':
     model.eval()
 
     print('Now visualizing...')
-    visualize(model, test_loader, device)
+    avg_chamfer_dist, avg_hamming_dist = visualize(model, test_loader, device)
     print('Done!')
+
+    print(f'Average Chamfer Distance: {avg_chamfer_dist}')
+    print(f'Average Hamming Distance: {avg_hamming_dist}')

@@ -3,6 +3,7 @@ import torch
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import open3d as o3d
+from sklearn.neighbors import KDTree
 
 from code.table import get_accepted_topologies
 from utils_extension import cpp_utils
@@ -145,9 +146,42 @@ def save_mesh_fig(pts, offset, topology, grid, i):
 
     plt.savefig(f'outputs/figures/test_example_mesh_{i}.png')
 
+def get_chamfer_dist(true_points, occupancy, grid):
+    xv_cls, yv_cls, zv_cls = np.meshgrid(
+            range(len(grid)),
+            range(len(grid)),
+            range(len(grid)),
+            indexing='ij')
+    xv_cls = xv_cls.flatten()
+    yv_cls = yv_cls.flatten()
+    zv_cls = zv_cls.flatten()
+
+    proba_treshold = 0.4
+    pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
+    pred_points = pred_points[occupancy.flatten() > proba_treshold]
+
+    array1 = true_points.cpu().numpy()
+    array2 = pred_points.cpu().numpy()
+
+    batch_size, num_point = array1.shape[:2]
+    dist = 0
+    for i in range(batch_size):
+        tree1 = KDTree(array1[i], leaf_size=num_point+1)
+        tree2 = KDTree(array2[i], leaf_size=num_point+1)
+        distances1, _ = tree1.query(array2[i])
+        distances2, _ = tree2.query(array1[i])
+        av_dist1 = np.mean(distances1)
+        av_dist2 = np.mean(distances2)
+        dist = dist + (av_dist1+av_dist2)/batch_size
+    return dist
+
+def get_hamming_dist(clean_batch, occupancy, device):
+    return 0
 
 def visualize(model, test_loader, device):
     model.to(device)
+    avg_chamfer_dist = 0
+    avg_hamming_dist = 0
     with torch.no_grad():
         for i, (clean_batch, perturbed_batch) in tqdm(enumerate(test_loader)):
             clean_batch = clean_batch.to(device)
@@ -174,3 +208,14 @@ def visualize(model, test_loader, device):
                     topology_vis[-1],
                     np.arange(0, 32+1),
                     i)
+            
+            avg_chamfer_dist += get_chamfer_dist(clean_batch.data.cpu().numpy(),
+                                                 occupancy.data.cpu().numpy(), 
+                                                 np.arange(0, 32+1)
+                                                )
+            avg_hamming_dist += get_hamming_dist(clean_batch, occupancy)
+        
+    avg_chamfer_dist /= len(test_loader)
+    avg_hamming_dist /= len(test_loader)
+
+    return avg_chamfer_dist, avg_hamming_dist

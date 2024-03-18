@@ -51,6 +51,8 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
 
     plt.savefig(f'outputs/figures/test_example_input_occupancy_{i}.png')
 
+    np.save(f'outputs/points/test_example_input_occupancy_{i}.npy', input_pts)
+
     fig = plt.figure()
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
@@ -66,6 +68,8 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     ax.set_zlabel('Z Label')
 
     plt.savefig(f'outputs/figures/test_example_true_occupancy_{i}.png')
+
+    np.save(f'outputs/points/test_example_true_occupancy_{i}.npy', pts)
 
     fig = plt.figure()
     fig.clear()
@@ -89,6 +93,8 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     ax.set_zlabel('Z Label')
 
     plt.savefig(f'outputs/figures/test_example_pred_occupancy_{i}.png')
+
+    np.save(f'outputs/points/test_example_pred_occupancy_{i}.npy', pred_points)
 
 def save_mesh_fig(pts, offset, topology, grid, i):
     num_cells = len(grid)-1
@@ -159,14 +165,14 @@ def visualize(model, test_loader, device):
                     np.arange(0, 32+1),
                     i)
 
-            # topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies(4))]
+            topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies(4))]
 
-            # save_mesh_fig(
-            #         clean_batch[-1].data.cpu().numpy(),
-            #         offset[-1],
-            #         topology_vis[-1],
-            #         np.arange(0, 32+1),
-            #         i)
+            save_mesh_fig(
+                    clean_batch[-1].data.cpu().numpy(),
+                    offset[-1],
+                    topology_vis[-1],
+                    np.arange(0, 32+1),
+                    i)
 
             break
             

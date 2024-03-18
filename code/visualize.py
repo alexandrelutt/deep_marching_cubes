@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import open3d as o3d
 
 from code.table import get_accepted_topologies
 from utils_extension import cpp_utils
@@ -51,7 +52,9 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
 
     plt.savefig(f'outputs/figures/test_example_input_occupancy_{i}.png')
 
-    np.save(f'outputs/points/test_example_input_occupancy_{i}.npy', input_pts)
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(input_pts)
+    o3d.io.write_point_cloud(f'outputs/points/test_example_input_occupancy_{i}.ply', pcd)
 
     fig = plt.figure()
     fig.clear()
@@ -69,7 +72,9 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
 
     plt.savefig(f'outputs/figures/test_example_true_occupancy_{i}.png')
 
-    np.save(f'outputs/points/test_example_true_occupancy_{i}.npy', pts)
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(pts)
+    o3d.io.write_point_cloud(f'outputs/points/test_example_true_occupancy_{i}.ply', pcd)
 
     fig = plt.figure()
     fig.clear()
@@ -94,7 +99,9 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
 
     plt.savefig(f'outputs/figures/test_example_pred_occupancy_{i}.png')
 
-    np.save(f'outputs/points/test_example_pred_occupancy_{i}.npy', pred_points)
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(pred_points)
+    o3d.io.write_point_cloud(f'outputs/points/test_example_pred_occupancy_{i}.ply', pcd)
 
 def save_mesh_fig(pts, offset, topology, grid, i):
     num_cells = len(grid)-1

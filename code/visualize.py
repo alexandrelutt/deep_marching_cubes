@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import open3d as o3d
 from sklearn.neighbors import KDTree
+from scipy.spatial.distance import hamming
 
 from code.table import get_accepted_topologies
 from utils_extension import cpp_utils
@@ -175,8 +176,24 @@ def get_chamfer_dist(true_points, occupancy, grid):
         dist += av_dist1 + av_dist2
     return dist/batch_size
 
-def get_hamming_dist(clean_batch, occupancy, device):
-    return 0
+def get_hamming_dist(true_points, occupancy, grid):
+    xv_cls, yv_cls, zv_cls = np.meshgrid(
+            range(len(grid)),
+            range(len(grid)),
+            range(len(grid)),
+            indexing='ij')
+    
+    xv_cls = xv_cls.flatten()
+    yv_cls = yv_cls.flatten()
+    zv_cls = zv_cls.flatten()
+
+    proba_treshold = 0.4
+    pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
+    pred_points = pred_points[occupancy.flatten() > proba_treshold]
+
+    array1 = true_points.cpu().numpy()
+    array2 = pred_points.cpu().numpy()
+    return hamming(array1, array2)
 
 def visualize(model, test_loader, device):
     model.to(device)

@@ -84,7 +84,7 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     rgba_x[:, 0] = 1.0
     rgba_x[:, 3] = occupancy.flatten()
 
-    proba_treshold = 0.4
+    proba_treshold = 0.3
 
     pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
     pred_points = pred_points[occupancy.flatten() > proba_treshold]

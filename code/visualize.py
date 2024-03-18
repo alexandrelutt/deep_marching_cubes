@@ -166,14 +166,14 @@ def get_chamfer_dist(true_points, occupancy, grid):
     batch_size, num_point = array1.shape[:2]
     dist = 0
     for i in range(batch_size):
-        tree1 = KDTree(array1[i], leaf_size=num_point+1)
-        tree2 = KDTree(array2[i], leaf_size=num_point+1)
+        tree1 = KDTree(array1[i], leaf_size=num_point + 1)
+        tree2 = KDTree(array2[i], leaf_size=num_point + 1)
         distances1, _ = tree1.query(array2[i])
         distances2, _ = tree2.query(array1[i])
         av_dist1 = np.mean(distances1)
         av_dist2 = np.mean(distances2)
-        dist = dist + (av_dist1+av_dist2)/batch_size
-    return dist
+        dist += av_dist1 + av_dist2
+    return dist/batch_size
 
 def get_hamming_dist(clean_batch, occupancy, device):
     return 0

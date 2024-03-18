@@ -172,7 +172,7 @@ def visualize(model, test_loader, device):
                     np.arange(0, 32+1),
                     i)
 
-            topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies(4))]
+            topology_vis = topology[:, :, torch.LongTensor(get_accepted_topologies())]
 
             save_mesh_fig(
                     clean_batch[-1].data.cpu().numpy(),

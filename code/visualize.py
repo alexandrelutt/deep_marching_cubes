@@ -228,7 +228,7 @@ def visualize(model, test_loader, device):
             
             break
         
-    avg_chamfer_dist /= len(test_loader)
-    avg_hamming_dist /= len(test_loader)
+    # avg_chamfer_dist /= len(test_loader)
+    # avg_hamming_dist /= len(test_loader)
 
     return avg_chamfer_dist, avg_hamming_dist

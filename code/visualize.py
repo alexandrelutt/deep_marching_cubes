@@ -193,7 +193,12 @@ def get_hamming_dist(true_points, occupancy, grid):
 
     array1 = true_points.cpu().numpy()
     array2 = pred_points.cpu().numpy()
-    return hamming(array1, array2)
+
+    dist = 0
+    batch_size = array1.shape[0]
+    for i in range(batch_size):
+        dist += hamming(array1[i], array2[i])
+    return dist/batch_size
 
 def visualize(model, test_loader, device):
     model.to(device)

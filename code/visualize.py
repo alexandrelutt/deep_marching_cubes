@@ -163,10 +163,6 @@ def get_chamfer_dist(true_points, occupancy, grid):
     for i in range(batch_size):
         pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
         # pred_points = pred_points[occupancy[i].flatten() > 0.3]
-        print(pred_points.min(axis=0), pred_points.max(axis=0))
-        print(true_points[i].min(axis=0), true_points[i].max(axis=0))
-
-        print('-------')
 
         dists_pc1_to_pc2 = np.sqrt(((pred_points[:, np.newaxis] - true_points[i]) ** 2).sum(axis=-1).min(axis=-1))
         dists_pc2_to_pc1 = np.sqrt(((true_points[i][:, np.newaxis] - pred_points) ** 2).sum(axis=-1).min(axis=-1))

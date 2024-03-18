@@ -12,6 +12,12 @@ python3 -m pip install --upgrade pip
 sh main_setup.sh
 ```
 
+If you want to download the pretrained models as long as plots generated during validation, run:
+
+```bash
+sh scripts/download_from_gcp.sh
+```
+
 To train the model and upload outputs to GCP, please use Tmux:
 ```bash
 sudo apt install tmux
@@ -22,7 +28,7 @@ python run.py
 You can now leave GCP VM window. After training, reconnect to the VM:
 ```bash
 tmux attach
-sh scripts/download_outputs.sh
+sh scripts/upload_outputs.sh
 ```
 Then press Ctrl+b and :
 ```bash

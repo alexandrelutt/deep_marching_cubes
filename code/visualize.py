@@ -184,14 +184,19 @@ def get_hamming_dist(true_points, occupancy, grid):
     yv_cls = yv_cls.flatten()
     zv_cls = zv_cls.flatten()
 
-    batch_size, num_point = true_points.shape[:2]
+    batch_size = true_points.shape[0]
     proba_treshold = 0.4
     dist = 0
     for i in range(batch_size):
         pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
         pred_points = pred_points[occupancy[i].flatten() > proba_treshold]
 
-        dist += hamming(true_points[i], pred_points)
+        for c in range(3):
+            true_points[i][:, c] = np.round(true_points[i][:, c])
+            pred_points[:, c] = np.round(pred_points[:, c])
+            dist += hamming(true_points[i, :, c], pred_points[:, c])
+        dist /= 3
+        
     return dist/batch_size
 
 def visualize(model, test_loader, device):

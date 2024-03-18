@@ -162,7 +162,7 @@ def get_chamfer_dist(true_points, occupancy, grid):
     dist = 0
     for i in range(batch_size):
         pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
-        pred_points = pred_points[occupancy[i].flatten() > proba_treshold]
+        # pred_points = pred_points[occupancy[i].flatten() > proba_treshold]
 
         dists_pc1_to_pc2 = np.sqrt(((pred_points[:, np.newaxis] - true_points[i]) ** 2).sum(axis=-1).min(axis=-1))
         dists_pc2_to_pc1 = np.sqrt(((true_points[i][:, np.newaxis] - pred_points) ** 2).sum(axis=-1).min(axis=-1))
@@ -185,7 +185,7 @@ def get_hamming_dist(true_points, occupancy):
         new_true_points[local_true_points[:, 0], local_true_points[:, 1], local_true_points[:, 2]] = 1
 
         local_occupancy = local_occupancy.flatten()
-        new_true_points = new_true_points.flatten()[local_occupancy == 1]
+        new_true_points = new_true_points.flatten()
 
         dist += hamming(local_occupancy, new_true_points)
 

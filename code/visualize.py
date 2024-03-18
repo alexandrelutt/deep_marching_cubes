@@ -26,6 +26,11 @@ def unique_rows(a):
     _, idx, inverse = np.unique(b, return_index=True, return_inverse=True)
     return a[idx], inverse 
 
+def save_ply(pts, filename):
+    pcd = o3d.geometry.PointCloud()
+    pcd.points = o3d.utility.Vector3dVector(pts)
+    o3d.io.write_point_cloud(filename, pcd)
+
 def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     xv_cls, yv_cls, zv_cls = np.meshgrid(
             range(len(grid)),
@@ -51,10 +56,7 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     ax.set_zlabel('Z Label')
 
     plt.savefig(f'outputs/figures/test_example_input_occupancy_{i}.png')
-
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(input_pts)
-    o3d.io.write_point_cloud(f'outputs/points/test_example_input_occupancy_{i}.ply', pcd)
+    save_ply(input_pts, filename=f'outputs/points/test_example_input_occupancy_{i}.ply')
 
     fig = plt.figure()
     fig.clear()
@@ -71,10 +73,7 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     ax.set_zlabel('Z Label')
 
     plt.savefig(f'outputs/figures/test_example_true_occupancy_{i}.png')
-
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(pts)
-    o3d.io.write_point_cloud(f'outputs/points/test_example_true_occupancy_{i}.ply', pcd)
+    save_ply(pts, filename=f'outputs/points/test_example_true_occupancy_{i}.ply')
 
     fig = plt.figure()
     fig.clear()
@@ -98,10 +97,7 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     ax.set_zlabel('Z Label')
 
     plt.savefig(f'outputs/figures/test_example_pred_occupancy_{i}.png')
-
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(pred_points)
-    o3d.io.write_point_cloud(f'outputs/points/test_example_pred_occupancy_{i}.ply', pcd)
+    save_ply(pred_points, filename=f'outputs/points/test_example_pred_occupancy_{i}.ply')
 
 def save_mesh_fig(pts, offset, topology, grid, i):
     num_cells = len(grid)-1
@@ -129,8 +125,6 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     fig = plt.figure(0)
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
-
-    # ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
 
     color = [0.8, 0.5, 0.5]
     ax.plot_trisurf(vertices_unique[:, 0],
@@ -180,6 +174,3 @@ def visualize(model, test_loader, device):
                     topology_vis[-1],
                     np.arange(0, 32+1),
                     i)
-
-            break
-            

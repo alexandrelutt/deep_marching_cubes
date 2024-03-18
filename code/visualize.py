@@ -225,6 +225,8 @@ def visualize(model, test_loader, device):
             avg_hamming_dist += get_hamming_dist(clean_batch.data.cpu().numpy(),
                                                  occupancy.data.cpu().numpy()
                                                 )
+            
+            break
         
     avg_chamfer_dist /= len(test_loader)
     avg_hamming_dist /= len(test_loader)

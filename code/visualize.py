@@ -84,7 +84,7 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     rgba_x[:, 0] = 1.0
     rgba_x[:, 3] = occupancy.flatten()
 
-    proba_treshold = 0.3
+    proba_treshold = 0.4
 
     pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
     pred_points = pred_points[occupancy.flatten() > proba_treshold]
@@ -158,7 +158,7 @@ def get_chamfer_dist(true_points, occupancy, grid):
     zv_cls = zv_cls.flatten()
 
     batch_size = true_points.shape[0]
-    proba_treshold = 0.3
+    proba_treshold = 0.4
     dist = 0
     for i in range(batch_size):
         pred_points = np.array([xv_cls, yv_cls, zv_cls]).T

@@ -117,7 +117,7 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
 
-    ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
+    # ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.', color='#727272', zorder=1)
 
     color = [0.8, 0.5, 0.5]
     ax.plot_trisurf(vertices_unique[:, 0],

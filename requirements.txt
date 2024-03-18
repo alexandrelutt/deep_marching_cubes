@@ -3,3 +3,4 @@ ninja
 gdown
 scipy
 matplotlib
+open3d

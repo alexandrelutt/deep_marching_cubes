@@ -24,3 +24,4 @@ mkdir outputs/models
 mkdir outputs/figures
 mkdir outputs/meshes
 mkdir outputs/results
+mkdir outputs/points

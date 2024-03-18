@@ -164,16 +164,24 @@ def get_chamfer_dist(true_points, occupancy, grid):
         pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
         pred_points = pred_points[occupancy[i].flatten() > proba_treshold]
 
-        tree1 = KDTree(true_points[i], leaf_size=num_point + 1)
-        tree2 = KDTree(pred_points, leaf_size=num_point + 1)
-        distances1, _ = tree1.query(pred_points)
-        distances2, _ = tree2.query(true_points[i])
-        av_dist1 = np.mean(distances1)
-        av_dist2 = np.mean(distances2)
-        dist += av_dist1 + av_dist2
+        dists_pc1_to_pc2 = np.sqrt(((pred_points[:, np.newaxis] - true_points[i]) ** 2).sum(axis=-1).min(axis=-1))
+    
+        # Compute distances from points in pc2 to points in pc1
+        dists_pc2_to_pc1 = np.sqrt(((true_points[i][:, np.newaxis] - pred_points) ** 2).sum(axis=-1).min(axis=-1))
+        
+        # Compute the Chamfer distance
+        chamfer_dist = np.mean(dists_pc1_to_pc2) + np.mean(dists_pc2_to_pc1)
+        dist += chamfer_dist
+        # tree1 = KDTree(true_points[i], leaf_size=num_point + 1)
+        # tree2 = KDTree(pred_points, leaf_size=num_point + 1)
+        # distances1, _ = tree1.query(pred_points)
+        # distances2, _ = tree2.query(true_points[i])
+        # av_dist1 = np.mean(distances1)
+        # av_dist2 = np.mean(distances2)
+        # dist += av_dist1 + av_dist2
     return dist/batch_size
 
-def get_hamming_dist(true_points, occupancy, grid):
+def get_hamming_dist(true_points, occupancy):
     batch_size = true_points.shape[0]
     dist = 0
     for i in range(batch_size):
@@ -226,8 +234,7 @@ def visualize(model, test_loader, device):
                                                  np.arange(0, 32+1)
                                                 )
             avg_hamming_dist += get_hamming_dist(clean_batch.data.cpu().numpy(),
-                                                 occupancy.data.cpu().numpy(), 
-                                                 np.arange(0, 32+1)
+                                                 occupancy.data.cpu().numpy()
                                                 )
         
     avg_chamfer_dist /= len(test_loader)

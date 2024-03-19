@@ -933,7 +933,7 @@ void curvature_cuda_forward(
             innerLoss.data_ptr<float>(),
             3);
   float lossiner = innerLoss.sum().item<float>();
-  loss_ += lossz;
+  loss_ += lossiner;
 
   loss[0] = loss_;
   

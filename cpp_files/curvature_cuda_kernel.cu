@@ -900,20 +900,20 @@ void curvature_cuda_forward(
   float loss_ = 0.0;
 
   pairwise_loss<<<dimGrid, dimBlock>>>(
-        offset.data_ptr<float>(),
-        topology.data_ptr<float>(),
-        xTable.data_ptr<float>(),
-        xLoss.data_ptr<float>(),
-        0);
+            offset.data_ptr<float>(),
+            topology.data_ptr<float>(),
+            xTable.data_ptr<float>(),
+            xLoss.data_ptr<float>(),
+            0);
   float lossx = xLoss.sum().item<float>();
   loss_ += lossx;
 
   pairwise_loss<<<dimGrid, dimBlock>>>(
-        offset.data_ptr<float>(),
-        topology.data_ptr<float>(),
-        yTable.data_ptr<float>(),
-        yLoss.data_ptr<float>(),
-        0);
+            offset.data_ptr<float>(),
+            topology.data_ptr<float>(),
+            yTable.data_ptr<float>(),
+            yLoss.data_ptr<float>(),
+            0);
   float lossy = yLoss.sum().item<float>();
   loss_ += lossy;
 

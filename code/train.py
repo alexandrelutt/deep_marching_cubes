@@ -110,7 +110,7 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
             test_loss_smoothness.append(epoch_test_loss_smoothness)
             test_loss_curvature.append(epoch_test_loss_curvature)
 
-        scheduler.step(epoch_test_loss)
+        # scheduler.step(epoch_test_loss)
             
         print(f'Training loss: {epoch_train_loss}.')
         print(f'Test loss:     {epoch_test_loss}.')

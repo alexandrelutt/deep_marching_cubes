@@ -7,28 +7,7 @@ from google.cloud import storage
 
 from code.utils import plot_losses
 
-## Early stopping (stolen from https://stackoverflow.com/questions/71998978/early-stopping-in-pytorch)
-class EarlyStopper:
-    def __init__(self, patience=1, min_delta=0.005):
-        self.patience = patience
-        self.min_delta = min_delta
-        self.counter = 0
-        self.min_validation_loss = float('inf')
-
-    def early_stop(self, validation_loss):
-        if validation_loss < self.min_validation_loss:
-            self.min_validation_loss = validation_loss
-            self.counter = 0
-        elif validation_loss > (self.min_validation_loss + self.min_delta):
-            self.counter += 1
-            if self.counter >= self.patience:
-                return True
-        return False
-
 def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device):
-
-    early_stopper = EarlyStopper()
-
     storage_client = storage.Client()
     bucket = storage_client.get_bucket('npm3d')
 
@@ -157,9 +136,5 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
 
         dt = time.time() - t0
         print(f'\nEpoch duration: {dt:.2f}s.\n')
-
-        if early_stopper.early_stop(epoch_test_loss): 
-            print('Early stopping!')            
-            break
 
     print('Training complete!\n')

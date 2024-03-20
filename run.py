@@ -22,6 +22,6 @@ if __name__ == '__main__':
     model = DeepMarchingCube()
     loss_module = MyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5)
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=3)
 
     train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device)

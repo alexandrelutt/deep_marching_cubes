@@ -27,7 +27,7 @@ class MyLoss(object):
         self.weight_point_to_mesh = 1.0 # 1.0
         self.weight_occupancy = 0.4 # 0.4
         self.weight_smoothness = 0.6 # 0.6
-        self.weight_curvature = 1.0 # 0.6
+        self.weight_curvature = 0.6 # 0.6
 
         ## utils for point_to_mesh loss
         self.dist_pt_topo = DistPtsTopo()

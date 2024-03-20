@@ -83,8 +83,7 @@ class MyLoss(object):
         loss_inside = self.fraction_inside*weight_to_adapt*loss_inside
 
         loss = loss_sides + loss_inside
-        ## no need to normalize by the dimension of the cube
-        return loss
+        return loss/self.N**3
 
     def smoothness_loss(self, occupancy):
         loss = self.smoothness(occupancy)/self.N**3

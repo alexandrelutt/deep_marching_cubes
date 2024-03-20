@@ -18,12 +18,6 @@ If you want to download the pretrained models as well as plots generated during 
 sh scripts/download_from_gcp.sh
 ```
 
-To run the evaluation script:
-
-```bash
-python eval.py
-```
-
 To train the model and upload outputs to GCP, please use Tmux:
 ```bash
 sudo apt install tmux
@@ -40,4 +34,11 @@ Then press Ctrl+b and :
 ```bash
 kill-session
 ```
+
 If you want to exit the tmux window, press Ctrl+b and d.
+
+To run the evaluation script:
+
+```bash
+python eval.py
+```

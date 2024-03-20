@@ -18,7 +18,6 @@ class LocalEncoder(nn.Module):
     def __init__(self, input_dim=16, skip_connection=True):
         super(LocalEncoder, self).__init__()
 
-        ## u-net
         self.conv1_1 = nn.Conv3d(input_dim, 16, 3, padding=3)
         self.conv1_2 = nn.Conv3d(16, 16, 3, padding=1)
         self.conv2_1 = nn.Conv3d(16, 32, 3, padding=1)
@@ -27,7 +26,6 @@ class LocalEncoder(nn.Module):
         self.conv3_2 = nn.Conv3d(64, 64, 3, padding=1)
         self.conv4 = nn.Conv3d(64, 128, 3, padding=1)
 
-	# batchnorm
         self.conv1_1_bn = nn.BatchNorm3d(16)
         self.conv1_2_bn = nn.BatchNorm3d(16)
         self.conv2_1_bn = nn.BatchNorm3d(32)
@@ -76,7 +74,6 @@ class SurfaceDecoder(nn.Module):
     def __init__(self, skip_connection=True):
         super(SurfaceDecoder, self).__init__()
 
-	# decoder
         self.deconv4 = nn.Conv3d(128, 64, 3, padding=1)
         self.deconv3_1 = nn.ConvTranspose3d(128, 128, 3, padding=1)
         self.deconv3_2 = nn.ConvTranspose3d(128, 32, 3, padding=1)
@@ -89,7 +86,6 @@ class SurfaceDecoder(nn.Module):
         self.deconv1_occ_1 = nn.ConvTranspose3d(32, 32, 3, padding=1)
         self.deconv1_occ_2 = nn.ConvTranspose3d(32, 1 , 3, padding=3)
 
-        # batchnorm
         self.deconv4_bn = nn.BatchNorm3d(64)
         self.deconv3_1_bn = nn.BatchNorm3d(128)
         self.deconv3_2_bn = nn.BatchNorm3d(32)

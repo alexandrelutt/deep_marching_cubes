@@ -9,7 +9,7 @@ from code.utils import plot_losses
 
 ## Early stopping (stolen from https://stackoverflow.com/questions/71998978/early-stopping-in-pytorch)
 class EarlyStopper:
-    def __init__(self, patience=6, min_delta=0.):
+    def __init__(self, patience=4, min_delta=0.):
         self.patience = patience
         self.min_delta = min_delta
         self.counter = 0
@@ -25,9 +25,9 @@ class EarlyStopper:
                 return True
         return False
 
-def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, scheduler, device):
+def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
 
-    early_stopper = EarlyStopper()
+    # early_stopper = EarlyStopper()
 
     storage_client = storage.Client()
     bucket = storage_client.get_bucket('npm3d')
@@ -155,9 +155,9 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, sc
 
         print('Done!')
 
-        if early_stopper.early_stop(epoch_test_loss): 
-            print('Early stopping!')            
-            break
+        # if early_stopper.early_stop(epoch_test_loss): 
+        #     print('Early stopping!')            
+        #     break
 
         dt = time.time() - t0
         print(f'\nEpoch duration: {dt:.2f}s.\n')

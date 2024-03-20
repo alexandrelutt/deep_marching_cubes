@@ -58,6 +58,7 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     ax.set_zlabel('Z Label')
 
     plt.savefig(f'outputs/figures/test_example_input_occupancy_{i}.png')
+    plt.close()
     save_ply(input_pts, filename=f'outputs/points/test_example_input_occupancy_{i}.ply')
 
     fig = plt.figure()
@@ -75,6 +76,7 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     ax.set_zlabel('Z Label')
 
     plt.savefig(f'outputs/figures/test_example_true_occupancy_{i}.png')
+    plt.close()
     save_ply(pts, filename=f'outputs/points/test_example_true_occupancy_{i}.ply')
 
     fig = plt.figure()
@@ -99,6 +101,7 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     ax.set_zlabel('Z Label')
 
     plt.savefig(f'outputs/figures/test_example_pred_occupancy_{i}.png')
+    plt.close()
     save_ply(pred_points, filename=f'outputs/points/test_example_pred_occupancy_{i}.ply')
 
 def save_mesh_fig(pts, offset, topology, grid, i):
@@ -150,6 +153,7 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     ax.set_zlabel('Z Label')
 
     plt.savefig(f'outputs/figures/test_example_mesh_{i}.png')
+    plt.close()
 
 def get_chamfer_dist(true_points, occupancy, grid):
     xv_cls, yv_cls, zv_cls = np.meshgrid(

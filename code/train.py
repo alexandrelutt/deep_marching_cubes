@@ -27,7 +27,7 @@ class EarlyStopper:
 
 def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, device):
 
-    # early_stopper = EarlyStopper()
+    early_stopper = EarlyStopper()
 
     storage_client = storage.Client()
     bucket = storage_client.get_bucket('npm3d')
@@ -155,9 +155,9 @@ def train(model, train_loader, test_loader, loss_module, n_epochs, optimizer, de
 
         print('Done!')
 
-        # if early_stopper.early_stop(epoch_test_loss): 
-        #     print('Early stopping!')            
-        #     break
+        if early_stopper.early_stop(epoch_test_loss): 
+            print('Early stopping!')            
+            break
 
         dt = time.time() - t0
         print(f'\nEpoch duration: {dt:.2f}s.\n')

@@ -65,6 +65,8 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     fig.clear()
     ax = fig.add_subplot(111, projection='3d')
 
+    true_barycenters = pts.mean(axis=0)
+
     ax.scatter(pts[:, 0], pts[:, 1], pts[:, 2], '.',
             color='#727272', zorder=1)
 
@@ -90,6 +92,8 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
 
     pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
     pred_points = pred_points[occupancy.flatten() > proba_treshold]
+
+    pred_points = pred_points - pred_points.mean(axis=0) + true_barycenters
 
     ax.scatter(pred_points[:, 0], pred_points[:, 1], pred_points[:, 2], '.', color=rgba_x[occupancy.flatten() > proba_treshold], zorder=1)
 

@@ -5,9 +5,6 @@ import torch.nn.functional as F
 from code.grid import GridPooling, FeatureExtractor
 from code.topo import OccupancyToTopology
 
-# from grid import GridPooling, FeatureExtractor
-# from topo import OccupancyToTopology
-
 if torch.cuda.is_available():
     dtype = torch.cuda.FloatTensor
 else:

@@ -164,7 +164,7 @@ def save_mesh_fig(pts, offset, topology, grid, i):
 def get_chamfer_dist(true_points, occupancy, grid):
     print(true_points.shape)
     print(occupancy.shape)
-    
+
     xv_cls, yv_cls, zv_cls = np.meshgrid(
             range(len(grid)),
             range(len(grid)),
@@ -240,11 +240,11 @@ def visualize(model, test_loader, device):
                     i)
             
             avg_chamfer_dist += get_chamfer_dist(clean_batch.data.cpu().numpy(),
-                                                 occupancy.data.cpu().numpy(), 
+                                                 occupancy.data.cpu().numpy()[:, 0, :, :, :], 
                                                  np.arange(0, 32+1)
                                                 )
             avg_hamming_dist += get_hamming_dist(clean_batch.data.cpu().numpy(),
-                                                 occupancy.data.cpu().numpy()
+                                                 occupancy.data.cpu().numpy()[:, 0, :, :, :]
                                                 )
                     
     avg_chamfer_dist /= len(test_loader)

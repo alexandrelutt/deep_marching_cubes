@@ -178,6 +178,9 @@ def get_chamfer_dist(true_points, occupancy, grid):
         pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
         pred_points = pred_points[occupancy[i].flatten() > proba_treshold]
 
+        print(pred_points.shape)
+        print(true_points[i].shape)
+
         dists_pc1_to_pc2 = np.sqrt(((pred_points[:, np.newaxis] - true_points[i]) ** 2).sum(axis=-1).min(axis=-1))
         dists_pc2_to_pc1 = np.sqrt(((true_points[i][:, np.newaxis] - pred_points) ** 2).sum(axis=-1).min(axis=-1))
         chamfer_dist = np.mean(dists_pc1_to_pc2) + np.mean(dists_pc2_to_pc1)

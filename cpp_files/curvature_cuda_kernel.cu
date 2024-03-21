@@ -2,13 +2,11 @@
 
 #include <cuda.h>
 #include <cuda_runtime.h>
-// #include <ATen/ATen.h>
 
 #include <vector>
 #include <math.h>
 
 
-// number of all triangles for topologies up to __3__ triangles
 #define NumTri 220 
 #define NumTop 96 
 
@@ -16,11 +14,9 @@ __constant__ float eps=1e-6;
 
 __constant__ float thres=1e-4;
 
-// up to __3__ triangles
 __constant__ int acceptTopologyWithFlip[2][96]={ {1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 19, 25, 31, 32, 34, 35, 38, 47, 48, 49, 50, 51, 55, 59, 63, 64, 68, 70, 76, 79, 96, 98, 100, 102, 103, 110, 111, 112, 115, 118, 119, 127, 0, 255, 128, 136, 137, 140, 143, 144, 145, 152, 153, 155, 157, 159, 176, 179, 185, 187, 191, 192, 196, 200, 204, 205, 206, 207, 208, 217, 220, 221, 223, 224, 230, 236, 238, 239, 240, 241, 242, 243, 244, 246, 247, 248, 249, 251, 252, 253, 254},
 				    {1, 1, 2, 1, 2, 3, 1, 2, 3, 2, 3, 3, 2, 1, 2, 3, 3, 3, 1, 2, 3, 3, 3, 2, 3, 3, 2, 3, 3, 2, 1, 2, 3, 3, 3, 2, 3, 3, 2, 3, 3, 2, 3, 3, 3, 2, 1, 0, 0, 1, 2, 3, 3, 3, 2, 3, 3, 2, 3, 3, 2, 3, 3, 3, 2, 1, 2, 3, 3, 2, 3, 3, 2, 3, 3, 3, 2, 1, 3, 3, 3, 2, 1, 2, 3, 3, 2, 3, 2, 1, 3, 2, 1, 2, 1, 1}};
 
-// look-up-table in Marching Cubes Algorithm
 __constant__ int triTable[256][16] =
 {{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
 {0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
@@ -295,76 +291,61 @@ __constant__ int vertices_to_offset[12][4]={ {0, 1, 1, 0}, // #0
 				{2, 0, 0, 1}}; // #11
 
 
-/**
- * get the vertex locations from the vertex displacement field
- */
 __device__ void offset_to_vertices_cuda(const float *offset, const int W, const int H, const int D, const int x, const int y, const int z, float *vertices){
-  // #0
-  vertices[0 ] = 0.5-offset[0       + (x+1)*H*D + (y+1)*D + z   ]; 
-  vertices[1 ] = 1.0; 
-  vertices[2 ] = 0.0; 
-  // #1
-  vertices[3 ] = 1.0; 
-  vertices[4 ] = 0.5-offset[1*W*H*D + (x+1)*H*D + (y+1)*D + z   ]; 
-  vertices[5 ] = 0.0; 
-  // #2
-  vertices[6 ] = 0.5-offset[0       + (x+1)*H*D + (y  )*D + z   ]; 
-  vertices[7 ] = 0.0; 
-  vertices[8 ] = 0.0; 
-  // #3
-  vertices[9 ] = 0.0; 
+  vertices[0] = 0.5-offset[0       + (x+1)*H*D + (y+1)*D + z   ]; 
+  vertices[1] = 1.0; 
+  vertices[2] = 0.0; 
+
+  vertices[3] = 1.0; 
+  vertices[4] = 0.5-offset[1*W*H*D + (x+1)*H*D + (y+1)*D + z   ]; 
+  vertices[5] = 0.0; 
+
+  vertices[6] = 0.5-offset[0       + (x+1)*H*D + (y  )*D + z   ]; 
+  vertices[7] = 0.0; 
+  vertices[8] = 0.0; 
+
+  vertices[9] = 0.0; 
   vertices[10] = 0.5-offset[1*W*H*D + (x  )*H*D + (y+1)*D + z   ]; 
   vertices[11] = 0.0; 
 
-  // #4
   vertices[12] = 0.5-offset[0       + (x+1)*H*D + (y+1)*D + z+1 ]; 
   vertices[13] = 1.0; 
   vertices[14] = 1.0; 
-  // #5
+
   vertices[15] = 1.0; 
   vertices[16] = 0.5-offset[1*W*H*D + (x+1)*H*D + (y+1)*D + z+1 ]; 
   vertices[17] = 1.0; 
-  // #6
+
   vertices[18] = 0.5-offset[0       + (x+1)*H*D + (y  )*D + z+1 ]; 
   vertices[19] = 0.0; 
   vertices[20] = 1.0; 
-  // #7
+
   vertices[21] = 0.0; 
   vertices[22] = 0.5-offset[1*W*H*D + (x  )*H*D + (y+1)*D + z+1 ]; 
   vertices[23] = 1.0; 
 
-  // #8
   vertices[24] = 0.0; 
   vertices[25] = 1.0; 
   vertices[26] = 0.5-offset[2*W*H*D + (x  )*H*D + (y+1)*D + z+1 ]; 
-  // #9
+
   vertices[27] = 1.0; 
   vertices[28] = 1.0; 
   vertices[29] = 0.5-offset[2*W*H*D + (x+1)*H*D + (y+1)*D + z+1 ]; 
-  // #10
+
   vertices[30] = 1.0; 
   vertices[31] = 0.0; 
   vertices[32] = 0.5-offset[2*W*H*D + (x+1)*H*D + (y  )*D + z+1 ]; 
-  // #11
+
   vertices[33] = 0.0; 
   vertices[34] = 0.0; 
   vertices[35] = 0.5-offset[2*W*H*D + (x  )*H*D + (y  )*D + z+1 ]; 
 }
 
 
-
-/**
- * check the intersection between two integer lists 
- * param:
- * 	array1 		input, integer list denoting the vertex indices on a single face, length 4
- * 	array2 		input, integer list denoting the vertex indices of a triangle, length 3
- * 	out		output, intersected vertex indices, padded with -1 to a fixed length, length 3
- */
 __device__ void intersection(const int *array1, const int *array2, int *out){
 
     int count = 0;
 
-    // initialization
     for (int i=0; i<3; i++){
         out[i] = -1;
     }
@@ -380,9 +361,6 @@ __device__ void intersection(const int *array1, const int *array2, int *out){
     }
 }
 
-/**
- * return the vertex indices on a given surface of a cell
- */
 __device__ void get_vertices_on_face(const int r, int *row){
     int vertices_on_location[6][4] = { {5, 9, 1, 10},
                                    {7, 8, 3, 11},
@@ -395,12 +373,7 @@ __device__ void get_vertices_on_face(const int r, int *row){
     }
 }
 
-/**
- * calculate dn/dpb
- * 	 0  		c3-a3  		-(c2-a2)
- * 	 -(c3-a3)  	0 		c1-a1
- * 	 c2-a2 		-(c1-a1)	0
- */
+
 __device__ void dn_dpb( const float *vertices, const int a, const int c, const float *dn, float *db ){
 
   float d3 = vertices[c*3+2] - vertices[a*3+2];
@@ -413,12 +386,6 @@ __device__ void dn_dpb( const float *vertices, const int a, const int c, const f
 
 }
 
-/**
- * dn/dpc
- *  	0  		-(b3-a3)  	b2-a2
- *  	(b3-a3)  	0 		-(b1-a1)
- *  	-(b2-a2) 	b1-a1		0
- */
 __device__ void dn_dpc( const float *vertices, const int a, const int b, const float *dn, float *dc ){
 
   float d3 = vertices[b*3+2] - vertices[a*3+2];
@@ -431,12 +398,6 @@ __device__ void dn_dpc( const float *vertices, const int a, const int b, const f
 
 }
 
-/**
- * calculate dn/dpa
- *  	0  		b3-c3  		-(b2-c2)
- *  	-(b3-c3)  	0 		b1-c1	
- *  	b2-c2 		-(b1-c1)	0
- */
 __device__ void dn_dpa( const float *vertices, const int b, const int c, const float *dn, float *da ){
 
   float d3 = vertices[b*3+2] - vertices[c*3+2];
@@ -448,31 +409,8 @@ __device__ void dn_dpa( const float *vertices, const int b, const int c, const f
   da[2] =  d2*dn[0] - d1*dn[1]           ;
 }
 
-/** 
- * offset_to_normals, return normal vectors of all triangles (NOT topologies)
- * params:
- * 	offset 		input
- * 	W 		input, number of cells on one of the directions
- * 	H 		input, number of cells on one of the directions
- * 	D 		input, number of cells on one of the directions
- *	i_ 		input, index of the cell on one of the directions
- *	j_ 		input, index of the cell on one of the directions
- *	k_ 		input, index of the cell on one of the directions
- *	location	input, indicating the relative location of the current cell in the pairwise loss
- * 				0: x1 
- * 				1: x2 
- * 				2: y1 
- * 				3: y2 
- * 				4: z1 
- * 				5: z2 
- * 				6: dummy case for inner cell loss 
- * 				7: dummy case for inner cell loss 
- * 	normal 		output
- * 	length 		output, return the length of the normal vector for computing the gradient
- */
 __device__ void offset_to_normals(const float *offset, const int W, const int H, const int D, const int i_, const int j_, const int k_, const int location, float *normal, float *length){
 
-  // offset_to_vertices
   float vertices[12*3];
   offset_to_vertices_cuda(offset, W, H, D, i_, j_, k_, vertices);
 
@@ -485,26 +423,19 @@ __device__ void offset_to_normals(const float *offset, const int W, const int H,
       int top_ind = acceptTopologyWithFlip[0][i]; 
       int num_triangle = acceptTopologyWithFlip[1][i];
       for (int tri_ind = 0; tri_ind<num_triangle; tri_ind++){
-	  // get the indices of the triangle vertices
 	  int triangle[3] = {triTable[top_ind][tri_ind*3], triTable[top_ind][tri_ind*3+1], triTable[top_ind][tri_ind*3+2]};
 	  
-	  // check if the triangle has a line on the face we care about
-	  // simply assign a dummy normal vector if not
           int inter_ind[3];
 	  intersection(vertices_on_face, triangle, inter_ind);
 
 
-	  // location > 5 means inner case instead of x, y, z direction
 	  if (location>5 ||  (location <=5 && inter_ind[0]>-1 && inter_ind[1]>-1 && inter_ind[2]==-1) ){
 	
-	    // consider inside/outside, then the direction of the normal vector 
-	    // decided by the look-up-table
 	    int a, b, c;
 	    a = triangle[0];
 	    b = triangle[1];
 	    c = triangle[2];
 		
-	    // compute the normal
 	    float vec1[3] = { vertices[b*3+0] - vertices[a*3+0], 
 		    	      vertices[b*3+1] - vertices[a*3+1],
 		    	      vertices[b*3+2] - vertices[a*3+2] };
@@ -512,16 +443,13 @@ __device__ void offset_to_normals(const float *offset, const int W, const int H,
 		    	      vertices[c*3+1] - vertices[a*3+1],
 		    	      vertices[c*3+2] - vertices[a*3+2] };
 
-	    // cross product 
 	    float cross[3] = { vec1[1]*vec2[2] - vec1[2]*vec2[1],
 	    		       vec1[2]*vec2[0] - vec1[0]*vec2[2],
 	    		       vec1[0]*vec2[1] - vec1[1]*vec2[0] };
 
-	    // normalized to unit vector
 	    float l2 = sqrt(cross[0]*cross[0] + cross[1]*cross[1] + cross[2]*cross[2]);
 	    if (l2<eps) { l2=eps; }
 	    
-	    // copy to the normal vector, which saved the normal of all triangles
 	    normal[tri_cnt*3 + 0] = cross[0]/l2;
 	    normal[tri_cnt*3 + 1] = cross[1]/l2;
 	    normal[tri_cnt*3 + 2] = cross[2]/l2;
@@ -530,7 +458,6 @@ __device__ void offset_to_normals(const float *offset, const int W, const int H,
 
 	  }
 	  else{
-            // set dummy normal vector
 	    normal[tri_cnt*3 + 0] = 1.0;
 	    normal[tri_cnt*3 + 1] = 1.0;
 	    normal[tri_cnt*3 + 2] = 1.0;
@@ -541,12 +468,9 @@ __device__ void offset_to_normals(const float *offset, const int W, const int H,
   }
 }
 
-/**
- * calculate the gradient back-propagated to the offset
- */
+
 __device__ void grad_normal_to_offset(float *grad_offset, const float *grad_normal, const float *offset, const int W, const int H, const int D, const int i_, const int j_, int k_,  const int location){
 
-  // offset_to_vertices
   float vertices[12*3];
   offset_to_vertices_cuda(offset, W, H, D, i_, j_, k_, vertices);
 
@@ -561,29 +485,21 @@ __device__ void grad_normal_to_offset(float *grad_offset, const float *grad_norm
       int num_triangle = acceptTopologyWithFlip[1][i];
       for (int tri_ind = 0; tri_ind<num_triangle; tri_ind++){
 
-	  // get the gradient on the normal vector of the current triangle
 	  float grad_tri[3] = {grad_normal[tri_cnt*3 + 0], grad_normal[tri_cnt*3 +1], grad_normal[tri_cnt*3 + 2]};
 
-	  // get the indices of the triangle vertices
 	  int triangle[3] = {triTable[top_ind][tri_ind*3], triTable[top_ind][tri_ind*3+1], triTable[top_ind][tri_ind*3+2]};
-	  
-	  // check if the triangle has a line on the face we care about
-	  // simply assign a dummy normal vector if not
-          int inter_ind[3];
+
+    int inter_ind[3];
 	  intersection(vertices_on_face, triangle, inter_ind);
 
 
-	  // location > 5 means inner case instead of x, y, z direction
 	  if (location>5 ||  (location <=5 && inter_ind[0]>-1 && inter_ind[1]>-1 && inter_ind[2]==-1) ){
 
-	    // consider inside/outside, then the direction of the normal vector 
-	    // decided by the look-up-table
 	    int a, b, c;
 	    a = triangle[0];
 	    b = triangle[1];
 	    c = triangle[2];
 
-	    // dn_da
 	    float da[3];
   	    dn_dpa(vertices, b, c, grad_tri, da);
 
@@ -593,7 +509,6 @@ __device__ void grad_normal_to_offset(float *grad_offset, const float *grad_norm
   	    		             vertices_to_offset[a][3]+k_], 
 		       da[vertices_to_offset[a][0]] );
 
-	    // dn_db
 	    float db[3];
   	    dn_dpb(vertices, a, c, grad_tri, db);
 
@@ -603,7 +518,6 @@ __device__ void grad_normal_to_offset(float *grad_offset, const float *grad_norm
   	    		             vertices_to_offset[b][3]+k_], 
 		       db[vertices_to_offset[b][0]] );
 
-	    // dn_dc
 	    float dc[3];
   	    dn_dpc(vertices, a, b, grad_tri, dc);
 
@@ -620,9 +534,6 @@ __device__ void grad_normal_to_offset(float *grad_offset, const float *grad_norm
   }
 }
 
-/**
- * calculate d(normalized normal vector)/d(normal vector)
- */
 __device__ void grad_normalized_to_normal(float *grad_normal, const float *normal, const float l){
 
   float orig_normal[3] = {normal[0]*l, normal[1]*l, normal[2]*l};
@@ -647,19 +558,7 @@ __device__ void grad_normalized_to_normal(float *grad_normal, const float *norma
   grad_normal[2] = g3;
 }
 
-/**
- * calculate the loss between two neighboring cells
- * params:
- * 	offset 		input, the vertex displacement field of the full grid
- * 	topolopy 	input, probability for each triangle'
- * 	mask 		input, mask denoting if two topogolies have connected triangles or not	
- * 	loss 		output, curvature loss
- * 	direction	input, a integer denoting the neighoring relationship between two cells 
- * 				0: two cells adajecent in x direction
- * 				1: two cells adajecent in y direction
- * 				2: two cells adajecent in z direction
- * 				3: dummy label for inner cell loss
- */
+
 __global__ void pairwise_loss(const float *offset, const float *topology, const float *mask, float *loss, const int direction){
 
   int i1 = blockIdx.x;
@@ -673,7 +572,6 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
   int T = NumTri;
   
   int i2=0, j2=0, k2=0, ind1=0, ind2=0;
-  // x direction
   if (direction==0){
        if (i1==W-1) return;
        ind1 = i1*H*D + j1*H + k1;
@@ -682,7 +580,6 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
        j2 = j1;
        k2 = k1;
   }
-  // y direction
   else if (direction==1){
        if (j1==H-1) return;
        ind1 = i1*H*D + j1*H + k1;
@@ -691,7 +588,6 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
        j2 = j1+1;
        k2 = k1;
   }
-  // z direction
   else if (direction==2){
        if (k1==D-1) return;
        ind1 = i1*H*D + j1*H + k1;
@@ -700,7 +596,6 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
        j2 = j1;
        k2 = k1+1;
   }
-  // inner loss, within the same cell
   else if (direction==3){
        ind1 = i1*H*D + j1*H + k1;
        ind2 = ind1;
@@ -709,7 +604,6 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
        k2 = k1;
   }
   
-  // get normal vector in both grids
   float norm1[NumTri*3];
   float norm2[NumTri*3];
   float length1[NumTri];
@@ -724,17 +618,13 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
 
     for (int tj=0; tj<T; tj++){
 
-       // no loss if two topologies are not connected
        float conn_ij = mask[ti*T + tj];
        if (conn_ij<eps) continue;
 
-       // joint probability of two topology combinations
-       // corresponding to outer product
        float pi = topology[ind1*T+ti];
        float pj = topology[ind2*T+tj];
        float p_ij = pi*pj;
 
-       // l2 loss
        float diff_norm0 = norm1[ti*3 + 0]-norm2[tj*3 + 0];
        float diff_norm1 = norm1[ti*3 + 1]-norm2[tj*3 + 1];
        float diff_norm2 = norm1[ti*3 + 2]-norm2[tj*3 + 2];
@@ -752,18 +642,6 @@ __global__ void pairwise_loss(const float *offset, const float *topology, const 
 }
 
 
-/**
- * calculate the gradient back-propagated to the offset
- * 	offset 		input, the vertex displacement field of the full grid
- * 	topology	input, the topology probability
- * 	grad_offset	output, gradient on the offset
- * 	mask 		input, mask denoting if two topogolies have connected triangles or not	
- * 	direction	input, a integer denoting the neighoring relationship between two cells 
- * 				0: two cells adajecent in x direction
- * 				1: two cells adajecent in y direction
- * 				2: two cells adajecent in z direction
- * 				3: dummy label for inner cell loss
- */
 __global__ void pairwise_grad(const float *offset, const float *topology, float *grad_offset, const float *mask, const int direction){
 
   int i1 = blockIdx.x;
@@ -774,11 +652,9 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
   int H = gridDim.y;
   int D = blockDim.x;
 
-  // TODO: change below
   int T = NumTri;
   
   int i2=0, j2=0, k2=0, ind1=0, ind2=0;
-  // x direction
   if (direction==0){
        if (i1==W-1) return;
        ind1 = i1*H*D + j1*H + k1;
@@ -787,7 +663,6 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
        j2 = j1;
        k2 = k1;
   }
-  // y direction
   else if (direction==1){
        if (j1==H-1) return;
        ind1 = i1*H*D + j1*H + k1;
@@ -796,7 +671,6 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
        j2 = j1+1;
        k2 = k1;
   }
-  // z direction
   else if (direction==2){
        if (k1==D-1) return;
        ind1 = i1*H*D + j1*H + k1;
@@ -805,7 +679,6 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
        j2 = j1;
        k2 = k1+1;
   }
-  // inner loss, within the same cell
   else if (direction==3){
        ind1 = i1*H*D + j1*H + k1;
        ind2 = ind1;
@@ -814,7 +687,6 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
        k2 = k1;
   }
   
-  // get normal vector in both grids
   float norm1[NumTri*3];
   float norm2[NumTri*3];
   float length1[NumTri];
@@ -829,17 +701,13 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
 
     for (int tj=0; tj<T; tj++){
 
-       // no loss if two topologies are not connected
        float conn_ij = mask[ti*T + tj];
        if (conn_ij<eps) continue;
 
-       // joint probability of two topology combinations
-       // corresponding to outer product
        float pi = topology[ind1*T+ti];
        float pj = topology[ind2*T+tj];
        float p_ij = pi*pj;
 
-       // l2 loss
        float grad_norm1_[3] = {-2*conn_ij*p_ij*norm2[tj*3 + 0], -2*conn_ij*p_ij*norm2[tj*3 + 1], -2*conn_ij*p_ij*norm2[tj*3 + 2]};
        float grad_norm2_[3] = {-2*conn_ij*p_ij*norm1[ti*3 + 0], -2*conn_ij*p_ij*norm1[ti*3 + 1], -2*conn_ij*p_ij*norm1[ti*3 + 2]};
 
@@ -863,20 +731,6 @@ __global__ void pairwise_grad(const float *offset, const float *topology, float 
 
 }
 
-
-/*
- * Forward function, calculating the distance from a set of points to one single linesegment 
- * params: 
- *	  state 		input, THCState
- * 	  offset 		input, vertex displacement field, 3x(W+1)x(H+1)x(D+1) 
- * 	  topolopy 		input, probability for each topology, (WxHxD)xT', T' is the number of triangles instead of topologies 
- *  	  xTable	 	input, connected triangles in x direction, T'xT' 
- *  	  yTable	 	input, connected triangles in y direction, T'xT'
- *  	  zTable	 	input, connected triangles in z direction, T'xT'
- *  	  innerTable	 	input, connected triangles within the same topology, T'xT'
- *  	  loss  		output, smoothness loss on both horizontal and vertical directions, 1 
- *
- */	
 void curvature_cuda_forward(
     torch::Tensor offset,
     torch::Tensor topology,
@@ -939,21 +793,6 @@ void curvature_cuda_forward(
   
 }
 
-
-/*
- * Backward function, calculating the derivative of the topology with respect to the loss 
- * params: 
- *	  state 		input, THCState
- * 	  grad_output 		input, gradient on the output loss, 1
- *	  offset 		input, vertex displacement field, 3x(W+1)x(H+1)x(D+1)
- * 	  topolopy 		input, probability for each topology, (WxHxD)xT', T' is the number of triangles instead of topologies 
- *  	  xTable	 	input, connected triangles in x direction, T'xT' 
- *  	  yTable	 	input, connected triangles in y direction, T'xT'
- *  	  zTable	 	input, connected triangles in z direction, T'xT'
- *  	  innerTable	 	input, connected triangles within the same topology, T'xT'
- *  	  grad_offset  		output, gradient on the offset, 3x(W+1)x(H+1)x(D+1)
- *
- */	
 void curvature_cuda_backward(
     torch::Tensor grad_output,
     torch::Tensor offset,

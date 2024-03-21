@@ -23,11 +23,10 @@ class MyLoss(object):
     def __init__(self):
         self.N = 32
 
-        ## weights
-        self.weight_point_to_mesh = 1.0 # 1.0
-        self.weight_occupancy = 0.4 # 0.4
-        self.weight_smoothness = 0.6 # 0.6
-        self.weight_curvature = 0.6 # 0.6
+        self.weight_point_to_mesh = 1.0 
+        self.weight_occupancy = 0.4
+        self.weight_smoothness = 0.6
+        self.weight_curvature = 0.6
 
         ## utils for point_to_mesh loss
         self.dist_pt_topo = DistPtsTopo()

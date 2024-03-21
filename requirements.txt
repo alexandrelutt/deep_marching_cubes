@@ -4,3 +4,4 @@ gdown
 scipy
 matplotlib
 open3d
+google-cloud-storage

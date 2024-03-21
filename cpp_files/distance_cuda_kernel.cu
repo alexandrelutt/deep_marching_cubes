@@ -273,69 +273,67 @@ __constant__ int triTable[256][16] =
 {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
 
 __constant__ int vertices_to_offset[12][4]={ {0, 1, 1, 0}, // #0
-				{1, 1, 1, 0}, // #1
-				{0, 1, 0, 0}, // #2
-				{1, 0, 1, 0}, // #3
+				{1, 1, 1, 0},
+				{0, 1, 0, 0},
+				{1, 0, 1, 0},
 				
-				{0, 1, 1, 1}, // #4
-				{1, 1, 1, 1}, // #5
-				{0, 1, 0, 1}, // #6
-				{1, 0, 1, 1}, // #7
+				{0, 1, 1, 1},
+				{1, 1, 1, 1},
+				{0, 1, 0, 1},
+				{1, 0, 1, 1},
 
-				{2, 0, 1, 1}, // #8
-				{2, 1, 1, 1}, // #9
-				{2, 1, 0, 1}, // #10
-				{2, 0, 0, 1}}; // #11
+				{2, 0, 1, 1},
+				{2, 1, 1, 1},
+				{2, 1, 0, 1},
+				{2, 0, 0, 1}};
 
 
 __device__ void offset_to_vertices_cuda(const float *offset, const int W, const int H, const int D, const int x, const int y, const int z, float *vertices){
-  // #0
-  vertices[0 ] = 0.5-offset[0       + (x+1)*H*D + (y+1)*D + z   ]; 
-  vertices[1 ] = 1.0; 
-  vertices[2 ] = 0.0; 
-  // #1
-  vertices[3 ] = 1.0; 
-  vertices[4 ] = 0.5-offset[1*W*H*D + (x+1)*H*D + (y+1)*D + z   ]; 
-  vertices[5 ] = 0.0; 
-  // #2
-  vertices[6 ] = 0.5-offset[0       + (x+1)*H*D + (y  )*D + z   ]; 
-  vertices[7 ] = 0.0; 
-  vertices[8 ] = 0.0; 
-  // #3
-  vertices[9 ] = 0.0; 
+
+  vertices[0] = 0.5-offset[0       + (x+1)*H*D + (y+1)*D + z   ]; 
+  vertices[1] = 1.0; 
+  vertices[2] = 0.0; 
+
+  vertices[3] = 1.0; 
+  vertices[4] = 0.5-offset[1*W*H*D + (x+1)*H*D + (y+1)*D + z   ]; 
+  vertices[5] = 0.0; 
+
+  vertices[6] = 0.5-offset[0       + (x+1)*H*D + (y  )*D + z   ]; 
+  vertices[7] = 0.0; 
+  vertices[8] = 0.0; 
+
+  vertices[9] = 0.0; 
   vertices[10] = 0.5-offset[1*W*H*D + (x  )*H*D + (y+1)*D + z   ]; 
   vertices[11] = 0.0; 
 
-  // #4
   vertices[12] = 0.5-offset[0       + (x+1)*H*D + (y+1)*D + z+1 ]; 
   vertices[13] = 1.0; 
   vertices[14] = 1.0; 
-  // #5
+
   vertices[15] = 1.0; 
   vertices[16] = 0.5-offset[1*W*H*D + (x+1)*H*D + (y+1)*D + z+1 ]; 
   vertices[17] = 1.0; 
-  // #6
+
   vertices[18] = 0.5-offset[0       + (x+1)*H*D + (y  )*D + z+1 ]; 
   vertices[19] = 0.0; 
   vertices[20] = 1.0; 
-  // #7
+
   vertices[21] = 0.0; 
   vertices[22] = 0.5-offset[1*W*H*D + (x  )*H*D + (y+1)*D + z+1 ]; 
   vertices[23] = 1.0; 
 
-  // #8
   vertices[24] = 0.0; 
   vertices[25] = 1.0; 
   vertices[26] = 0.5-offset[2*W*H*D + (x  )*H*D + (y+1)*D + z+1 ]; 
-  // #9
+
   vertices[27] = 1.0; 
   vertices[28] = 1.0; 
   vertices[29] = 0.5-offset[2*W*H*D + (x+1)*H*D + (y+1)*D + z+1 ]; 
-  // #10
+
   vertices[30] = 1.0; 
   vertices[31] = 0.0; 
   vertices[32] = 0.5-offset[2*W*H*D + (x+1)*H*D + (y  )*D + z+1 ]; 
-  // #11
+
   vertices[33] = 0.0; 
   vertices[34] = 0.0; 
   vertices[35] = 0.5-offset[2*W*H*D + (x  )*H*D + (y  )*D + z+1 ]; 
@@ -387,12 +385,9 @@ __device__ float d_t_(float a, float b, float c, float d, float e,
 }
 
 __device__ void grad_triangle_to_offset(const float *grad_triangle, float *grad_offset, const int W, const int H, const int D, const int i, const int j, const int k, const int t, const float count){
-  // for triangles in a single toplogy
   for (int tri_ind = 0; tri_ind<acceptTopology[1][t]; tri_ind++){
-    // for vertices on the triangle
     for (int vertex_ind = 0; vertex_ind<3; vertex_ind++){
 
-	// every vertex only contributes to the gradient of a single variable on the offset map
 	int topology_ind = acceptTopology[0][t];
         int vertex = triTable[topology_ind][tri_ind*3+vertex_ind];
 
@@ -497,33 +492,31 @@ __device__ void point_triangle_distance_backward(const float grad_output_, const
           t_norm = t_clamp/norm;
   }
 
-  // t11
+
   d_a = 2*t11 - 2*t12; d_b = 2*t11 - t12 - t13; d_c = 2*t11 - 2*t13; d_d = p1 - 2*t11 + t12; d_e = p1 - 2*t11 + t13; d_f = 2*t11 - 2*p1; 
   d_t11 += grad_output_ * d_sqrdistance_(a,b,c,d,e,f,s_norm,t_norm, d_a,d_b,d_c,d_d,d_e,d_f, d_s_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det), d_t_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det));
-  // t21
+
   d_a = 2*t21 - 2*t22; d_b = 2*t21 - t22 - t23; d_c = 2*t21 - 2*t23; d_d = p2 - 2*t21 + t22; d_e = p2 - 2*t21 + t23; d_f = 2*t21 - 2*p2; 
   d_t21 += grad_output_ * d_sqrdistance_(a,b,c,d,e,f,s_norm,t_norm, d_a,d_b,d_c,d_d,d_e,d_f, d_s_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det), d_t_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det));
-  // t31
+
   d_a = 2*t31 - 2*t32; d_b = 2*t31 - t32 - t33; d_c = 2*t31 - 2*t33; d_d = p3 - 2*t31 + t32; d_e = p3 - 2*t31 + t33; d_f = 2*t31 - 2*p3; 
   d_t31 += grad_output_ * d_sqrdistance_(a,b,c,d,e,f,s_norm,t_norm, d_a,d_b,d_c,d_d,d_e,d_f, d_s_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det), d_t_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det));
 
-  // t12
   d_a = 2*t12 - 2*t11; d_b = t13 - t11; d_c = 0.0; d_d = t11 - p1; d_e = 0.0; d_f = 0.0; 
   d_t12 += grad_output_ * d_sqrdistance_(a,b,c,d,e,f,s_norm,t_norm, d_a,d_b,d_c,d_d,d_e,d_f, d_s_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det), d_t_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det));
-  // t22
+
   d_a = 2*t22 - 2*t21; d_b = t23 - t21; d_c = 0.0; d_d = t21 - p2; d_e = 0.0; d_f = 0.0; 
   d_t22 += grad_output_ * d_sqrdistance_(a,b,c,d,e,f,s_norm,t_norm, d_a,d_b,d_c,d_d,d_e,d_f, d_s_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det), d_t_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det));
 
   d_a = 2*t32 - 2*t31; d_b = t33 - t31; d_c = 0.0; d_d = t31 - p3; d_e = 0.0; d_f = 0.0; 
   d_t32 += grad_output_ * d_sqrdistance_(a,b,c,d,e,f,s_norm,t_norm, d_a,d_b,d_c,d_d,d_e,d_f, d_s_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det), d_t_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det));
 
-  // t13
   d_a = 0.0; d_b = t12 - t11; d_c = 2*t13 - 2*t11; d_d = 0.0; d_e = t11 - p1; d_f = 0.0; 
   d_t13 += grad_output_ * d_sqrdistance_(a,b,c,d,e,f,s_norm,t_norm, d_a,d_b,d_c,d_d,d_e,d_f, d_s_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det), d_t_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det));
-  // t23
+
   d_a = 0.0; d_b = t22 - t21; d_c = 2*t23 - 2*t21; d_d = 0.0; d_e = t21 - p2; d_f = 0.0; 
   d_t23 += grad_output_ * d_sqrdistance_(a,b,c,d,e,f,s_norm,t_norm, d_a,d_b,d_c,d_d,d_e,d_f, d_s_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det), d_t_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det));
-  // t33
+
   d_a = 0.0; d_b = t32 - t31; d_c = 2*t33 - 2*t31; d_d = 0.0; d_e = t31 - p3; d_f = 0.0; 
   d_t33 += grad_output_ * d_sqrdistance_(a,b,c,d,e,f,s_norm,t_norm, d_a,d_b,d_c,d_d,d_e,d_f, d_s_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det), d_t_(a,b,c,d,e, d_a,d_b,d_c,d_d,d_e, s_clamp,t_clamp,det));
 
@@ -542,29 +535,26 @@ __device__ void point_triangle_distance_backward(const float grad_output_, const
 }
 
 __global__ void point_toplogy_distance_kernel(const float *offset, const float *points, float *distances, long int *indices, const int n){
-  // topology
+
   int t = threadIdx.x;
   int topology_ind = acceptTopology[0][t];
   int T = blockDim.x + 1;
-  // cell indices
+
   int i = blockIdx.x;
   int j = blockIdx.y;
   int k = blockIdx.z;
-  // cell size
+
   int Wc = gridDim.x;
   int Hc = gridDim.y;
   int Dc = gridDim.z;
   int ind = i*Hc*Dc + j*Dc + k;
-  // offset size, note that we always have 3x(W+1)x(H+1)x(Dx1) offset for WxHxD grid
+
   int W = Wc + 1;
   int H = Hc + 1;
   int D = Dc + 1;
 
-  // offset_to_vertices
   float vertices[12*3];
   offset_to_vertices_cuda(offset, W, H, D, i, j, k, vertices);
-
-  //float *triangle = offset_to_triangles(offset, i, j, k, t);
 
   float distance_sum=0.0;
   float count=0;
@@ -573,26 +563,23 @@ __global__ void point_toplogy_distance_kernel(const float *offset, const float *
      float px = points[p*3+0];
      float py = points[p*3+1];
      float pz = points[p*3+2];
-     // if point is inside of the grid
+
      if (px >= i && px < i+grid_size && py >= j && py < j+grid_size && pz >= k && pz < k+grid_size){
        
-       // min distance to a triangle in the same topology
-       // also save the min indice for back-propagation
        float min_distance = 10000.0;
        long int min_indice = -1;
 
        for (int tri_ind = 0; tri_ind<acceptTopology[1][t]; tri_ind++){
-         // offset_to_triangles
-	 // Note: offset_to_triangles is inside of the loop to avoid dynamically allocate memory, different to cpu version
-	 float triangle_single[3*3] = { // v1 
+
+	 float triangle_single[3*3] = {
 		 			vertices[triTable[topology_ind][tri_ind*3+0]*3 + 0] + float(i),
 				        vertices[triTable[topology_ind][tri_ind*3+0]*3 + 1] + float(j),
 				        vertices[triTable[topology_ind][tri_ind*3+0]*3 + 2] + float(k), 
-					// v2
+
 		 			vertices[triTable[topology_ind][tri_ind*3+1]*3 + 0] + float(i),
 				        vertices[triTable[topology_ind][tri_ind*3+1]*3 + 1] + float(j),
 				        vertices[triTable[topology_ind][tri_ind*3+1]*3 + 2] + float(k), 
-					// v3
+
 		 			vertices[triTable[topology_ind][tri_ind*3+2]*3 + 0] + float(i),
 				        vertices[triTable[topology_ind][tri_ind*3+2]*3 + 1] + float(j),
 				        vertices[triTable[topology_ind][tri_ind*3+2]*3 + 2] + float(k) }; 
@@ -610,7 +597,7 @@ __global__ void point_toplogy_distance_kernel(const float *offset, const float *
        count += 1;
      }
   }
-  // if the current grid is not empty
+
   if (count>0) {
     distances[ind*T + t] = distance_sum/count;
   } else {
@@ -623,15 +610,14 @@ __global__ void point_toplogy_distance_kernel(const float *offset, const float *
 
 __global__ void grad_point_toplogy_distance_kernel(const float *grad_output, const float *offset, const float *points, const long int *indices, float *grad_offset, const int n){
 
-  // topology
   int t = threadIdx.x;
   int T = blockDim.x + 1;
   int topology_ind = acceptTopology[0][t];
-  // cell indices
+
   int i = blockIdx.x;
   int j = blockIdx.y;
   int k = blockIdx.z;
-  // cell size
+
   int Wc = gridDim.x;
   int Hc = gridDim.y;
   int Dc = gridDim.z;
@@ -639,22 +625,16 @@ __global__ void grad_point_toplogy_distance_kernel(const float *grad_output, con
 
   int grad_ind = ind*T + t; 
   const float grad_output_element = grad_output[grad_ind];
-  //printf("%d %d %d, %d, grad_output_element %f\n", i, j, k, grad_ind, grad_output_element );
-  // offset size, note that we always have 3x(W+1)x(H+1)x(Dx1) offset for WxHxD grid
+
   int W = Wc + 1;
   int H = Hc + 1;
   int D = Dc + 1;
 
-  // offset_to_vertices
   float vertices[12*3];
   offset_to_vertices_cuda(offset, W, H, D, i, j, k, vertices);
 
-  //float *triangle = offset_to_triangles(offset, i, j, k, t);
 
   float count=0;
-
-  // allocate memory for accumulating the gradients
-  // assuming maximum number of triangles for each topology is 4 as in Marching Cubes
   float grad_triangle_all[4*3*3] = {0};
 
 
@@ -662,36 +642,24 @@ __global__ void grad_point_toplogy_distance_kernel(const float *grad_output, con
      float px = points[p*3+0];
      float py = points[p*3+1];
      float pz = points[p*3+2];
-     // if point is inside of the grid
      if (px >= float(i) && px < float(i)+grid_size && py >= float(j) && py < float(j)+grid_size && pz >= float(k) && pz < float(k)+grid_size){
 
-       // printf("(%f %f %f) in [%f %f %f]\n", px, py, pz, float(i), float(j), float(k) );
-       // printf("grad_output_element %f\n", grad_output_element );
-       // printf("grad_output_element index: %d*%d + %d = %d\n", ind, T, t, ind*T+t);
-       // only back propagate to the nearest triangle
        int tri_ind = indices[p*T + t];
        if (tri_ind == -1) continue;
-       // offset_to_triangles
-       // Note: offset_to_triangles is inside of the loop to avoid dynamically allocate memory, different to cpu version
-       float triangle_single[3*3] = { // v1 
+       float triangle_single[3*3] = {
                     vertices[triTable[topology_ind][tri_ind*3+0]*3 + 0] + float(i),
           		        vertices[triTable[topology_ind][tri_ind*3+0]*3 + 1] + float(j),
           		        vertices[triTable[topology_ind][tri_ind*3+0]*3 + 2] + float(k), 
-          			// v2
            			vertices[triTable[topology_ind][tri_ind*3+1]*3 + 0] + float(i),
           		        vertices[triTable[topology_ind][tri_ind*3+1]*3 + 1] + float(j),
           		        vertices[triTable[topology_ind][tri_ind*3+1]*3 + 2] + float(k), 
-          			// v3
            			vertices[triTable[topology_ind][tri_ind*3+2]*3 + 0] + float(i),
           		        vertices[triTable[topology_ind][tri_ind*3+2]*3 + 1] + float(j),
           		        vertices[triTable[topology_ind][tri_ind*3+2]*3 + 2] + float(k) }; 
         float point_single[3] = {px, py, pz};
 	    float grad_triangle[3*3];
-        //point_triangle_distance_backward(grad_output[ind*T + t], triangle_single, point_single, grad_triangle);
         point_triangle_distance_backward(grad_output_element, triangle_single, point_single, grad_triangle);
 
-        // accumulate gradients over all the points for each triangle
-            // to reduce times of updating global memory	
         for (int gi=0; gi<9; gi++){
             grad_triangle_all[tri_ind*9 + gi] += grad_triangle[gi];
         }
@@ -702,17 +670,15 @@ __global__ void grad_point_toplogy_distance_kernel(const float *grad_output, con
 
   if (count<1.0) return;
 
-  // 
   grad_triangle_to_offset(grad_triangle_all, grad_offset, W, H, D, i, j, k, t, count);
 
 }
 
 __global__ void update_empty_topology(float *distances, const int T){
-  // cell indices
   int i = blockIdx.x;
   int j = blockIdx.y;
   int k = blockIdx.z;
-  // cell size
+
   int Hc = gridDim.y;
   int Dc = gridDim.z;
   int ind = i*Hc*Dc + j*Dc + k;

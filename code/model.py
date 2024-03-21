@@ -5,9 +5,6 @@ import torch.nn.functional as F
 from code.grid import GridPooling, FeatureExtractor
 from code.topo import OccupancyToTopology
 
-# from grid import GridPooling, FeatureExtractor
-# from topo import OccupancyToTopology
-
 if torch.cuda.is_available():
     dtype = torch.cuda.FloatTensor
 else:
@@ -15,7 +12,7 @@ else:
 
 class LocalEncoder(nn.Module):
     """Encoder of the U-Net"""
-    def __init__(self, input_dim=16, skip_connection=True):
+    def __init__(self, input_dim=16):
         super(LocalEncoder, self).__init__()
 
         self.conv1_1 = nn.Conv3d(input_dim, 16, 3, padding=3)
@@ -36,8 +33,6 @@ class LocalEncoder(nn.Module):
 
         self.maxpool = nn.MaxPool3d(2, return_indices=True)
 
-        self.skip_connection = skip_connection
-
     def encoder(self, x):
         x = F.relu(self.conv1_1_bn(self.conv1_1(x)))
         x = F.relu(self.conv1_2_bn(self.conv1_2(x)))
@@ -45,14 +40,12 @@ class LocalEncoder(nn.Module):
         size1 = x.size()
         x, indices1 = self.maxpool(x)
 
-        #
         x = F.relu(self.conv2_1_bn(self.conv2_1(x)))
         x = F.relu(self.conv2_2_bn(self.conv2_2(x)))
         feat2 = x
         size2 = x.size()
         x, indices2 = self.maxpool(x)
 
-        #
         x = F.relu(self.conv3_1_bn(self.conv3_1(x)))
         x = F.relu(self.conv3_2_bn(self.conv3_2(x)))
         feat3 = x
@@ -64,14 +57,11 @@ class LocalEncoder(nn.Module):
     
     def forward(self, x):
         x, feat1, size1, indices1, feat2, size2, indices2, feat3, size3, indices3 = self.encoder(x)
-        if self.skip_connection: 
-            return x, (feat1, size1, indices1, feat2, size2, indices2, feat3, size3, indices3)
-        else:
-            return x
+        return x, (feat1, size1, indices1, feat2, size2, indices2, feat3, size3, indices3)
         
 class SurfaceDecoder(nn.Module):
     """Decoder of the U-Net, estimate topology and offset with two headers"""
-    def __init__(self, skip_connection=True):
+    def __init__(self):
         super(SurfaceDecoder, self).__init__()
 
         self.deconv4 = nn.Conv3d(128, 64, 3, padding=1)
@@ -100,35 +90,28 @@ class SurfaceDecoder(nn.Module):
 
         self.maxunpool = nn.MaxUnpool3d(2)
 
-        self.skip_connection = skip_connection
-
     def decoder(self, x, intermediate_feat=None):
 
-        if self.skip_connection:
-            feat1, size1, indices1, feat2, size2, indices2, feat3, size3, indices3 = intermediate_feat
+        feat1, size1, indices1, feat2, size2, indices2, feat3, size3, indices3 = intermediate_feat
 
         x = F.relu(self.deconv4_bn(self.deconv4(x)))
 
         x = self.maxunpool(x, indices3, output_size=size3)
-        if self.skip_connection:
-            x = torch.cat((feat3, x), 1)
+        x = torch.cat((feat3, x), 1)
         x = F.relu(self.deconv3_1_bn(self.deconv3_1(x)))
         x = F.relu(self.deconv3_2_bn(self.deconv3_2(x)))
 
         x = self.maxunpool(x, indices2, output_size=size2)
-        if self.skip_connection:
-            x = torch.cat((feat2, x), 1)
+        x = torch.cat((feat2, x), 1)
         x_occupancy = F.relu(self.deconv2_occ_1_bn(self.deconv2_occ_1(x)))
         x_occupancy = F.relu(self.deconv2_occ_2_bn(self.deconv2_occ_2(x_occupancy)))
         x_offset = F.relu(self.deconv2_off_1_bn(self.deconv2_off_1(x)))
         x_offset = F.relu(self.deconv2_off_2_bn(self.deconv2_off_2(x_offset)))
 
         x_occupancy = self.maxunpool(x_occupancy, indices1, output_size=size1)
-        if self.skip_connection:
-            x_occupancy = torch.cat((feat1, x_occupancy), 1)
+        x_occupancy = torch.cat((feat1, x_occupancy), 1)
         x_offset = self.maxunpool(x_offset, indices1, output_size=size1)
-        if self.skip_connection:
-            x_offset = torch.cat((feat1, x_offset), 1)
+        x_offset = torch.cat((feat1, x_offset), 1)
         x_occupancy = F.relu(self.deconv1_occ_1_bn(self.deconv1_occ_1(x_occupancy)))
         x_occupancy = self.sigmoid(self.deconv1_occ_2(x_occupancy))
         x_offset = F.relu(self.deconv1_off_1_bn(self.deconv1_off_1(x_offset)))
@@ -144,8 +127,8 @@ class DeepMarchingCube(nn.Module):
         super(DeepMarchingCube, self).__init__()
         self.feature_extractor = FeatureExtractor()
         self.grid_pooling = GridPooling()
-        self.encoder = LocalEncoder(16, True)
-        self.decoder = SurfaceDecoder(True)
+        self.encoder = LocalEncoder(16)
+        self.decoder = SurfaceDecoder()
         self.occupancy_to_topology = OccupancyToTopology()
 
         self.N = 32

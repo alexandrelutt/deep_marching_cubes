@@ -89,15 +89,15 @@ def save_occupancy_fig(input_pts, pts, occupancy, grid, i):
     rgba_x[:, 0] = 1.0
     rgba_x[:, 3] = occupancy.flatten()
 
-    proba_treshold = 0.05
+    # proba_treshold = 0.05
 
     pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
-    pred_points = pred_points[occupancy.flatten() > proba_treshold]
+    pred_points = pred_points[occupancy.flatten()]# > proba_treshold]
 
-    pred_points = pred_points * true_stds
+    pred_points = pred_points / pred_points.std(axis=0) * true_stds
     pred_points = pred_points - pred_points.mean(axis=0) + true_barycenters
 
-    ax.scatter(pred_points[:, 0], pred_points[:, 1], pred_points[:, 2], '.', color=rgba_x[occupancy.flatten() > proba_treshold], zorder=1)
+    ax.scatter(pred_points[:, 0], pred_points[:, 1], pred_points[:, 2], '.', color=rgba_x[occupancy.flatten()], zorder=1)# > proba_treshold], zorder=1)
 
     ax.set_xlim(grid.min(), grid.max())
     ax.set_ylim(grid.min(), grid.max())
@@ -178,9 +178,6 @@ def get_chamfer_dist(true_points, occupancy, grid):
         pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
         pred_points = pred_points[occupancy[i].flatten() > proba_treshold]
 
-        print(pred_points.shape)
-        print(true_points[i].shape)
-
         dists_pc1_to_pc2 = np.sqrt(((pred_points[:, np.newaxis] - true_points[i]) ** 2).sum(axis=-1).min(axis=-1))
         dists_pc2_to_pc1 = np.sqrt(((true_points[i][:, np.newaxis] - pred_points) ** 2).sum(axis=-1).min(axis=-1))
         chamfer_dist = np.mean(dists_pc1_to_pc2) + np.mean(dists_pc2_to_pc1)
@@ -239,14 +236,16 @@ def visualize(model, test_loader, device):
                     np.arange(0, 32+1),
                     i)
             
-            avg_chamfer_dist += get_chamfer_dist(clean_batch.data.cpu().numpy(),
-                                                 occupancy.data.cpu().numpy(), 
-                                                 np.arange(0, 32+1)
-                                                )
-            avg_hamming_dist += get_hamming_dist(clean_batch.data.cpu().numpy(),
-                                                 occupancy.data.cpu().numpy()
-                                                )
+            # avg_chamfer_dist += get_chamfer_dist(clean_batch.data.cpu().numpy(),
+            #                                      occupancy.data.cpu().numpy(), 
+            #                                      np.arange(0, 32+1)
+            #                                     )
+            # avg_hamming_dist += get_hamming_dist(clean_batch.data.cpu().numpy(),
+            #                                      occupancy.data.cpu().numpy()
+            #                                     )
                     
+            break
+
     avg_chamfer_dist /= len(test_loader)
     avg_hamming_dist /= len(test_loader)
 

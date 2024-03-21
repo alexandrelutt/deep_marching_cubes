@@ -239,6 +239,9 @@ def visualize(model, test_loader, device):
                     np.arange(0, 32+1),
                     i)
             
+            print(np.min(occupancy.data.cpu().numpy()))
+            print(np.max(occupancy.data.cpu().numpy()))
+            
             avg_chamfer_dist += get_chamfer_dist(clean_batch.data.cpu().numpy(),
                                                  occupancy.data.cpu().numpy(), 
                                                  np.arange(0, 32+1)
@@ -246,6 +249,8 @@ def visualize(model, test_loader, device):
             avg_hamming_dist += get_hamming_dist(clean_batch.data.cpu().numpy(),
                                                  occupancy.data.cpu().numpy()
                                                 )
+            
+            break
                     
     avg_chamfer_dist /= len(test_loader)
     avg_hamming_dist /= len(test_loader)

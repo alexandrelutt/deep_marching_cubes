@@ -216,7 +216,7 @@ def visualize(model, test_loader, device):
 
             offset, topology, occupancy = model(perturbed_batch)
 
-            for b in range(occupancy.shape()[0]):
+            for b in range(occupancy.shape[0]):
                 occupancy[b, 0] = (occupancy[b, 0] - occupancy[b, 0].min()) / (occupancy[b, 0].max() - occupancy[b, 0].min())
 
             topology_fused = topology[-1].data.cpu().numpy()

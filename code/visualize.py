@@ -162,6 +162,9 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     plt.close()
 
 def get_chamfer_dist(true_points, occupancy, grid):
+    print(true_points.shape)
+    print(occupancy.shape)
+    
     xv_cls, yv_cls, zv_cls = np.meshgrid(
             range(len(grid)),
             range(len(grid)),
@@ -185,8 +188,6 @@ def get_chamfer_dist(true_points, occupancy, grid):
     return dist/batch_size
 
 def get_hamming_dist(true_points, occupancy):
-    print(true_points.shape)
-    print(occupancy.shape)
     batch_size = true_points.shape[0]
     dist = 0
     for i in range(batch_size):

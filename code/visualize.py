@@ -162,9 +162,6 @@ def save_mesh_fig(pts, offset, topology, grid, i):
     plt.close()
 
 def get_chamfer_dist(true_points, occupancy, grid):
-    print(true_points.shape)
-    print(occupancy.shape)
-
     xv_cls, yv_cls, zv_cls = np.meshgrid(
             range(len(grid)),
             range(len(grid)),
@@ -219,6 +216,9 @@ def visualize(model, test_loader, device):
 
             offset, topology, occupancy = model(perturbed_batch)
 
+            for b in range(occupancy.shape(0)):
+                occupancy[b, 0] = (occupancy[b, 0] - occupancy[b, 0].min()) / (occupancy[b, 0].max() - occupancy[b, 0].min())
+
             topology_fused = topology[-1].data.cpu().numpy()
             topology_fused = np.maximum(topology_fused[:, 0:128],
                                         topology_fused[:, 256:127:-1])
@@ -240,7 +240,6 @@ def visualize(model, test_loader, device):
                     i)
             
             occupancy_numpy = occupancy.data.cpu().numpy()
-            occupancy_numpy = (occupancy_numpy - occupancy_numpy.min()) / (occupancy_numpy.max() - occupancy_numpy.min())
             
             avg_chamfer_dist += get_chamfer_dist(clean_batch.data.cpu().numpy(),
                                                  occupancy_numpy, 

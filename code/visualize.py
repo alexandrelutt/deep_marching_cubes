@@ -179,7 +179,7 @@ def get_chamfer_dist(true_points, occupancy, grid):
     dist = 0
     for i in range(batch_size):
         pred_points = np.array([xv_cls, yv_cls, zv_cls]).T
-        pred_points = pred_points[occupancy[i].flatten() > proba_treshold]
+        # pred_points = pred_points[occupancy[i].flatten() > proba_treshold]
 
         dists_pc1_to_pc2 = np.sqrt(((pred_points[:, np.newaxis] - true_points[i]) ** 2).sum(axis=-1).min(axis=-1))
         dists_pc2_to_pc1 = np.sqrt(((true_points[i][:, np.newaxis] - pred_points) ** 2).sum(axis=-1).min(axis=-1))
@@ -240,11 +240,11 @@ def visualize(model, test_loader, device):
                     i)
             
             avg_chamfer_dist += get_chamfer_dist(clean_batch.data.cpu().numpy(),
-                                                 occupancy.data.cpu().numpy()[:, 0, :, :, :], 
+                                                 occupancy.data.cpu().numpy(), 
                                                  np.arange(0, 32+1)
                                                 )
             avg_hamming_dist += get_hamming_dist(clean_batch.data.cpu().numpy(),
-                                                 occupancy.data.cpu().numpy()[:, 0, :, :, :]
+                                                 occupancy.data.cpu().numpy()
                                                 )
                     
     avg_chamfer_dist /= len(test_loader)

@@ -239,15 +239,15 @@ def visualize(model, test_loader, device):
                     np.arange(0, 32+1),
                     i)
             
-            print(np.min(occupancy.data.cpu().numpy()))
-            print(np.max(occupancy.data.cpu().numpy()))
+            occupancy_numpy = occupancy.data.cpu().numpy()
+            occupancy_numpy = (occupancy_numpy - occupancy_numpy.min()) / (occupancy_numpy.max() - occupancy_numpy.min())
             
             avg_chamfer_dist += get_chamfer_dist(clean_batch.data.cpu().numpy(),
-                                                 occupancy.data.cpu().numpy(), 
+                                                 occupancy_numpy, 
                                                  np.arange(0, 32+1)
                                                 )
             avg_hamming_dist += get_hamming_dist(clean_batch.data.cpu().numpy(),
-                                                 occupancy.data.cpu().numpy()
+                                                 occupancy_numpy
                                                 )
             
             break
